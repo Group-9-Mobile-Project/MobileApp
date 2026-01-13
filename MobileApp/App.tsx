@@ -5,20 +5,9 @@ import BottomNav from "./components/BottomNav";
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <NavigationContainer>
-        <BottomNav />
-      </NavigationContainer>
+    <NavigationContainer>
+      <BottomNav />
       <StatusBar style="auto" />
-    </View>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
