@@ -6,7 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
 
-export default function BottomNav() {
+export default function Navigator() {
   return (
     <Tab.Navigator tabBar={(props) => <BottomNavBar {...props} />}>
       <Tab.Screen 
