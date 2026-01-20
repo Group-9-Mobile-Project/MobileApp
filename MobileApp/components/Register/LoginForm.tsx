@@ -2,12 +2,14 @@ import { View, Text, StyleSheet, TextInput, Button, ActivityIndicator, Alert } f
 import React, { useState } from 'react'
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../firebase/Config';
+import { useProfile } from '../../hooks/useProfile';
 
 export default function LoginForm() {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
+    const { getProfile, saveProfile } = useProfile();
 
     const handleLogin = async () => {
 
@@ -17,25 +19,23 @@ export default function LoginForm() {
         }
 
         setLoading(true);
+
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password)
-                .then(() => {
-                    // Signed up 
+                    // Loged in 
                     Alert.alert('Kirjautuminen onnistui')
+                    //console.log(userCredential.user)
+                    await saveProfile(userCredential.user)
                     // ...
-                })
-                .catch((error) => {
-                    const errorCode = error.code;
-                    const errorMessage = error.message;
-                    if (error.code === 'auth/too-many-requests') {
-                        Alert.alert('Liian monta yritystä', 'Yritä uudelleen myöhemmin');
-                    } else {
-                        Alert.alert('Virhe', 'Kirjautuminen epäonnistui')
-                    }
-                    // ..
-                });
         } catch (error: any) {
-            Alert.alert('Virhe', 'Kirjautuminen epäonnistui')
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            if (error.code === 'auth/too-many-requests') {
+                Alert.alert('Liian monta yritystä', 'Yritä uudelleen myöhemmin');
+            } else {
+                Alert.alert('Virhe', 'Kirjautuminen epäonnistui')
+            }
+            // ..
         } finally {
             setLoading(false);
         }

@@ -3,7 +3,6 @@ import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import BottomNavBar from './BottomNavBar';
 import { Ionicons } from '@expo/vector-icons';
-import RegisterScreen from '../screens/RegisterScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -12,7 +11,7 @@ export default function Navigator() {
     <Tab.Navigator tabBar={(props) => <BottomNavBar {...props} />}>
       <Tab.Screen 
         name="Home" 
-        component={RegisterScreen}
+        component={HomeScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home" size={size} color={color} />
