@@ -1,125 +1,73 @@
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { View, Text, StyleSheet, TextInput, Button, Alert, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
-import { Fauth } from "../firebase/Config";
+import LoginForm from "../components/Register/LoginForm";
+import RegisterForm from "../components/Register/RegisterForm";
 
 export default function RegisterScreen() {
 
-    const auth = Fauth;
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [loading, setLoading] = useState(false);
-
-    const handleRegister = async () => {
-
-        if (!email || !password || !name) {
-            Alert.alert('Virhe', 'Täytä kaikki kentät');
-            return;
-        }
-
-        if (password.length < 8) {
-            Alert.alert('Virhe', 'Salasanan tulee olla vähintään 8 merkkiä');
-            return;
-        }
-
-        setLoading(true);
-        try {
-            createUserWithEmailAndPassword(auth, email, password)
-                .then(() => {
-                    // Signed up 
-                    Alert.alert('Käyttäjän luonti onnistui')
-                    // ...
-                })
-                .catch((error) => {
-                    const errorCode = error.code;
-                    const errorMessage = error.message;
-                    // ..
-                });
-        } catch (error: any) {
-            Alert.alert('Virhe', error.message || 'Rekisteröinti epäonnistui')
-        } finally {
-            setLoading(false);
-        }
-    }
+    const [showLogin, setShowLogin] = useState(true)
 
     return (
         <View style={styles.container}>
 
             <Text style={styles.title}>
-                Lenkille
+                Liikkeelle
             </Text>
 
-            <Text style={styles.subtitle}>
-                Luo käyttäjä
-            </Text>
+            {showLogin ? (
+                <>
+                    <LoginForm />
 
-            <Text style={styles.text}>
-                Anna sähköpostiosoitteesi ja luo salasana rekisteröityäksesi tähän sovellukseen
-            </Text>
+                    <View style={styles.registerButton}>
+                        <Text style={styles.text}>
+                            Eikö sinulla ole vielä käyttäjää?
+                        </Text>
+                        <Button
+                            title="Rekisteröidy"
+                            onPress={() => setShowLogin(false)}
+                        />
+                    </View>
+                </>
+            ) : (
+                <>
+                    <RegisterForm />
 
-            <TextInput style={styles.input}
-                value={name}
-                onChangeText={setName}
-                placeholder="Erkki Esimerkki"
-                keyboardType="default"
-            />
+                    <View style={styles.loginButton}>
+                        <Text style={styles.text}>
+                            Onko sinulla jo käyttäjä?
+                        </Text>
 
-            <TextInput style={styles.input}
-                value={email}
-                onChangeText={setEmail}
-                placeholder="erkki@esimerkki.com"
-                keyboardType="email-address"
-            />
-
-            <TextInput style={styles.input}
-                value={password}
-                onChangeText={setPassword}
-                placeholder="********"
-                secureTextEntry
-            />
-
-            <Button
-                title="Rekisteröidy"
-                onPress={handleRegister}
-            />
-
-            {loading && (
-                <ActivityIndicator size="large" />
-            )}
-
+                        <Button
+                            title="Kirjaudu"
+                            onPress={() => setShowLogin(true)}
+                        />
+                    </View>
+                </>)}
         </View>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    input: {
-        width: '90%',
-        marginBottom: 16,
-        borderWidth: 1,
-        borderColor: 'lightgrey',
-        borderRadius: 8,
-        paddingHorizontal: 16,
-        paddingVertical: 12,
-        fontSize: 16,
+        flex: 1
     },
     title: {
         fontSize: 36,
         fontWeight: 'bold',
-        marginBottom: 70,
-    },
-    subtitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 12,
+        marginBottom: 30,
+        textAlign: 'center',
+        marginTop: 50,
     },
     text: {
-        margin: 12,
-        textAlign: 'center'
+        textAlign: 'center',
+        fontWeight: 'bold',
+
     },
-});
+    loginButton: {
+        marginBottom: 50,
+    },
+    registerButton: {
+        marginBottom: 50,
+    }
+})
+
