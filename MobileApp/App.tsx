@@ -10,27 +10,34 @@ import { AuthProvider } from "./context/AuthContext";
 export default function App() {
 
   const [profile, setProfile] = useState(null);
-  const { getProfile, deleteProfile } = useProfile();
+  const { saveProfile, getProfile, deleteProfile } = useProfile();
 
-  const handleLogout = async () => {
-    await deleteProfile();
-    setProfile(null);
-  };
-
-  useEffect(() => {
+    useEffect(() => {
     (async () => {
       const stored = await getProfile();
       if (stored) setProfile(stored);
     })();
   }, []);
 
+  const handleLogin = async (profile: any) => {
+    await saveProfile(profile);
+    setProfile(profile);
+  };
+
+  const handleLogout = async () => {
+    await deleteProfile();
+    setProfile(null);
+  };
+
   if (!profile) {
     return (
-      <RegisterScreen/>
+      <AuthProvider onLogin={handleLogin} onLogout={handleLogout}>
+        <RegisterScreen/>
+      </AuthProvider>
     )
   } else {
       return (
-    <AuthProvider onLogout={handleLogout}>
+    <AuthProvider onLogin={handleLogin} onLogout={handleLogout}>
       <NavigationContainer>
       <Navigator />
       <StatusBar style="auto" />

@@ -2,14 +2,14 @@ import { View, Text, StyleSheet, TextInput, Button, ActivityIndicator, Alert } f
 import React, { useState } from 'react'
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../firebase/Config';
-import { useProfile } from '../../hooks/useProfile';
+import { useAuth } from '../../context/AuthContext';
 
 export default function LoginForm() {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    const { getProfile, saveProfile } = useProfile();
+    const { onLogin } = useAuth();
 
     const handleLogin = async () => {
 
@@ -22,11 +22,11 @@ export default function LoginForm() {
 
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password)
-                    // Loged in 
-                    Alert.alert('Kirjautuminen onnistui')
-                    //console.log(userCredential.user)
-                    await saveProfile(userCredential.user)
-                    // ...
+            // Loged in 
+            Alert.alert('Kirjautuminen onnistui')
+            //console.log(userCredential.user)
+            onLogin(userCredential.user)
+            // ...
         } catch (error: any) {
             const errorCode = error.code;
             const errorMessage = error.message;
