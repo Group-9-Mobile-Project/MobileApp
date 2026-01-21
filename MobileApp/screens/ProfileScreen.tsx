@@ -1,13 +1,19 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import LogOutButton from '../components/Profile/LogOutButton';
 
 export default function ProfileScreen() {
+
+
+
   return (
+
     <View style={styles.container}>
-      <Text>ProfileScreen</Text>
+      <LogOutButton/>
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
