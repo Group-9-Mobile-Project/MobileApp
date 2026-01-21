@@ -5,18 +5,24 @@ import Navigator from "./components/Navigator";
 import { useEffect, useState } from "react";
 import { useProfile } from "./hooks/useProfile";
 import RegisterScreen from "./screens/RegisterScreen";
+import { AuthProvider } from "./context/AuthContext";
 
 export default function App() {
 
   const [profile, setProfile] = useState(null);
-  const { getProfile, saveProfile } = useProfile();
+  const { getProfile, deleteProfile } = useProfile();
+
+  const handleLogout = async () => {
+    await deleteProfile();
+    setProfile(null);
+  };
 
   useEffect(() => {
     (async () => {
       const stored = await getProfile();
       if (stored) setProfile(stored);
     })();
-  }, [getProfile]);
+  }, []);
 
   if (!profile) {
     return (
@@ -24,10 +30,12 @@ export default function App() {
     )
   } else {
       return (
-    <NavigationContainer>
+    <AuthProvider onLogout={handleLogout}>
+      <NavigationContainer>
       <Navigator />
       <StatusBar style="auto" />
     </NavigationContainer>
+    </AuthProvider>
   );
   }
 }

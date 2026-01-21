@@ -27,5 +27,13 @@ export function useProfile() {
         }
     }, []);
 
-    return { saveProfile, getProfile };
+    const deleteProfile = useCallback(async (): Promise<void> => {
+        try {
+            await SecureStore.deleteItemAsync(PROFILE_KEY);
+        } catch (e) {
+            throw e;
+        }
+    }, []);
+
+    return { saveProfile, getProfile, deleteProfile };
 }
