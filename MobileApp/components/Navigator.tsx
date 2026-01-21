@@ -10,7 +10,7 @@ export default function Navigator() {
   return (
     <Tab.Navigator tabBar={(props) => <BottomNavBar {...props} />}>
       <Tab.Screen 
-        name="Home" 
+        name="Koti" 
         component={HomeScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
@@ -19,7 +19,7 @@ export default function Navigator() {
         }}
       />
       <Tab.Screen 
-        name="Profile" 
+        name="Profiili" 
         component={ProfileScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
