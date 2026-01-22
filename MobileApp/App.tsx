@@ -6,13 +6,14 @@ import { useEffect, useState } from "react";
 import { useProfile } from "./hooks/useProfile";
 import RegisterScreen from "./screens/RegisterScreen";
 import { AuthProvider } from "./context/AuthContext";
+import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-context";
 
 export default function App() {
 
   const [profile, setProfile] = useState(null);
   const { saveProfile, getProfile, deleteProfile } = useProfile();
 
-    useEffect(() => {
+  useEffect(() => {
     (async () => {
       const stored = await getProfile();
       if (stored) setProfile(stored);
@@ -32,17 +33,23 @@ export default function App() {
   if (!profile) {
     return (
       <AuthProvider onLogin={handleLogin} onLogout={handleLogout}>
-        <RegisterScreen/>
+        <SafeAreaProvider style={{marginBottom: initialWindowMetrics?.insets.bottom}}>
+          <RegisterScreen />
+          <StatusBar style="auto" />
+        </SafeAreaProvider>
       </AuthProvider>
     )
   } else {
-      return (
-    <AuthProvider onLogin={handleLogin} onLogout={handleLogout}>
-      <NavigationContainer>
-      <Navigator />
-      <StatusBar style="auto" />
-    </NavigationContainer>
-    </AuthProvider>
-  );
+    return (
+      <AuthProvider onLogin={handleLogin} onLogout={handleLogout}>
+        <SafeAreaProvider style={{marginBottom: initialWindowMetrics?.insets.bottom}}>
+          <NavigationContainer>
+            <Navigator />
+            <StatusBar style="auto" />
+          </NavigationContainer>
+        </SafeAreaProvider>
+      </AuthProvider>
+
+    );
   }
 }
