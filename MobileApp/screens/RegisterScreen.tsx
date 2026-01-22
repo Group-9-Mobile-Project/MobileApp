@@ -18,29 +18,32 @@ export default function RegisterScreen() {
                 <>
                     <LoginForm />
 
-                    <View style={styles.registerButton}>
+                    <View style={styles.changeModeView}>
                         <Text style={styles.text}>
                             Eikö sinulla ole vielä käyttäjää?
                         </Text>
-                        <Button
-                            title="Rekisteröidy"
-                            onPress={() => setShowLogin(false)}
-                        />
+                        <View style={styles.changeModeButton}>
+                            <Button
+                                title="Rekisteröidy"
+                                onPress={() => setShowLogin(false)}
+                            />
+                        </View>
                     </View>
                 </>
             ) : (
                 <>
                     <RegisterForm />
 
-                    <View style={styles.loginButton}>
+                    <View style={styles.changeModeView}>
                         <Text style={styles.text}>
                             Onko sinulla jo käyttäjä?
                         </Text>
-
-                        <Button
-                            title="Kirjaudu"
-                            onPress={() => setShowLogin(true)}
-                        />
+                        <View style={styles.changeModeButton}>
+                            <Button
+                                title="Kirjaudu"
+                                onPress={() => setShowLogin(true)}
+                            />
+                        </View>
                     </View>
                 </>)}
         </View>
@@ -64,11 +67,14 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
 
     },
-    loginButton: {
-        marginBottom: 50,
+    changeModeView: {
+        margin: 8,
+        marginBottom: 60,
+        alignItems: 'center',
     },
-    registerButton: {
-        marginBottom: 50,
+    changeModeButton: {
+        width: '50%' ,
+        margin: 16,
     }
 })
 
