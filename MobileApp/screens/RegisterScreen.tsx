@@ -1,5 +1,6 @@
-import { View, Text, StyleSheet, TextInput, Button, Alert, ActivityIndicator, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import { View, Text, StyleSheet, Button,TouchableWithoutFeedback, Keyboard } from 'react-native'
 import React, { useState } from 'react'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import LoginForm from "../components/Register/LoginForm";
 import RegisterForm from "../components/Register/RegisterForm";
 
@@ -9,8 +10,13 @@ export default function RegisterScreen() {
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-
-            <View style={styles.container}>
+         <KeyboardAwareScrollView
+                style={styles.container}
+                contentContainerStyle={styles.container}
+                keyboardShouldPersistTaps="handled"
+                enableOnAndroid
+                extraScrollHeight={24}
+            >
 
                 <Text style={styles.title}>
                     Liikkeelle
@@ -48,8 +54,8 @@ export default function RegisterScreen() {
                             </View>
                         </View>
                     </>)}
-            </View>
-        </TouchableWithoutFeedback>
+            </KeyboardAwareScrollView>
+        </TouchableWithoutFeedback >
     )
 }
 
