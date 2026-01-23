@@ -1,11 +1,11 @@
 import { View, Text, StyleSheet, TextInput, Button, ActivityIndicator, Alert } from 'react-native'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../firebase/Config';
 import { useAuth } from '../../context/AuthContext';
 
 export default function LoginForm() {
-
+    const passwordRef = useRef<TextInput>(null);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -57,13 +57,19 @@ export default function LoginForm() {
                 onChangeText={setEmail}
                 placeholder="erkki@esimerkki.com"
                 keyboardType="email-address"
+                returnKeyType="next"
+                submitBehavior="submit"
+                onSubmitEditing={() => passwordRef.current?.focus()}
             />
 
             <TextInput style={styles.input}
+                ref={passwordRef}
                 value={password}
                 onChangeText={setPassword}
                 placeholder="********"
                 secureTextEntry
+                returnKeyType='done'
+            
             />
 
             <Button
