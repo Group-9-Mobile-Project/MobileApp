@@ -1,17 +1,22 @@
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { View, Text, StyleSheet, TextInput, Button, Alert, ActivityIndicator } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { auth } from "../../firebase/Config";
+import firebase from "firebase/compat/app";
 
 export default function RegisterForm() {
     const passwordRef = useRef<TextInput>(null);
+    const passwordAgainRef = useRef<TextInput>(null);
+    const nameRef = useRef<TextInput>(null);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [passwordAgain, setPasswordAgain] = useState('');
+    const [displayName, setDisplayName] = useState('')
     const [loading, setLoading] = useState(false);
 
     const handleRegister = async () => {
 
-        if (!email || !password) {
+        if (!email || !password || !passwordAgain || !displayName) {
             Alert.alert('Virhe', 'Täytä kaikki kentät');
             return;
         }
@@ -21,9 +26,24 @@ export default function RegisterForm() {
             return;
         }
 
+        if (password !== passwordAgain) {
+            Alert.alert('Virhe', 'Salasanat eivät täsmää')
+            return;
+        }
+
         setLoading(true);
         try {
             createUserWithEmailAndPassword(auth, email, password)
+                .then((res) => {
+                    const user = res.user;
+                    updateProfile(user, {
+                        displayName: displayName
+                    })
+                        .then(() => {
+                            console.log(user)
+                        })
+
+                })
                 .then(() => {
                     // Signed up 
                     Alert.alert('Käyttäjän luonti onnistui')
@@ -49,7 +69,7 @@ export default function RegisterForm() {
             </Text>
 
             <Text style={styles.text}>
-                Anna sähköpostiosoitteesi ja luo salasana rekisteröityäksesi tähän sovellukseen
+                Anna sähköpostiosoitteesi ja salasanasi. Toista salasana, ja lisää vielä käyttäjänimesi rekisteröityäksesi tähän sovellukseen
             </Text>
 
             <TextInput style={styles.input}
@@ -68,8 +88,31 @@ export default function RegisterForm() {
                 onChangeText={setPassword}
                 placeholder="********"
                 secureTextEntry
+                autoCapitalize="none"
+                returnKeyType='next'
+                submitBehavior="submit"
+                onSubmitEditing={() => passwordAgainRef.current?.focus()}
+            />
+
+            <TextInput style={styles.input}
+                ref={passwordAgainRef}
+                value={passwordAgain}
+                onChangeText={setPasswordAgain}
+                placeholder="Salasana uudelleen"
+                secureTextEntry
+                autoCapitalize="none"
+                returnKeyType='next'
+                submitBehavior="submit"
+                onSubmitEditing={() => nameRef.current?.focus()}
+            />
+
+            <TextInput style={styles.input}
+                ref={nameRef}
+                value={displayName}
+                onChangeText={setDisplayName}
+                placeholder="Käyttäjänimi"
                 returnKeyType='done'
-            
+
             />
 
             <Button
