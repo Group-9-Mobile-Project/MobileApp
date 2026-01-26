@@ -7,6 +7,7 @@ import { useProfile } from "./hooks/useProfile";
 import RegisterScreen from "./screens/RegisterScreen";
 import { AuthProvider } from "./context/AuthContext";
 import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-context";
+import { firestore } from './firebase/Config';
 
 export default function App() {
 
