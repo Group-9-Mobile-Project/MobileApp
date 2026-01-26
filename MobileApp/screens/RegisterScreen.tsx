@@ -1,5 +1,6 @@
-import { View, Text, StyleSheet, TextInput, Button, Alert, ActivityIndicator } from 'react-native'
+import { View, Text, StyleSheet, Button,TouchableWithoutFeedback, Keyboard } from 'react-native'
 import React, { useState } from 'react'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import LoginForm from "../components/Register/LoginForm";
 import RegisterForm from "../components/Register/RegisterForm";
 
@@ -8,45 +9,53 @@ export default function RegisterScreen() {
     const [showLogin, setShowLogin] = useState(true)
 
     return (
-        <View style={styles.container}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+         <KeyboardAwareScrollView
+                style={styles.container}
+                contentContainerStyle={styles.container}
+                keyboardShouldPersistTaps="handled"
+                enableOnAndroid
+                extraScrollHeight={24}
+            >
 
-            <Text style={styles.title}>
-                Liikkeelle
-            </Text>
+                <Text style={styles.title}>
+                    Liikkeelle
+                </Text>
 
-            {showLogin ? (
-                <>
-                    <LoginForm />
+                {showLogin ? (
+                    <>
+                        <LoginForm />
 
-                    <View style={styles.changeModeView}>
-                        <Text style={styles.text}>
-                            Eikö sinulla ole vielä käyttäjää?
-                        </Text>
-                        <View style={styles.changeModeButton}>
-                            <Button
-                                title="Rekisteröidy"
-                                onPress={() => setShowLogin(false)}
-                            />
+                        <View style={styles.changeModeView}>
+                            <Text style={styles.text}>
+                                Eikö sinulla ole vielä käyttäjää?
+                            </Text>
+                            <View style={styles.changeModeButton}>
+                                <Button
+                                    title="Rekisteröidy"
+                                    onPress={() => setShowLogin(false)}
+                                />
+                            </View>
                         </View>
-                    </View>
-                </>
-            ) : (
-                <>
-                    <RegisterForm />
+                    </>
+                ) : (
+                    <>
+                        <RegisterForm />
 
-                    <View style={styles.changeModeView}>
-                        <Text style={styles.text}>
-                            Onko sinulla jo käyttäjä?
-                        </Text>
-                        <View style={styles.changeModeButton}>
-                            <Button
-                                title="Kirjaudu"
-                                onPress={() => setShowLogin(true)}
-                            />
+                        <View style={styles.changeModeView}>
+                            <Text style={styles.text}>
+                                Onko sinulla jo käyttäjä?
+                            </Text>
+                            <View style={styles.changeModeButton}>
+                                <Button
+                                    title="Kirjaudu"
+                                    onPress={() => setShowLogin(true)}
+                                />
+                            </View>
                         </View>
-                    </View>
-                </>)}
-        </View>
+                    </>)}
+            </KeyboardAwareScrollView>
+        </TouchableWithoutFeedback >
     )
 }
 
@@ -58,9 +67,8 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 36,
         fontWeight: 'bold',
-        marginBottom: 30,
         textAlign: 'center',
-        marginTop: 50,
+        marginTop: 120,
     },
     text: {
         textAlign: 'center',
@@ -73,7 +81,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     changeModeButton: {
-        width: '50%' ,
+        width: '50%',
         margin: 16,
     }
 })

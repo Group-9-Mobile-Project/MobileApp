@@ -1,10 +1,10 @@
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { View, Text, StyleSheet, TextInput, Button, Alert, ActivityIndicator } from 'react-native'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { auth } from "../../firebase/Config";
 
 export default function RegisterForm() {
-
+    const passwordRef = useRef<TextInput>(null);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -57,13 +57,19 @@ export default function RegisterForm() {
                 onChangeText={setEmail}
                 placeholder="erkki@esimerkki.com"
                 keyboardType="email-address"
+                returnKeyType="next"
+                submitBehavior="submit"
+                onSubmitEditing={() => passwordRef.current?.focus()}
             />
 
             <TextInput style={styles.input}
+                ref={passwordRef}
                 value={password}
                 onChangeText={setPassword}
                 placeholder="********"
                 secureTextEntry
+                returnKeyType='done'
+            
             />
 
             <Button
