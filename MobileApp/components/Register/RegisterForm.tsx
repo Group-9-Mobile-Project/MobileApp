@@ -1,10 +1,11 @@
-import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { View, Text, StyleSheet, TextInput, Button, Alert, ActivityIndicator } from 'react-native'
 import React, { useRef, useState } from 'react'
-import { auth } from "../../firebase/Config";
-import firebase from "firebase/compat/app";
+import { auth, firestore, setDoc, USERINFO } from "../../firebase/Config";
+import { doc, serverTimestamp } from "firebase/firestore";
 
 export default function RegisterForm() {
+
     const passwordRef = useRef<TextInput>(null);
     const passwordAgainRef = useRef<TextInput>(null);
     const nameRef = useRef<TextInput>(null);
@@ -13,6 +14,26 @@ export default function RegisterForm() {
     const [passwordAgain, setPasswordAgain] = useState('');
     const [displayName, setDisplayName] = useState('')
     const [loading, setLoading] = useState(false);
+
+
+    async function handleFirebaseAdd(): Promise<void> {
+
+        try {
+            await setDoc(doc(firestore, USERINFO, email), {
+                name: displayName,
+                email: email,
+                birthdate: "",
+                description: "",
+                hobbies: [],
+                interests: "",
+                city: "",
+                joined: serverTimestamp(),
+                pronouns: "",
+            });
+        } catch (err) {
+            console.error('Failed to save user info', err);
+        }
+    }
 
     const handleRegister = async () => {
 
@@ -43,6 +64,9 @@ export default function RegisterForm() {
                             console.log(user)
                         })
 
+                })
+                .then(() => {
+                    handleFirebaseAdd()
                 })
                 .then(() => {
                     // Signed up 

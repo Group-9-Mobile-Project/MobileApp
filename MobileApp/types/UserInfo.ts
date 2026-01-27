@@ -3,9 +3,10 @@
 export type UserInfo = {
     id: string,
     name: string,
-    age: number,
+    email: string,
+    birthdate: string,
     description: string,
-    hobbies: string,
+    hobbies: string[],
     interests: string,
     city: string,
     joined: string,
