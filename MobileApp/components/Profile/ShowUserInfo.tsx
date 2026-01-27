@@ -1,27 +1,73 @@
-import { StatusBar } from 'expo-status-bar';
-import { Button, StyleSheet, TextInput, View, Text, Pressable } from 'react-native';
-import { firestore } from '../../firebase/Config';
-import React, { useState } from 'react';
+import { StyleSheet, View, Text, Pressable } from 'react-native';
+import { firestore, USERINFO } from '../../firebase/Config';
+import React, { useEffect, useState } from 'react';
 import EditUserInfo from './EditUserInfo';
+import { UserInfo } from '../../types/UserInfo';
+import { doc, getDoc } from "firebase/firestore";
+import { useProfile } from '../../hooks/useProfile';
 
 export default function ShowUserInfo() {
 
-const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const [email, setEmail] = useState("");
+  const { getProfile } = useProfile();
+
+  useEffect(() => {
+    (async () => {
+      const profile = await getProfile();
+      //if (profile?.email) setEmail(profile.email);
+      const profileEmail = profile?.email;
+      if (!profileEmail) return;
+
+      setEmail(profileEmail);
+
+      const docRef = doc(firestore, USERINFO, profileEmail);
+      //console.log('doc path:', docRef.path);
+
+      try {
+        const docSnap = await getDoc(docRef);
+        console.log('exists:', docSnap.exists());
+        console.log('data:', docSnap.data())
+
+        if (docSnap.exists()) {
+          setUserInfo(docSnap.data({ serverTimestamps: 'estimate' }) as UserInfo);
+          console.log("Kissa", docSnap.data())
+        } else {
+          console.log("User info not found")
+        }
+
+      } catch (e) {
+        console.log('getDoc error', e)
+      }
+
+    })();
+  }, [getProfile]);
 
   return (
     <View>
-      <Text>Omat tiedot</Text>
+      <Text style={styles.heading} >Omat tiedot</Text>
 
-        <Pressable
+        {userInfo ? <View style={styles.text}>
+          <Text>Nimi: {userInfo.name}</Text>
+          <Text>Sähköposti: {userInfo.email}</Text>
+          <Text>Syntymäpäivä: {userInfo.birthdate}</Text>
+          <Text>Kaupunki: {userInfo.city}</Text>
+          <Text>Harrastukset: {userInfo.hobbies}</Text>
+          <Text>Kiinnostusten kohteet: {userInfo.interests}</Text>
+          <Text>Pronominit: {userInfo.pronouns}</Text>
+        </View> : null}
+
+      <Pressable
         onPress={() => setModalVisible(true)}
         style={({ pressed }) => pressed && styles.textPressed}
         accessibilityRole="button"
-        accessibilityLabel="Show modal message"
-        >
-            <Text style={styles.triggerText}>Muokkaa omia tietojasi</Text>
-        </Pressable>
+        accessibilityLabel="Show user info"
+      >
+        <Text style={styles.triggerText}>Muokkaa omia tietojasi</Text>
+      </Pressable>
 
-        {modalVisible && <EditUserInfo/>}
+      {modalVisible && <EditUserInfo />}
 
     </View>
   )
@@ -41,36 +87,13 @@ const styles = StyleSheet.create({
   textPressed: {
     opacity: 0.6,
   },
-  centeredView: {
-    flex: 1,
+  text: {
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    alignContent: 'center'
   },
-  modalView: {
-    width: '100%',
-    height: '20%',
-    backgroundColor: 'white',
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  modalText: {
-    marginBottom: 60,
-    textAlign: 'center',
-  },
-  closeTextPressed: {
-    opacity: 0.7,
-  },
-  closeButtonText: {
-    color: '#111827',
-    fontWeight: '600',
-  },
+  heading: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  }
 });
