@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { Platform, StyleSheet, Text, View } from "react-native";
 import { useNavigation, NavigationContainer } from "@react-navigation/native";
 import Navigator from "./components/Navigator";
 import { useEffect, useState } from "react";
@@ -13,6 +13,7 @@ export default function App() {
 
   const [profile, setProfile] = useState(null);
   const { saveProfile, getProfile, deleteProfile } = useProfile();
+  const isAndroid15 = Platform.OS == 'android' && Platform.Version >= 35;
 
   useEffect(() => {
     (async () => {
@@ -34,7 +35,7 @@ export default function App() {
   if (!profile) {
     return (
       <AuthProvider onLogin={handleLogin} onLogout={handleLogout}>
-        <SafeAreaProvider style={{marginBottom: initialWindowMetrics?.insets.bottom}}>
+        <SafeAreaProvider style={isAndroid15 ? { marginBottom: initialWindowMetrics?.insets.bottom } : {}}>
           <RegisterScreen />
           <StatusBar style="auto" />
         </SafeAreaProvider>
