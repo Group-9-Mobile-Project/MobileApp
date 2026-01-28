@@ -3,6 +3,7 @@ export type Event = {
   title: string,
   description: string,
   date: string,
+  type: EventType,
   location: Location,
   attendees: string[],
   organizer: string,
@@ -10,6 +11,8 @@ export type Event = {
   endTime: string,
   ownerEmail: string,
 }
+
+export type EventType = "juoksu" | "kävely";
 
 export interface Location {
   name: string;

@@ -1,8 +1,9 @@
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import React, { useState } from "react";
-import { Event, Location } from "../../types/Event";
+import { Event, EventType, Location } from "../../types/Event";
 import { firestore, EVENT } from "../../firebase/Config";
 import { collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { Picker } from "@react-native-picker/picker";
 import { auth } from "../../firebase/Config";
 
 export default function AddEvent() {
@@ -11,6 +12,7 @@ export default function AddEvent() {
   const [date, setDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
+  const [type, setType] = useState<EventType>("kävely");
  
   const [locationName, setLocationName] = useState("");
   const [locationAddress, setLocationAddress] = useState("");
@@ -59,6 +61,7 @@ export default function AddEvent() {
         title,
         description,
         date,
+        type,
         location,
         attendees: [],
         organizer: organizerName,
@@ -150,6 +153,17 @@ export default function AddEvent() {
         multiline
       />
 
+      <Text style={styles.label}>Tyyppi</Text>
+      <View style={styles.pickerWrapper}>
+        <Picker
+          selectedValue={type}
+          onValueChange={(value) => setType(value as EventType)}
+        >
+          <Picker.Item label="Kävely" value="kävely" />
+          <Picker.Item label="Juoksu" value="juoksu" />
+        </Picker>
+      </View>
+
       <Button title="Tallenna" onPress={handleFirebaseAddEvent} />
     </View>
   );
@@ -175,5 +189,13 @@ const styles = StyleSheet.create({
   multiline: {
     minHeight: 80,
     textAlignVertical: "top",
+  },
+  label: {
+    fontWeight: "600",
+  },
+  pickerWrapper: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
   },
 });
