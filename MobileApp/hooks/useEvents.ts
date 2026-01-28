@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { EventType } from "../types/Event";
 
-export function useAddEvent() {
+export function useEvents() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [startTime, setStartTime] = useState("");

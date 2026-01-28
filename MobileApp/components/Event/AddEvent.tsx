@@ -5,7 +5,7 @@ import { firestore, EVENT } from "../../firebase/Config";
 import { collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { Picker } from "@react-native-picker/picker";
 import { auth } from "../../firebase/Config";
-import { useAddEvent } from "../../hooks/useEvents";
+import { useEvents } from "../../hooks/useEvents";
 import { LocationFields } from "./LocationFields";
 import { DateTimeFields } from "./DateTimeFields";
 
@@ -36,7 +36,7 @@ export default function AddEvent() {
     longitudeInput,
     setLongitudeInput,
     resetForm,
-  } = useAddEvent();
+  } = useEvents();
 
   async function handleFirebaseAddEvent(): Promise<void> {
     const ownerEmail = auth.currentUser?.email;
