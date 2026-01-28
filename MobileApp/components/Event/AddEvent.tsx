@@ -1,42 +1,63 @@
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { Event, EventType, Location } from "../../types/Event";
 import { firestore, EVENT } from "../../firebase/Config";
 import { collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { Picker } from "@react-native-picker/picker";
 import { auth } from "../../firebase/Config";
-import { useEvents } from "../../hooks/useEvents";
 import { LocationFields } from "./LocationFields";
 import { DateTimeFields } from "./DateTimeFields";
 
 export default function AddEvent() {
-  const {
-    title,
-    setTitle,
-    description,
-    setDescription,
-    startTime,
-    setStartTime,
-    endTime,
-    setEndTime,
-    type,
-    setType,
-    date,
-    dateValue,
-    showDatePicker,
-    setShowDatePicker,
-    handleDateChange,
-    formattedDate,
-    locationName,
-    setLocationName,
-    locationAddress,
-    setLocationAddress,
-    latitudeInput,
-    setLatitudeInput,
-    longitudeInput,
-    setLongitudeInput,
-    resetForm,
-  } = useEvents();
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [type, setType] = useState<EventType>("kävely");
+  const [date, setDate] = useState("");
+  const [dateValue, setDateValue] = useState<Date>(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const [locationName, setLocationName] = useState("");
+  const [locationAddress, setLocationAddress] = useState("");
+  const [latitudeInput, setLatitudeInput] = useState("");
+  const [longitudeInput, setLongitudeInput] = useState("");
+
+  function handleDateChange(event: { type?: string }, selected?: Date) {
+    if (event.type === "set" && selected) {
+      setShowDatePicker(false);
+      setDateValue(selected);
+      const iso = selected.toISOString().slice(0, 10);
+      setDate(iso);
+      return;
+    }
+    if (event.type === "dismissed") {
+      setShowDatePicker(false);
+    }
+  }
+
+  const formattedDate = date
+    ? new Intl.DateTimeFormat("fi-FI", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    }).format(new Date(date))
+    : "Valitse päivämäärä";
+
+  function resetForm() {
+    setTitle("");
+    setDescription("");
+    setDate("");
+    setDateValue(new Date());
+    setStartTime("");
+    setEndTime("");
+    setLocationName("");
+    setLocationAddress("");
+    setLatitudeInput("");
+    setLongitudeInput("");
+    setShowDatePicker(false);
+    setType("kävely");
+  }
 
   async function handleFirebaseAddEvent(): Promise<void> {
     const ownerEmail = auth.currentUser?.email;
