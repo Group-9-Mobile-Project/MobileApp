@@ -15,6 +15,11 @@ export default function AllEventsMapView() {
     longitudeDelta: 0.0421,
   })
 
+  const [eventList, setEventList] = useState([
+    {title: 'lenkki 1', location: {latitude: 65.0800, longitude: 25.4800}},
+    {title: 'lenkki 2', location: {latitude: 65.0650, longitude: 24.9800}}
+  ])
+
   const getCurrentLocation = async (): Promise<void> => {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
@@ -48,7 +53,7 @@ export default function AllEventsMapView() {
 
     <View style={styles.mapContainer}>
       <Text>Tähän tulee kaikkien tapahtumien karttanäkymä</Text>
-      <MapAllEvents region={location} />
+      <MapAllEvents currentRegion={location} eventList={eventList} />
     </View>
 
   )

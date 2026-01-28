@@ -3,21 +3,41 @@ import React from 'react'
 import MapView, { Marker, Region } from 'react-native-maps';
 
 interface MapProps {
-    region: Region;
+    currentRegion: Region;
 }
 
-export default function MapAllEvents({ region }: MapProps) {
+interface Event {
+    title: string,
+    location: {latitude: number, longitude: number}
+}
+
+interface EventList {
+    currentRegion: Region,
+    eventList: Event[]
+}
+
+export default function MapAllEvents({ currentRegion, eventList }: EventList) {
     return (
-        <MapView style={styles.map} region={region} >
+        <MapView style={styles.map} region={currentRegion} >
             <Marker
                 coordinate={{
-                    latitude: region.latitude,
-                    longitude: region.longitude,
+                    latitude: currentRegion.latitude,
+                    longitude: currentRegion.longitude,
                 }}
                 title='Oma sijainti'
                 description='Olet Tässä'
                 pinColor='#565fdd'
             />
+            {eventList.map((event) => (
+                <Marker coordinate={{
+                    latitude: event.location.latitude,
+                    longitude: event.location.longitude,
+                }}
+                key={event.title}
+                title={event.title}
+                pinColor='red'
+                />
+            ))}
         </MapView>
     )
 }
