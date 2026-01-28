@@ -159,6 +159,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
     gap: 12,
+    width: "90%",
   },
   title: {
     fontSize: 20,
