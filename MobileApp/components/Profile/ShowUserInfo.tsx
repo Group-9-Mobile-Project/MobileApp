@@ -1,21 +1,19 @@
 import { StyleSheet, View, Text, Pressable } from 'react-native';
-import { firestore, USERINFO } from '../../firebase/Config';
+import { auth, firestore, USERINFO } from '../../firebase/Config';
 import React, { useEffect, useState } from 'react';
 import EditUserInfo from './EditUserInfo';
 import { UserInfo } from '../../types/UserInfo';
 import { doc, getDoc } from "firebase/firestore";
-import { useProfile } from '../../hooks/useProfile';
 
 export default function ShowUserInfo() {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [email, setEmail] = useState("");
-  const { getProfile } = useProfile();
 
   useEffect(() => {
     (async () => {
-      const profile = await getProfile();
+      const profile = auth.currentUser;
       //if (profile?.email) setEmail(profile.email);
       const profileEmail = profile?.email;
       if (!profileEmail) return;
@@ -42,7 +40,7 @@ export default function ShowUserInfo() {
       }
 
     })();
-  }, [getProfile]);
+  }, []);
 
   return (
     <View style={styles.container}>
