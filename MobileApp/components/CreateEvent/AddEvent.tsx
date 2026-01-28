@@ -146,8 +146,6 @@ export default function AddEvent() {
           <Button title="Valmis" onPress={() => setShowDatePicker(false)} />
         </View>
       )}
-
-      )}
       <TextInput
         style={styles.input}
         placeholder="Sijainnin nimi"
