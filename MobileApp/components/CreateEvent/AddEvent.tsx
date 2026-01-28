@@ -1,4 +1,5 @@
-import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
+import { View, Text, TextInput, Button, StyleSheet, Alert, Platform } from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import React, { useState } from "react";
 import { Event, EventType, Location } from "../../types/Event";
 import { firestore, EVENT } from "../../firebase/Config";
@@ -9,15 +10,41 @@ import { auth } from "../../firebase/Config";
 export default function AddEvent() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [date, setDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [type, setType] = useState<EventType>("kävely");
  
+  const [date, setDate] = useState("");
+  const [dateValue, setDateValue] = useState<Date>(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  
   const [locationName, setLocationName] = useState("");
   const [locationAddress, setLocationAddress] = useState("");
   const [latitudeInput, setLatitudeInput] = useState("");
   const [longitudeInput, setLongitudeInput] = useState("");
+  
+  function handleDateChange(event: { type?: string }, selected?: Date) {
+    if (event.type === "set" && selected) {
+      setShowDatePicker(false);
+      setDateValue(selected);
+      const iso = selected.toISOString().slice(0, 10);
+      setDate(iso);
+      return;
+    }
+  
+    if (event.type === "dismissed") {
+      setShowDatePicker(false);
+    }
+  }
+
+  
+  const formattedDate = date
+    ? new Intl.DateTimeFormat("fi-FI", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      }).format(new Date(date))
+    : "Valitse päivämäärä";
   
   async function handleFirebaseAddEvent(): Promise<void> {
     const ownerEmail = auth.currentUser?.email;
@@ -101,12 +128,26 @@ export default function AddEvent() {
         value={title}
         onChangeText={setTitle}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Päivämäärä (YYYY-MM-DD)"
-        value={date}
-        onChangeText={setDate}
+      <Text style={styles.label}>Päivämäärä</Text>
+      <Button
+        title={formattedDate}
+        onPress={() => setShowDatePicker(true)}
       />
+      
+      {showDatePicker && (
+        <View style={styles.datePickerContainer}>
+          <DateTimePicker
+            value={dateValue}
+            mode="date"
+            display={Platform.OS === "android" ? "calendar" : "inline"}
+            locale="fi-FI"
+            onChange={handleDateChange}
+          />
+          <Button title="Valmis" onPress={() => setShowDatePicker(false)} />
+        </View>
+      )}
+
+      )}
       <TextInput
         style={styles.input}
         placeholder="Sijainnin nimi"
@@ -197,5 +238,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 8,
+  },
+  datePickerContainer: {
+    gap: 8,
   },
 });
