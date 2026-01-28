@@ -15,6 +15,7 @@ export default function AddEvent() {
  
   async function handleFirebaseAddEvent(): Promise<void> {
     const ownerEmail = auth.currentUser?.email;
+    const organizerName = auth.currentUser?.displayName?.trim() || ownerEmail || "Tuntematon";
     if (!ownerEmail) {
       Alert.alert("Virhe", "Kirjaudu sisään ennen tapahtuman luontia");
       return;
@@ -35,7 +36,7 @@ export default function AddEvent() {
         date,
         location: location as unknown as Event["location"],
         attendees: [],
-        organizer: "",
+        organizer: organizerName,
         startTime,
         endTime,
         ownerEmail
