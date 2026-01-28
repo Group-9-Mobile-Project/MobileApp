@@ -1,23 +1,46 @@
-import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { View, Text, StyleSheet, TextInput, Button, Alert, ActivityIndicator } from 'react-native'
 import React, { useRef, useState } from 'react'
-import { auth } from "../../firebase/Config";
+import { auth, firestore, setDoc, USERINFO } from "../../firebase/Config";
+import { doc, serverTimestamp } from "firebase/firestore";
 
 export default function RegisterForm() {
-  const passwordRef = useRef<TextInput>(null);
-  const passwordAgainRef = useRef<TextInput>(null);
-  const nameRef = useRef<TextInput>(null);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordAgain, setPasswordAgain] = useState("");
-  const [displayName, setDisplayName] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  const handleRegister = async () => {
-    if (!email || !password || !passwordAgain || !displayName) {
-      Alert.alert("Virhe", "Täytä kaikki kentät");
-      return;
+    const passwordRef = useRef<TextInput>(null);
+    const passwordAgainRef = useRef<TextInput>(null);
+    const nameRef = useRef<TextInput>(null);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [passwordAgain, setPasswordAgain] = useState('');
+    const [displayName, setDisplayName] = useState('')
+    const [loading, setLoading] = useState(false);
+
+
+    async function handleFirebaseAdd(): Promise<void> {
+
+        try {
+            await setDoc(doc(firestore, USERINFO, email), {
+                name: displayName,
+                email: email,
+                birthdate: "",
+                description: "",
+                hobbies: [],
+                interests: "",
+                city: "",
+                joined: serverTimestamp(),
+                pronouns: "",
+            });
+        } catch (err) {
+            console.error('Failed to save user info', err);
+        }
     }
+
+    const handleRegister = async () => {
+
+        if (!email || !password || !passwordAgain || !displayName) {
+            Alert.alert('Virhe', 'Täytä kaikki kentät');
+            return;
+        }
 
     if (password.length < 8) {
       Alert.alert("Virhe", "Salasanan tulee olla vähintään 8 merkkiä");
@@ -32,6 +55,7 @@ export default function RegisterForm() {
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(res.user, { displayName });
+      handleFirebaseAdd();
       Alert.alert("Käyttäjän luonti onnistui");
     } catch (error: any) {
       if (error.code === "auth/email-already-in-use") {

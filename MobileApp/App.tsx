@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import RegisterScreen from "./screens/RegisterScreen";
 import { AuthProvider } from "./context/AuthContext";
 import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-context";
+import { firestore } from './firebase/Config';
 import { onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "./firebase/Config";
 
