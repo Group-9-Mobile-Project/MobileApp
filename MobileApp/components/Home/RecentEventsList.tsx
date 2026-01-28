@@ -7,6 +7,7 @@ export default function RecentEventsList() {
     return (
         <View>
             <Text>Tähän listataan viisi viimeisintä Tapahtumaa lähelläsi</Text>
+            
         </View>
     )
 }
