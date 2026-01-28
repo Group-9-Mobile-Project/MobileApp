@@ -1,6 +1,6 @@
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import React, { useState } from "react";
-import { Event } from "../../types/Event";
+import { Event, Location } from "../../types/Event";
 import { firestore, EVENT } from "../../firebase/Config";
 import { collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { auth } from "../../firebase/Config";
@@ -8,11 +8,15 @@ import { auth } from "../../firebase/Config";
 export default function AddEvent() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
  
+  const [locationName, setLocationName] = useState("");
+  const [locationAddress, setLocationAddress] = useState("");
+  const [latitudeInput, setLatitudeInput] = useState("");
+  const [longitudeInput, setLongitudeInput] = useState("");
+  
   async function handleFirebaseAddEvent(): Promise<void> {
     const ownerEmail = auth.currentUser?.email;
     const organizerName = auth.currentUser?.displayName?.trim() || ownerEmail || "Tuntematon";
@@ -20,8 +24,20 @@ export default function AddEvent() {
       Alert.alert("Virhe", "Kirjaudu sisään ennen tapahtuman luontia");
       return;
     }
-    if (!title || !date || !location || !startTime || !endTime) {
+    if (!title || !date || !startTime || !endTime) {
       Alert.alert("Virhe", "Täytä vähintään nimi, päivä, paikka ja ajat");
+      return;
+    }
+    const latitude = parseFloat(latitudeInput);
+    const longitude = parseFloat(longitudeInput);
+
+    if (
+      !locationName ||
+      !locationAddress ||
+      Number.isNaN(latitude) ||
+      Number.isNaN(longitude)
+    ) {
+      Alert.alert("Virhe", "Täytä sijainti ja kelvolliset koordinaatit");
       return;
     }
 
@@ -29,12 +45,21 @@ export default function AddEvent() {
       const eventsRef = collection(firestore, EVENT);
       const eventRef = doc(eventsRef);
       
-      const payload = {
+      const location: Location = {
+        name: locationName,
+        address: locationAddress,
+        coordinates: {
+          latitude,
+          longitude,
+        },
+      };
+      
+      const payload: Event = {
         id: eventRef.id,
         title,
         description,
         date,
-        location: location as unknown as Event["location"],
+        location,
         attendees: [],
         organizer: organizerName,
         startTime,
@@ -51,9 +76,12 @@ export default function AddEvent() {
       setTitle("");
       setDescription("");
       setDate("");
-      setLocation("");
       setStartTime("");
       setEndTime("");
+      setLocationName("");
+      setLocationAddress("");
+      setLatitudeInput("");
+      setLongitudeInput("");
     } catch (err) {
       console.error("Failed to save new event", err);
       Alert.alert("Virhe", "Tapahtuman tallennus epäonnistui");
@@ -78,9 +106,29 @@ export default function AddEvent() {
       />
       <TextInput
         style={styles.input}
-        placeholder="Paikka"
-        value={location}
-        onChangeText={setLocation}
+        placeholder="Sijainnin nimi"
+        value={locationName}
+        onChangeText={setLocationName}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Osoite"
+        value={locationAddress}
+        onChangeText={setLocationAddress}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Latitude"
+        value={latitudeInput}
+        onChangeText={setLatitudeInput}
+        keyboardType="numeric"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Longitude"
+        value={longitudeInput}
+        onChangeText={setLongitudeInput}
+        keyboardType="numeric"
       />
       <TextInput
         style={styles.input}
