@@ -5,6 +5,7 @@ import { auth } from '../../firebase/Config';
 import { useAuth } from '../../context/AuthContext';
 
 export default function LoginForm() {
+    
     const passwordRef = useRef<TextInput>(null);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');

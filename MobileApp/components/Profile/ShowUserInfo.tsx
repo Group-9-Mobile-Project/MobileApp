@@ -27,12 +27,12 @@ export default function ShowUserInfo() {
 
       try {
         const docSnap = await getDoc(docRef);
-        console.log('exists:', docSnap.exists());
-        console.log('data:', docSnap.data())
+        //console.log('exists:', docSnap.exists());
+        //console.log('data:', docSnap.data())
 
         if (docSnap.exists()) {
           setUserInfo(docSnap.data({ serverTimestamps: 'estimate' }) as UserInfo);
-          console.log("Kissa", docSnap.data())
+          //console.log("Kissa", docSnap.data())
         } else {
           console.log("User info not found")
         }
@@ -45,18 +45,18 @@ export default function ShowUserInfo() {
   }, [getProfile]);
 
   return (
-    <View>
-      <Text style={styles.heading} >Omat tiedot</Text>
+    <View style={styles.container}>
 
-        {userInfo ? <View style={styles.text}>
-          <Text>Nimi: {userInfo.name}</Text>
-          <Text>Sähköposti: {userInfo.email}</Text>
-          <Text>Syntymäpäivä: {userInfo.birthdate}</Text>
-          <Text>Kaupunki: {userInfo.city}</Text>
-          <Text>Harrastukset: {userInfo.hobbies}</Text>
-          <Text>Kiinnostusten kohteet: {userInfo.interests}</Text>
-          <Text>Pronominit: {userInfo.pronouns}</Text>
-        </View> : null}
+      {userInfo ? <View style={styles.info}>
+        <Text style={styles.heading} >Omat tiedot</Text>
+        <Text>Nimi: {userInfo.name}</Text>
+        <Text>Sähköposti: {userInfo.email}</Text>
+        <Text>Syntymäpäivä: {userInfo.birthdate}</Text>
+        <Text>Kaupunki: {userInfo.city}</Text>
+        <Text>Harrastukset: {userInfo.hobbies}</Text>
+        <Text>Kiinnostusten kohteet: {userInfo.interests}</Text>
+        <Text>Pronominit: {userInfo.pronouns}</Text>
+      </View> : null}
 
       <Pressable
         onPress={() => setModalVisible(true)}
@@ -74,26 +74,28 @@ export default function ShowUserInfo() {
 }
 
 const styles = StyleSheet.create({
+
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  triggerText: {
-    color: 'black',
-    fontSize: 16,
-  },
-  textPressed: {
-    opacity: 0.6,
-  },
-  text: {
-    justifyContent: 'center',
-    alignContent: 'center'
   },
   heading: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
-  }
+  },
+  triggerText: {
+    color: 'black',
+    fontSize: 16,
+    fontWeight: 'bold',
+    margin: 20,
+  },
+  textPressed: {
+    opacity: 0.6,
+  },
+  info: {
+    borderColor: 'lightgray',
+    borderWidth: 4,
+    padding: 10,
+  },
 });

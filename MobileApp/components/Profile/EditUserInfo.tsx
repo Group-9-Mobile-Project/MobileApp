@@ -7,7 +7,7 @@ export default function EditUserInfo() {
 
   return (
     <View>
-      <Text>EditUserInfo</Text>
+      <Text>Muokkaa omia tietojasi</Text>
     </View>
   )
 }
