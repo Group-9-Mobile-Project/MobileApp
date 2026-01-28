@@ -1,4 +1,4 @@
-// This could be useful if we need to implement update event functionality
+// This could be useful if we need to implement updateEvent functionality
 
 import { useMemo, useState } from "react";
 import { EventType } from "../types/Event";

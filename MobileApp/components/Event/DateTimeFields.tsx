@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Platform, StyleProp, Text, TextInput, TextStyle, View, ViewStyle } from "react-native";
+import { Button, Platform, StyleProp, Text, TextInput, TextStyle, View, ViewStyle, StyleSheet } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 type DateTimeFieldsProps = {
@@ -32,7 +32,7 @@ export function DateTimeFields({
   setEndTime,
 }: DateTimeFieldsProps) {
   return (
-    <View>
+    <View style={styles.fieldGroup}>
       <Text style={labelStyle}>Päivämäärä</Text>
       <Button title={formattedDate} onPress={() => setShowDatePicker(true)} />
 
@@ -64,3 +64,8 @@ export function DateTimeFields({
     </View>
   );
 }
+const styles = StyleSheet.create({
+  fieldGroup: {
+    gap: 12,
+  },
+});

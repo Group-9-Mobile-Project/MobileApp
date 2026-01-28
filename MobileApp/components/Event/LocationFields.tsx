@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleProp, TextInput, TextStyle, View } from "react-native";
+import { StyleProp, TextInput, TextStyle, View, StyleSheet } from "react-native";
 
 type LocationFieldsProps = {
   inputStyle: StyleProp<TextStyle>;
@@ -25,7 +25,7 @@ export function LocationFields({
   setLongitudeInput,
 }: LocationFieldsProps) {
   return (
-    <View>
+    <View style={styles.fieldGroup}>
       <TextInput
         style={inputStyle}
         placeholder="Sijainnin nimi"
@@ -55,3 +55,8 @@ export function LocationFields({
     </View>
   );
 }
+const styles = StyleSheet.create({
+  fieldGroup: {
+    gap: 12, // Lisää väliä kenttien väliin
+  },
+});
