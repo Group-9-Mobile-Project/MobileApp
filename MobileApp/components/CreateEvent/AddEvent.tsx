@@ -2,7 +2,8 @@ import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import React, { useState } from "react";
 import { Event } from "../../types/Event";
 import { firestore, EVENT } from "../../firebase/Config";
-import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { auth } from "../../firebase/Config";
 
 export default function AddEvent() {
   const [title, setTitle] = useState("");
@@ -13,14 +14,21 @@ export default function AddEvent() {
   const [endTime, setEndTime] = useState("");
  
   async function handleFirebaseAddEvent(): Promise<void> {
+    const ownerEmail = auth.currentUser?.email;
+    if (!ownerEmail) {
+      Alert.alert("Virhe", "Kirjaudu sisään ennen tapahtuman luontia");
+      return;
+    }
     if (!title || !date || !location || !startTime || !endTime) {
       Alert.alert("Virhe", "Täytä vähintään nimi, päivä, paikka ja ajat");
       return;
     }
 
     try {
-      const eventRef = doc(firestore, EVENT);
-      const payload: Event = {
+      const eventsRef = collection(firestore, EVENT);
+      const eventRef = doc(eventsRef);
+      
+      const payload = {
         id: eventRef.id,
         title,
         description,
@@ -30,6 +38,7 @@ export default function AddEvent() {
         organizer: "",
         startTime,
         endTime,
+        ownerEmail
       };
 
       await setDoc(eventRef, {

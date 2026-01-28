@@ -8,4 +8,5 @@ export type Event = {
   organizer: string,
   startTime: string,
   endTime: string,
+  ownerEmail: string,
 }
