@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import EditUserInfo from './EditUserInfo';
 import { UserInfo } from '../../types/UserInfo';
 import { doc, getDoc } from "firebase/firestore";
+import { Card } from 'react-native-paper';
 
 export default function ShowUserInfo() {
 
@@ -45,16 +46,31 @@ export default function ShowUserInfo() {
   return (
     <View style={styles.container}>
 
-      {userInfo ? <View style={styles.info}>
-        <Text style={styles.heading} >Omat tiedot</Text>
-        <Text>Nimi: {userInfo.name}</Text>
-        <Text>Sähköposti: {userInfo.email}</Text>
-        <Text>Syntymäpäivä: {userInfo.birthdate}</Text>
-        <Text>Kaupunki: {userInfo.city}</Text>
-        <Text>Harrastukset: {userInfo.hobbies}</Text>
-        <Text>Kiinnostusten kohteet: {userInfo.interests}</Text>
-        <Text>Pronominit: {userInfo.pronouns}</Text>
-      </View> : null}
+      <Card style={styles.cardContainer}>
+        <Card.Content>
+          <Text style={styles.heading} >Omat tapahtumat</Text>
+        </Card.Content>
+        <Card.Content>
+          <Text style={styles.infoText}>Tähän tulee sitten käyttäjän omat tapahtumat.</Text>
+        </Card.Content>
+      </Card>
+
+      <Card style={styles.cardContainer}>
+        <Card.Content>
+          <Text style={styles.heading} >Omat tiedot</Text>
+        </Card.Content>
+        <Card.Content>
+          {userInfo ? <View>
+            <Text style={styles.infoText}>Nimi: {userInfo.name}</Text>
+            <Text style={styles.infoText}>Sähköposti: {userInfo.email}</Text>
+            <Text style={styles.infoText}>Syntymäpäivä: {userInfo.birthdate}</Text>
+            <Text style={styles.infoText}>Kaupunki: {userInfo.city}</Text>
+            <Text style={styles.infoText}>Harrastukset: {userInfo.hobbies}</Text>
+            <Text style={styles.infoText}>Kiinnostusten kohteet: {userInfo.interests}</Text>
+            <Text style={styles.infoText}>Pronominit: {userInfo.pronouns}</Text>
+          </View> : null}
+        </Card.Content>
+      </Card>
 
       <Pressable
         onPress={() => setModalVisible(true)}
@@ -62,7 +78,7 @@ export default function ShowUserInfo() {
         accessibilityRole="button"
         accessibilityLabel="Show user info"
       >
-        <Text style={styles.triggerText}>Muokkaa omia tietojasi</Text>
+        <Text style={styles.buttonText}>Muokkaa omia tietojasi</Text>
       </Pressable>
 
       {modalVisible && <EditUserInfo />}
@@ -74,26 +90,33 @@ export default function ShowUserInfo() {
 const styles = StyleSheet.create({
 
   container: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    flex: 1,
+    width: '100%',
+    paddingHorizontal: 10,
+  },
+  cardContainer: {
+    alignContent: 'flex-start',
+    marginBlockStart: 20,
+    width: '100%',
+    backgroundColor: 'lightgrey',
   },
   heading: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
   },
-  triggerText: {
+  buttonText: {
     color: 'black',
     fontSize: 16,
     fontWeight: 'bold',
-    margin: 20,
+    marginTop: 10
   },
   textPressed: {
-    opacity: 0.6,
+    opacity: 0.6
   },
-  info: {
-    borderColor: 'lightgray',
-    borderWidth: 4,
-    padding: 10,
-  },
+  infoText: {
+    fontSize: 12,
+    padding: 5,
+    fontWeight: 'bold'
+  }
 });
