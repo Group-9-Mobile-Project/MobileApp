@@ -1,12 +1,12 @@
 import { StatusBar } from "expo-status-bar";
-import { Platform } from "react-native";
+import { Platform, View, ActivityIndicator } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import Navigator from "./components/Navigator";
 import { useEffect, useState } from "react";
 import RegisterScreen from "./screens/RegisterScreen";
 import { AuthProvider } from "./context/AuthContext";
 import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-context";
-import { onAuthStateChanged, signOut, User } from "firebase/auth";
+import { onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "./firebase/Config";
 
 export default function App() {
@@ -22,13 +22,19 @@ export default function App() {
     return unsubscribe;
   }, []);
 
-  const signOutUser = async () => {
-    await signOut(auth);
-  };
+  if (loading) {
+    return (
+      <SafeAreaProvider style={isAndroid15 ? { marginBottom: initialWindowMetrics?.insets.bottom } : {}}>
+        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+          <ActivityIndicator size="large" />
+        </View>
+      </SafeAreaProvider>
+    );
+  }
 
   if (!user) {
     return (
-      <AuthProvider user={user} loading={loading} signOutUser={signOutUser}>
+      <AuthProvider user={user} loading={loading}>
         <SafeAreaProvider style={isAndroid15 ? { marginBottom: initialWindowMetrics?.insets.bottom } : {}}>
           <RegisterScreen />
           <StatusBar style="auto" />
@@ -38,7 +44,7 @@ export default function App() {
   }
 
   return (
-    <AuthProvider user={user} loading={loading} signOutUser={signOutUser}>
+    <AuthProvider user={user} loading={loading}>
       <SafeAreaProvider style={{ marginBottom: initialWindowMetrics?.insets.bottom }}>
         <NavigationContainer>
           <Navigator />
