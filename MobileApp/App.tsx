@@ -6,29 +6,35 @@ import { useEffect, useState } from "react";
 import RegisterScreen from "./screens/RegisterScreen";
 import { AuthProvider } from "./context/AuthContext";
 import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-context";
-import { onAuthStateChanged, User } from "firebase/auth";
+import { onAuthStateChanged, signOut, User } from "firebase/auth";
 import { auth } from "./firebase/Config";
 
 export default function App() {
-  const [profile, setProfile] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
   const isAndroid15 = Platform.OS == 'android' && Platform.Version >= 35;
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setProfile(user);
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      setUser(firebaseUser);
+      setLoading(false);
     });
     return unsubscribe;
   }, []);
 
-  const handleLogin = async (profile: any) => {
-    setProfile(profile);
+  const handleLogin = async () => {
+    // Ei tarvitse tehdä mitään — onAuthStateChanged hoitaa
   };
 
   const handleLogout = async () => {
-    setProfile(null);
+    await signOut(auth);
   };
 
-  if (!profile) {
+  if (loading) {
+    return null; // Tai latausnäkymä
+  }
+
+  if (!user) {
     return (
       <AuthProvider onLogin={handleLogin} onLogout={handleLogout}>
         <SafeAreaProvider style={isAndroid15 ? { marginBottom: initialWindowMetrics?.insets.bottom } : {}}>
@@ -36,18 +42,18 @@ export default function App() {
           <StatusBar style="auto" />
         </SafeAreaProvider>
       </AuthProvider>
-    )
-  } else {
-    return (
-      <AuthProvider onLogin={handleLogin} onLogout={handleLogout}>
-        <SafeAreaProvider style={{marginBottom: initialWindowMetrics?.insets.bottom}}>
-          <NavigationContainer>
-            <Navigator />
-            <StatusBar style="auto" />
-          </NavigationContainer>
-        </SafeAreaProvider>
-      </AuthProvider>
-
     );
   }
+
+  return (
+    <AuthProvider onLogin={handleLogin} onLogout={handleLogout}>
+      <SafeAreaProvider style={{ marginBottom: initialWindowMetrics?.insets.bottom }}>
+        <NavigationContainer>
+          <Navigator />
+          <StatusBar style="auto" />
+        </NavigationContainer>
+      </SafeAreaProvider>
+    </AuthProvider>
+  );
 }
+
