@@ -55,6 +55,7 @@ export default function RegisterForm() {
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(res.user, { displayName });
+      handleFirebaseAdd();
       Alert.alert("Käyttäjän luonti onnistui");
     } catch (error: any) {
       if (error.code === "auth/email-already-in-use") {
