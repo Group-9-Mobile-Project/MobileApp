@@ -12,7 +12,7 @@ import { auth } from "./firebase/Config";
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const isAndroid15 = Platform.OS == 'android' && Platform.Version >= 35;
+  const isAndroid15 = Platform.OS == "android" && Platform.Version >= 35;
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
@@ -22,21 +22,13 @@ export default function App() {
     return unsubscribe;
   }, []);
 
-  const handleLogin = async () => {
-    // Ei tarvitse tehdä mitään — onAuthStateChanged hoitaa
-  };
-
-  const handleLogout = async () => {
+  const signOutUser = async () => {
     await signOut(auth);
   };
 
-  if (loading) {
-    return null; // Tai latausnäkymä
-  }
-
   if (!user) {
     return (
-      <AuthProvider onLogin={handleLogin} onLogout={handleLogout}>
+      <AuthProvider user={user} loading={loading} signOutUser={signOutUser}>
         <SafeAreaProvider style={isAndroid15 ? { marginBottom: initialWindowMetrics?.insets.bottom } : {}}>
           <RegisterScreen />
           <StatusBar style="auto" />
@@ -46,7 +38,7 @@ export default function App() {
   }
 
   return (
-    <AuthProvider onLogin={handleLogin} onLogout={handleLogout}>
+    <AuthProvider user={user} loading={loading} signOutUser={signOutUser}>
       <SafeAreaProvider style={{ marginBottom: initialWindowMetrics?.insets.bottom }}>
         <NavigationContainer>
           <Navigator />
@@ -56,4 +48,3 @@ export default function App() {
     </AuthProvider>
   );
 }
-

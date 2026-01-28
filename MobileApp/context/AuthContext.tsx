@@ -1,30 +1,34 @@
-import React, { createContext, useContext } from 'react'
+import React, { createContext, useContext } from "react";
+import { User } from "firebase/auth";
 
 type AuthContextValue = {
-    onLogin: (profile: any) => Promise<void> | void;
-    onLogout: () => Promise<void> | void;
-}
+  user: User | null;
+  loading: boolean;
+  signOutUser: () => Promise<void>;
+};
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({
-    onLogin,
-    onLogout,
-    children,
+  user,
+  loading,
+  signOutUser,
+  children,
 }: {
-    onLogin: (profile: any) => Promise<void> | void;
-    onLogout: () => Promise<void> | void;
-    children: React.ReactNode;
+  user: User | null;
+  loading: boolean;
+  signOutUser: () => Promise<void>;
+  children: React.ReactNode;
 }) {
-    return (
-        <AuthContext.Provider value={{ onLogin, onLogout }}>
-            {children}
-        </AuthContext.Provider>
-    );
+  return (
+    <AuthContext.Provider value={{ user, loading, signOutUser }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {
-    const ctx = useContext(AuthContext);
-    if (!ctx) throw new Error('useAuth must be used within AuthProvider');
-    return ctx;
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be used within AuthProvider");
+  return ctx;
 }
