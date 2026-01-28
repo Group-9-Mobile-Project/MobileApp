@@ -1,33 +1,30 @@
 import { StatusBar } from "expo-status-bar";
-import { Platform, StyleSheet, Text, View } from "react-native";
-import { useNavigation, NavigationContainer } from "@react-navigation/native";
+import { Platform } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
 import Navigator from "./components/Navigator";
 import { useEffect, useState } from "react";
-import { useProfile } from "./hooks/useProfile";
 import RegisterScreen from "./screens/RegisterScreen";
 import { AuthProvider } from "./context/AuthContext";
 import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-context";
+import { onAuthStateChanged, User } from "firebase/auth";
+import { auth } from "./firebase/Config";
 
 export default function App() {
-
-  const [profile, setProfile] = useState(null);
-  const { saveProfile, getProfile, deleteProfile } = useProfile();
+  const [profile, setProfile] = useState<User | null>(null);
   const isAndroid15 = Platform.OS == 'android' && Platform.Version >= 35;
 
   useEffect(() => {
-    (async () => {
-      const stored = await getProfile();
-      if (stored) setProfile(stored);
-    })();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setProfile(user);
+    });
+    return unsubscribe;
   }, []);
 
   const handleLogin = async (profile: any) => {
-    await saveProfile(profile);
     setProfile(profile);
   };
 
   const handleLogout = async () => {
-    await deleteProfile();
     setProfile(null);
   };
 
