@@ -1,10 +1,13 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import RecentEventsList from '../components/Home/RecentEventsList';
+import AllEventsMapView from '../components/Home/AllEventsMapView';
 
 export default function HomeScreen() {
   return (
     <View style={styles.container}>
-      <Text>HomeScreen</Text>
+      <RecentEventsList />
+      <AllEventsMapView />
     </View>
   );
 }
