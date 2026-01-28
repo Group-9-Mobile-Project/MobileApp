@@ -1,56 +1,56 @@
 import { StatusBar } from "expo-status-bar";
-import { Platform, StyleSheet, Text, View } from "react-native";
-import { useNavigation, NavigationContainer } from "@react-navigation/native";
+import { Platform, View, ActivityIndicator } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
 import Navigator from "./components/Navigator";
 import { useEffect, useState } from "react";
-import { useProfile } from "./hooks/useProfile";
 import RegisterScreen from "./screens/RegisterScreen";
 import { AuthProvider } from "./context/AuthContext";
 import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-context";
+import { onAuthStateChanged, User } from "firebase/auth";
+import { auth } from "./firebase/Config";
 
 export default function App() {
-
-  const [profile, setProfile] = useState(null);
-  const { saveProfile, getProfile, deleteProfile } = useProfile();
-  const isAndroid15 = Platform.OS == 'android' && Platform.Version >= 35;
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const isAndroid15 = Platform.OS == "android" && Platform.Version >= 35;
 
   useEffect(() => {
-    (async () => {
-      const stored = await getProfile();
-      if (stored) setProfile(stored);
-    })();
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      setUser(firebaseUser);
+      setLoading(false);
+    });
+    return unsubscribe;
   }, []);
 
-  const handleLogin = async (profile: any) => {
-    await saveProfile(profile);
-    setProfile(profile);
-  };
-
-  const handleLogout = async () => {
-    await deleteProfile();
-    setProfile(null);
-  };
-
-  if (!profile) {
+  if (loading) {
     return (
-      <AuthProvider onLogin={handleLogin} onLogout={handleLogout}>
+      <SafeAreaProvider style={isAndroid15 ? { marginBottom: initialWindowMetrics?.insets.bottom } : {}}>
+        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+          <ActivityIndicator size="large" />
+        </View>
+      </SafeAreaProvider>
+    );
+  }
+
+  if (!user) {
+    return (
+      <AuthProvider user={user} loading={loading}>
         <SafeAreaProvider style={isAndroid15 ? { marginBottom: initialWindowMetrics?.insets.bottom } : {}}>
           <RegisterScreen />
           <StatusBar style="auto" />
         </SafeAreaProvider>
       </AuthProvider>
-    )
-  } else {
-    return (
-      <AuthProvider onLogin={handleLogin} onLogout={handleLogout}>
-        <SafeAreaProvider style={{marginBottom: initialWindowMetrics?.insets.bottom}}>
-          <NavigationContainer>
-            <Navigator />
-            <StatusBar style="auto" />
-          </NavigationContainer>
-        </SafeAreaProvider>
-      </AuthProvider>
-
     );
   }
+
+  return (
+    <AuthProvider user={user} loading={loading}>
+      <SafeAreaProvider style={{ marginBottom: initialWindowMetrics?.insets.bottom }}>
+        <NavigationContainer>
+          <Navigator />
+          <StatusBar style="auto" />
+        </NavigationContainer>
+      </SafeAreaProvider>
+    </AuthProvider>
+  );
 }
