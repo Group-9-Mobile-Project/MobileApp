@@ -1,10 +1,6 @@
-import {
-  StyleSheet,View,
-  TouchableWithoutFeedback,
-  Keyboard,
-} from "react-native";
+import { StyleSheet,TouchableWithoutFeedback, Keyboard} from "react-native";
 import React from "react";
-import AddEvent from "../components/CreateEvent/AddEvent";
+import AddEvent from "../components/Event/AddEvent";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function CreateScreen() {
