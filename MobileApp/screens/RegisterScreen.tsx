@@ -14,7 +14,7 @@ export default function RegisterScreen() {
                 style={styles.container}
                 contentContainerStyle={styles.container}
                 keyboardShouldPersistTaps="handled"
-                enableOnAndroid
+              //  enableOnAndroid 
                 extraScrollHeight={24}
             >
 
