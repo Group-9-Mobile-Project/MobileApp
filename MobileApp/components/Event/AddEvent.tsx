@@ -1,14 +1,15 @@
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import React, { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 import { Event, EventType, Location } from "../../types/Event";
 import { firestore, EVENT } from "../../firebase/Config";
 import { collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { Picker } from "@react-native-picker/picker";
-import { auth } from "../../firebase/Config";
 import { LocationFields } from "./LocationFields";
 import { DateTimeFields } from "./DateTimeFields";
 
 export default function AddEvent() {
+  const { user } = useAuth();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [startTime, setStartTime] = useState("");
@@ -60,8 +61,8 @@ export default function AddEvent() {
   }
 
   async function handleFirebaseAddEvent(): Promise<void> {
-    const ownerEmail = auth.currentUser?.email;
-    const organizerName = auth.currentUser?.displayName?.trim() || ownerEmail || "Tuntematon";
+    const ownerEmail = user?.email;
+    const organizerName = user?.displayName?.trim() || ownerEmail || "Tuntematon";
 
     if (!ownerEmail) {
       Alert.alert("Virhe", "Kirjaudu sisään ennen tapahtuman luontia");
