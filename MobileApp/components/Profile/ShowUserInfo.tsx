@@ -13,25 +13,22 @@ export default function ShowUserInfo() {
   const [email, setEmail] = useState("");
 
   useEffect(() => {
+
     (async () => {
+
       const profile = auth.currentUser;
-      //if (profile?.email) setEmail(profile.email);
       const profileEmail = profile?.email;
       if (!profileEmail) return;
 
       setEmail(profileEmail);
 
       const docRef = doc(firestore, USERINFO, profileEmail);
-      //console.log('doc path:', docRef.path);
 
       try {
         const docSnap = await getDoc(docRef);
-        //console.log('exists:', docSnap.exists());
-        //console.log('data:', docSnap.data())
 
         if (docSnap.exists()) {
           setUserInfo(docSnap.data({ serverTimestamps: 'estimate' }) as UserInfo);
-          //console.log("Kissa", docSnap.data())
         } else {
           console.log("User info not found")
         }
@@ -54,7 +51,6 @@ export default function ShowUserInfo() {
           <Text style={styles.infoText}>Tähän tulee sitten käyttäjän omat tapahtumat.</Text>
         </Card.Content>
       </Card>
-
       <Card style={styles.cardContainer}>
         <Card.Content>
           <Text style={styles.heading} >Omat tiedot</Text>
@@ -81,7 +77,7 @@ export default function ShowUserInfo() {
         <Text style={styles.buttonText}>Muokkaa omia tietojasi</Text>
       </Pressable>
 
-      {modalVisible && <EditUserInfo />}
+      {modalVisible && <EditUserInfo onClose={() => setModalVisible(false)} />}
 
     </View>
   )
@@ -106,10 +102,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   buttonText: {
-    color: 'black',
-    fontSize: 16,
+    backgroundColor: 'lightgrey',
     fontWeight: 'bold',
-    marginTop: 10
+    alignItems: 'center',
+    padding: 12,
+    marginVertical: 10,
+    borderRadius: 10,
   },
   textPressed: {
     opacity: 0.6

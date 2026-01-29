@@ -1,4 +1,4 @@
-import { Button, Alert } from "react-native";
+import { Button, Alert, StyleSheet, Pressable, Text } from "react-native";
 import React from "react";
 import { useAuth } from "../../context/AuthContext";
 
@@ -12,5 +12,23 @@ export default function LogOutButton() {
     ]);
   };
 
-  return <Button title="Kirjaudu ulos" onPress={handleLogOut} />;
+  return (
+    <Pressable style={styles.button} onPress={handleLogOut}>
+      <Text style={styles.buttonText}>Kirjaudu ulos</Text>
+    </Pressable>
+  );
 }
+
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: 'grey',
+    alignItems: 'center',
+    padding: 12,
+    borderRadius: 5,
+    margin: 10,
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+})
