@@ -55,8 +55,9 @@ export function LocationFields({
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   fieldGroup: {
-    gap: 12, // Lisää väliä kenttien väliin
+    gap: 12, 
   },
 });

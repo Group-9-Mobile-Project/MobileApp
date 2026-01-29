@@ -64,6 +64,7 @@ export function DateTimeFields({
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   fieldGroup: {
     gap: 12,
