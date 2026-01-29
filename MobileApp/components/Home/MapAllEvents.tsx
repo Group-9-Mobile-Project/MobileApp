@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
-import MapView, { Marker, Region } from 'react-native-maps';
+import MapView, { Callout, CalloutSubview, Marker, Region } from 'react-native-maps';
 
 interface MapProps {
     currentRegion: Region;
@@ -8,7 +8,7 @@ interface MapProps {
 
 interface Event {
     title: string,
-    location: {latitude: number, longitude: number}
+    location: { latitude: number, longitude: number }
 }
 
 interface EventList {
@@ -28,15 +28,20 @@ export default function MapAllEvents({ currentRegion, eventList }: EventList) {
                 description='Olet Tässä'
                 pinColor='#565fdd'
             />
-            {eventList.map((event) => (
-                <Marker coordinate={{
-                    latitude: event.location.latitude,
-                    longitude: event.location.longitude,
-                }}
-                key={event.title}
-                title={event.title}
-                pinColor='red'
-                />
+            {eventList.map((event, index) => (
+                <Marker
+                    coordinate={{
+                        latitude: event.location.latitude,
+                        longitude: event.location.longitude,
+                    }}
+                    key={index}
+                    title={event.title}
+                    description={event.title}
+                    pinColor='red'
+                    
+                >
+                    
+                </Marker>
             ))}
         </MapView>
     )
@@ -47,5 +52,15 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
         margin: 8
+    },
+    callout: {
+        backgroundColor: 'white',
+        borderStyle: 'solid',
+        borderColor: 'black',
+        borderWidth: 1,
+        padding: 10,
+        width: '100%',
+        height: '100%',
+        position: 'relative'
     }
 });
