@@ -7,6 +7,7 @@ export default function EditUserInfo({ onClose }: { onClose: () => void }) {
 
   const [email, setEmail] = useState("");
   const [name, setName] = useState("")
+  const [ description, setDescription ] = useState("")
   const [birthdate, setBirthdate] = useState("")
   const [city, setCity] = useState("")
   const [hobbies, setHobbies] = useState<string[]>([])
@@ -31,6 +32,7 @@ export default function EditUserInfo({ onClose }: { onClose: () => void }) {
         const docSnap = await getDoc(docRef)
         if ((docSnap).exists()) {
           setName(docSnap.data().name || "")
+          setDescription(docSnap.data().description || "")
           setBirthdate(docSnap.data().birthdate || "")
           setCity(docSnap.data().city || "")
           setHobbies(docSnap.data().hobbies || [])
@@ -63,6 +65,7 @@ export default function EditUserInfo({ onClose }: { onClose: () => void }) {
     try {
       await updateDoc(docRef, {
         name: name,
+        description: description,
         birthdate: birthdate,
         city: city,
         hobbies: hobbies,
@@ -87,6 +90,13 @@ export default function EditUserInfo({ onClose }: { onClose: () => void }) {
           placeholder='Syötä nimesi'
           value={name}
           onChangeText={setName}
+          editable={!loading}
+        />
+        <Text style={styles.label}>Kuvaus:</Text>
+        <TextInput style={styles.input}
+          placeholder='Syötä Kuvaus'
+          value={description}
+          onChangeText={setDescription}
           editable={!loading}
         />
         <Text style={styles.label}>Syntymäpäivä:</Text>

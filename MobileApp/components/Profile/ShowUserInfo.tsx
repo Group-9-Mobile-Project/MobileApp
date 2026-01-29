@@ -59,6 +59,7 @@ export default function ShowUserInfo() {
           {userInfo ? <View>
             <Text style={styles.infoText}>Nimi: {userInfo.name}</Text>
             <Text style={styles.infoText}>Sähköposti: {userInfo.email}</Text>
+            <Text style={styles.infoText}>Kuvaus: {userInfo.description}</Text>
             <Text style={styles.infoText}>Syntymäpäivä: {userInfo.birthdate}</Text>
             <Text style={styles.infoText}>Kaupunki: {userInfo.city}</Text>
             <Text style={styles.infoText}>Harrastukset: {userInfo.hobbies}</Text>
