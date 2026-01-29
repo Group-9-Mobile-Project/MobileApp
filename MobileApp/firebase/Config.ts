@@ -29,4 +29,6 @@ const auth = initializeAuth(app, {
 
 const USERINFO: string = 'userinfo'
 
-export {auth, firestore, collection, setDoc, USERINFO, serverTimestamp}
+const EVENT: string = 'events'
+
+export {auth, firestore, collection, setDoc, USERINFO, EVENT, serverTimestamp}
