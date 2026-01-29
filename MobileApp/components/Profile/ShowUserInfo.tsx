@@ -1,10 +1,11 @@
-import { StyleSheet, View, Text, Pressable } from 'react-native';
+import { StyleSheet, View, Text, Pressable, Modal } from 'react-native';
 import { auth, firestore, USERINFO } from '../../firebase/Config';
 import React, { useEffect, useState } from 'react';
 import EditUserInfo from './EditUserInfo';
 import { UserInfo } from '../../types/UserInfo';
 import { doc, getDoc } from "firebase/firestore";
 import { Card } from 'react-native-paper';
+import CardContent from 'react-native-paper/lib/typescript/components/Card/CardContent';
 
 export default function ShowUserInfo() {
 
@@ -42,15 +43,6 @@ export default function ShowUserInfo() {
 
   return (
     <View style={styles.container}>
-
-      <Card style={styles.cardContainer}>
-        <Card.Content>
-          <Text style={styles.heading} >Omat tapahtumat</Text>
-        </Card.Content>
-        <Card.Content>
-          <Text style={styles.infoText}>Tähän tulee sitten käyttäjän omat tapahtumat.</Text>
-        </Card.Content>
-      </Card>
       <Card style={styles.cardContainer}>
         <Card.Content>
           <Text style={styles.heading} >Omat tiedot</Text>
@@ -78,7 +70,15 @@ export default function ShowUserInfo() {
         <Text style={styles.buttonText}>Muokkaa omia tietojasi</Text>
       </Pressable>
 
-      {modalVisible && <EditUserInfo onClose={() => setModalVisible(false)} />}
+      <Modal
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+        animationType="slide"
+      >
+        <EditUserInfo onClose={() => setModalVisible(false)} />
+      </Modal>
+
+
 
     </View>
   )

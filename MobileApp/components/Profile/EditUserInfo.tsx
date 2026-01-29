@@ -84,7 +84,8 @@ export default function EditUserInfo({ onClose }: { onClose: () => void }) {
 
   return (
     <ScrollView>
-      <View style={styles.fieldContainer}>
+      <Text style={styles.heading} >Muokkaa omia tietoja</Text>
+      <View style={styles.container}>
         <Text style={styles.label}>Nimi:</Text>
         <TextInput style={styles.input}
           placeholder='Syötä nimesi'
@@ -178,15 +179,17 @@ export default function EditUserInfo({ onClose }: { onClose: () => void }) {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 20,
+    padding: 10,
+    margin: 10
   },
   fieldContainer: {
-    marginBottom: 20,
+    margin: 20,
+  },
+    heading: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginTop: 50,
+    padding: 10,
   },
   label: {
     fontSize: 14,
