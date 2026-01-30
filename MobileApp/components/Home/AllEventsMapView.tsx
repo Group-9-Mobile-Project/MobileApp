@@ -1,10 +1,12 @@
 import { View, Text, StyleSheet } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import MapView, { Region } from 'react-native-maps'
+import { Region } from 'react-native-maps'
 import MapAllEvents from './MapAllEvents';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Location from 'expo-location'
 import { Event } from '../../types/Event';
+import { collection, getDocs, onSnapshot, orderBy, query, where } from 'firebase/firestore';
+import { EVENT, firestore } from '../../firebase/Config';
+import { currentTimestamp } from 'firebase/firestore/pipelines';
 
 
 
@@ -37,7 +39,7 @@ export default function AllEventsMapView() {
     {
       title: 'lenkki 2',
       location: {
-        coordinates: { latitude: 65.0650, longitude: 24.9800 },
+        coordinates: { latitude: 44545, longitude: 45454545 },
         name: '',
         address: ''
       },
@@ -80,6 +82,28 @@ export default function AllEventsMapView() {
 
   useEffect(() => {
     getCurrentLocation()
+  }, [])
+
+  const getEventDocs = async (): Promise<void> => {
+    let today = new Date().toISOString().slice(0, 10)
+    console.log(today)
+    try {
+      const colRef = collection(firestore, EVENT)
+      const q = query(colRef, orderBy('date', 'desc'), where('date', '>=', today))
+      const querySnapshot = await getDocs(q)
+      const apulista: Event[] = []
+      querySnapshot.forEach((doc) => {
+        apulista.push(doc.data() as Event)
+      })
+      console.log(apulista)
+      setEventList(apulista)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  useEffect(() => {
+    getEventDocs()
   }, [])
 
   return (

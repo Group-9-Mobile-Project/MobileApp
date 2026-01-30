@@ -38,7 +38,7 @@ export default function EventInfoModal({ showModal, setShowModal, event }: Event
                         <Text>Sulje</Text>
                     </Pressable>
                     <Pressable style={styles.button}>
-                        <Text>Ilmoittaudu</Text>
+                        <Text>Ilmoittaudu EI TEE MITÄÄN</Text>
                     </Pressable>
                 </View>
             </View>
