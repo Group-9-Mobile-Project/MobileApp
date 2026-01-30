@@ -1,9 +1,11 @@
-import { StyleSheet, View, Text, Pressable } from 'react-native';
+import { StyleSheet, View, Text, Pressable, Modal } from 'react-native';
 import { auth, firestore, USERINFO } from '../../firebase/Config';
 import React, { useEffect, useState } from 'react';
 import EditUserInfo from './EditUserInfo';
 import { UserInfo } from '../../types/UserInfo';
 import { doc, getDoc } from "firebase/firestore";
+import { Card } from 'react-native-paper';
+import CardContent from 'react-native-paper/lib/typescript/components/Card/CardContent';
 
 export default function ShowUserInfo() {
 
@@ -12,25 +14,22 @@ export default function ShowUserInfo() {
   const [email, setEmail] = useState("");
 
   useEffect(() => {
+
     (async () => {
+
       const profile = auth.currentUser;
-      //if (profile?.email) setEmail(profile.email);
       const profileEmail = profile?.email;
       if (!profileEmail) return;
 
       setEmail(profileEmail);
 
       const docRef = doc(firestore, USERINFO, profileEmail);
-      //console.log('doc path:', docRef.path);
 
       try {
         const docSnap = await getDoc(docRef);
-        //console.log('exists:', docSnap.exists());
-        //console.log('data:', docSnap.data())
 
         if (docSnap.exists()) {
           setUserInfo(docSnap.data({ serverTimestamps: 'estimate' }) as UserInfo);
-          //console.log("Kissa", docSnap.data())
         } else {
           console.log("User info not found")
         }
@@ -44,17 +43,23 @@ export default function ShowUserInfo() {
 
   return (
     <View style={styles.container}>
-
-      {userInfo ? <View style={styles.info}>
-        <Text style={styles.heading} >Omat tiedot</Text>
-        <Text>Nimi: {userInfo.name}</Text>
-        <Text>Sähköposti: {userInfo.email}</Text>
-        <Text>Syntymäpäivä: {userInfo.birthdate}</Text>
-        <Text>Kaupunki: {userInfo.city}</Text>
-        <Text>Harrastukset: {userInfo.hobbies}</Text>
-        <Text>Kiinnostusten kohteet: {userInfo.interests}</Text>
-        <Text>Pronominit: {userInfo.pronouns}</Text>
-      </View> : null}
+      <Card style={styles.cardContainer}>
+        <Card.Content>
+          <Text style={styles.heading} >Omat tiedot</Text>
+        </Card.Content>
+        <Card.Content>
+          {userInfo ? <View>
+            <Text style={styles.infoText}>Nimi: {userInfo.name}</Text>
+            <Text style={styles.infoText}>Sähköposti: {userInfo.email}</Text>
+            <Text style={styles.infoText}>Kuvaus: {userInfo.description}</Text>
+            <Text style={styles.infoText}>Syntymäpäivä: {userInfo.birthdate}</Text>
+            <Text style={styles.infoText}>Kaupunki: {userInfo.city}</Text>
+            <Text style={styles.infoText}>Harrastukset: {userInfo.hobbies}</Text>
+            <Text style={styles.infoText}>Kiinnostusten kohteet: {userInfo.interests}</Text>
+            <Text style={styles.infoText}>Pronominit: {userInfo.pronouns}</Text>
+          </View> : null}
+        </Card.Content>
+      </Card>
 
       <Pressable
         onPress={() => setModalVisible(true)}
@@ -62,10 +67,18 @@ export default function ShowUserInfo() {
         accessibilityRole="button"
         accessibilityLabel="Show user info"
       >
-        <Text style={styles.triggerText}>Muokkaa omia tietojasi</Text>
+        <Text style={styles.EditButtonText}>Muokkaa omia tietojasi</Text>
       </Pressable>
 
-      {modalVisible && <EditUserInfo />}
+      <Modal
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+        animationType="slide"
+      >
+        <EditUserInfo onClose={() => setModalVisible(false)} />
+      </Modal>
+
+
 
     </View>
   )
@@ -74,26 +87,41 @@ export default function ShowUserInfo() {
 const styles = StyleSheet.create({
 
   container: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    flex: 1,
+    width: '100%',
+    paddingHorizontal: 10,
+  },
+  cardContainer: {
+    alignContent: 'flex-start',
+    marginBlockStart: 20,
+    width: '100%',
+    backgroundColor: 'lightgrey',
   },
   heading: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
   },
-  triggerText: {
-    color: 'black',
-    fontSize: 16,
+  buttonText: {
+    backgroundColor: 'lightgrey',
     fontWeight: 'bold',
-    margin: 20,
+    alignItems: 'center',
+    padding: 12,
+    marginVertical: 10,
+    borderRadius: 10,
+  },
+  EditButtonText: {
+    backgroundColor: 'lightgrey',
+    padding: 12,
+    marginVertical: 10,
+    borderRadius: 10,
+    textAlign: 'center'
   },
   textPressed: {
-    opacity: 0.6,
+    opacity: 0.6
   },
-  info: {
-    borderColor: 'lightgray',
-    borderWidth: 4,
-    padding: 10,
-  },
+  infoText: {
+    fontSize: 12,
+    padding: 5,
+  }
 });
