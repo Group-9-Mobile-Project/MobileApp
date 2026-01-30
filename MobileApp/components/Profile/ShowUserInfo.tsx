@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     alignContent: 'flex-start',
-    marginBlockStart: 20,
+    marginBlockStart: 10,
     width: '100%',
     backgroundColor: 'lightgrey',
   },
@@ -121,7 +121,8 @@ const styles = StyleSheet.create({
     opacity: 0.6
   },
   infoText: {
-    fontSize: 12,
+    fontSize: 14,
     padding: 5,
+    color: '#666',
   }
 });
