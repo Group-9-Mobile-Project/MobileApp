@@ -67,7 +67,7 @@ export default function ShowUserInfo() {
         accessibilityRole="button"
         accessibilityLabel="Show user info"
       >
-        <Text style={styles.buttonText}>Muokkaa omia tietojasi</Text>
+        <Text style={styles.EditButtonText}>Muokkaa omia tietojasi</Text>
       </Pressable>
 
       <Modal
@@ -110,12 +110,18 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     borderRadius: 10,
   },
+  EditButtonText: {
+    backgroundColor: 'lightgrey',
+    padding: 12,
+    marginVertical: 10,
+    borderRadius: 10,
+    textAlign: 'center'
+  },
   textPressed: {
     opacity: 0.6
   },
   infoText: {
     fontSize: 12,
     padding: 5,
-    fontWeight: 'bold'
   }
 });

@@ -180,7 +180,6 @@ export default function EditUserInfo({ onClose }: { onClose: () => void }) {
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    margin: 10
   },
   fieldContainer: {
     margin: 20,
@@ -201,6 +200,7 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     padding: 10,
     fontSize: 14,
+    marginTop: 5,
   },
   hobbyInputContainer: {
     flexDirection: 'row',
@@ -246,7 +246,6 @@ const styles = StyleSheet.create({
   deleteButtonText: {
     fontSize: 24,
     color: '#ff3b30',
-    fontWeight: 'bold',
   },
   buttonSave: {
     backgroundColor: 'grey',
@@ -266,6 +265,6 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   buttonText: {
-    fontWeight: 'bold',
+
   },
 })
