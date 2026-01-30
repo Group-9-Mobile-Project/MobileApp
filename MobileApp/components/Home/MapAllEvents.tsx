@@ -1,15 +1,8 @@
-import { View, Text, StyleSheet } from 'react-native'
-import React from 'react'
-import MapView, { Callout, CalloutSubview, Marker, Region } from 'react-native-maps';
-
-interface MapProps {
-    currentRegion: Region;
-}
-
-interface Event {
-    title: string,
-    location: { latitude: number, longitude: number }
-}
+import { Text, StyleSheet } from 'react-native'
+import React, { useState } from 'react'
+import MapView, { Marker, Region } from 'react-native-maps';
+import { Event } from '../../types/Event';
+import EventInfoModal from '../Common/EventInfoModal';
 
 interface EventList {
     currentRegion: Region,
@@ -17,33 +10,36 @@ interface EventList {
 }
 
 export default function MapAllEvents({ currentRegion, eventList }: EventList) {
+    const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
+    const [showModal, setShowModal] = useState<boolean>(false)
+
     return (
-        <MapView style={styles.map} region={currentRegion} >
-            <Marker
-                coordinate={{
-                    latitude: currentRegion.latitude,
-                    longitude: currentRegion.longitude,
-                }}
-                title='Oma sijainti'
-                description='Olet Tässä'
-                pinColor='#565fdd'
-            />
-            {eventList.map((event, index) => (
-                <Marker
-                    coordinate={{
-                        latitude: event.location.latitude,
-                        longitude: event.location.longitude,
-                    }}
-                    key={index}
-                    title={event.title}
-                    description={event.title}
-                    pinColor='red'
-                    
-                >
-                    
-                </Marker>
-            ))}
-        </MapView>
+        <>
+            <MapView style={styles.map} region={currentRegion} showsUserLocation>
+                
+                {eventList.map((event, index) => (
+                    <Marker
+                        coordinate={{
+                            latitude: event.location.coordinates.latitude,
+                            longitude: event.location.coordinates.longitude,
+                        }}
+                        key={index}
+                        title={event.title + ' ' + event.date + ' ' + event.startTime}
+                        description={ '\t' + 'Klikkaa tästä tarkastellaksesi'}
+                        
+                        pinColor={(event.type == 'juoksu') ? 'red' : 'blue'}
+                        onCalloutPress={() => {setSelectedEvent(event); setShowModal(true)}}
+                    >
+                        
+                    </Marker>
+                ))}
+            </MapView>
+            
+            {(selectedEvent && showModal) && (
+                
+                <EventInfoModal showModal={showModal} setShowModal={setShowModal} event={selectedEvent} />
+            )}
+        </>
     )
 }
 

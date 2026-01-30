@@ -4,6 +4,7 @@ import MapView, { Region } from 'react-native-maps'
 import MapAllEvents from './MapAllEvents';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Location from 'expo-location'
+import { Event } from '../../types/Event';
 
 
 
@@ -15,9 +16,41 @@ export default function AllEventsMapView() {
     longitudeDelta: 0.0421,
   })
 
-  const [eventList, setEventList] = useState([
-    {title: 'lenkki 1', location: {latitude: 65.0800, longitude: 25.4800}},
-    {title: 'lenkki 2', location: {latitude: 65.0650, longitude: 24.9800}}
+  const [eventList, setEventList] = useState<Event[]>([
+    {
+      title: 'lenkki 1',
+      location: {
+        coordinates: { latitude: 65.0800, longitude: 25.4800 },
+        name: 'OAMK',
+        address: 'Yliopistokatu 1, 90570 Oulu'
+      },
+      id: 'J9Q0ealXjOs12q24hz5h',
+      description: 'Tämä on tapahtuman kuvaus.',
+      date: '2026-01-29',
+      type: 'kävely',
+      attendees: ['tero@testi.com', 'tero0@testi.com'],
+      organizer: 'Ville-Pekka',
+      startTime: '23:00',
+      endTime: '',
+      ownerEmail: 'ville@mail.com'
+    },
+    {
+      title: 'lenkki 2',
+      location: {
+        coordinates: { latitude: 65.0650, longitude: 24.9800 },
+        name: '',
+        address: ''
+      },
+      id: '',
+      description: '',
+      date: '',
+      type: 'juoksu',
+      attendees: [],
+      organizer: '',
+      startTime: '',
+      endTime: '',
+      ownerEmail: ''
+    }
   ])
 
   const getCurrentLocation = async (): Promise<void> => {
