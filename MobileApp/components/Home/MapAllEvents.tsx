@@ -27,7 +27,7 @@ export default function MapAllEvents({ currentRegion, eventList }: EventList) {
                         title={event.title + ' ' + event.date + ' ' + event.startTime}
                         description={ '\t' + 'Klikkaa tästä tarkastellaksesi'}
                         
-                        pinColor={(event.type == 'juoksu') ? 'red' : 'blue'}
+                        pinColor={(event.type.toString() === "juoksu") ? "red" : "blue" }
                         onCalloutPress={() => {setSelectedEvent(event); setShowModal(true)}}
                     >
                         

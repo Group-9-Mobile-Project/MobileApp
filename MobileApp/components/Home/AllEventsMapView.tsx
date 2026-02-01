@@ -80,30 +80,28 @@ export default function AllEventsMapView() {
     }
   }
 
+
   useEffect(() => {
     getCurrentLocation()
   }, [])
 
-  const getEventDocs = async (): Promise<void> => {
+  
+  useEffect(() => {
     let today = new Date().toISOString().slice(0, 10)
     console.log(today)
-    try {
-      const colRef = collection(firestore, EVENT)
-      const q = query(colRef, orderBy('date', 'desc'), where('date', '>=', today))
-      const querySnapshot = await getDocs(q)
+
+    const colRef = collection(firestore, EVENT)
+    const q = query(colRef, orderBy('date', 'desc'), where('date', '>=', today))
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const apulista: Event[] = []
       querySnapshot.forEach((doc) => {
         apulista.push(doc.data() as Event)
       })
       console.log(apulista)
       setEventList(apulista)
-    } catch (error) {
-      console.error(error)
-    }
-  }
+    })
 
-  useEffect(() => {
-    getEventDocs()
+    return () => { unsubscribe(); };
   }, [])
 
   return (
