@@ -18,42 +18,7 @@ export default function AllEventsMapView() {
     longitudeDelta: 0.0421,
   })
 
-  const [eventList, setEventList] = useState<Event[]>([
-    {
-      title: 'lenkki 1',
-      location: {
-        coordinates: { latitude: 65.0800, longitude: 25.4800 },
-        name: 'OAMK',
-        address: 'Yliopistokatu 1, 90570 Oulu'
-      },
-      id: 'J9Q0ealXjOs12q24hz5h',
-      description: 'Tämä on tapahtuman kuvaus.',
-      date: '2026-01-29',
-      type: 'kävely',
-      attendees: ['tero@testi.com', 'tero0@testi.com'],
-      organizer: 'Ville-Pekka',
-      startTime: '23:00',
-      endTime: '',
-      ownerEmail: 'ville@mail.com'
-    },
-    {
-      title: 'lenkki 2',
-      location: {
-        coordinates: { latitude: 44545, longitude: 45454545 },
-        name: '',
-        address: ''
-      },
-      id: '',
-      description: '',
-      date: '',
-      type: 'juoksu',
-      attendees: [],
-      organizer: '',
-      startTime: '',
-      endTime: '',
-      ownerEmail: ''
-    }
-  ])
+  const [eventList, setEventList] = useState<Event[]>([])
 
   const getCurrentLocation = async (): Promise<void> => {
     try {
