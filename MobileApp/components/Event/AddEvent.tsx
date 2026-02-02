@@ -1,5 +1,5 @@
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { Event, EventType, Location } from "../../types/Event";
 import { firestore, EVENT } from "../../firebase/Config";
@@ -44,6 +44,34 @@ export default function AddEvent() {
   const [longitudeInput, setLongitudeInput] = useState(
     DEFAULT_COORDINATE.longitude.toString()
   );
+  
+  const reverseGeocodeRequestId = useRef(0);
+  
+  const applyReverseGeocode = async (coordinate: {
+    latitude: number;
+    longitude: number;
+  }) => {
+    const requestId = ++reverseGeocodeRequestId.current;
+  
+    try {
+      const [place] = await ExpoLocation.reverseGeocodeAsync(coordinate);
+      if (requestId !== reverseGeocodeRequestId.current) {
+        return;
+      }
+  
+      const formattedAddress = formatAddress(place);
+      if (formattedAddress) {
+        setLocationAddress(formattedAddress);
+      }
+      const name = place?.name || place?.street || place?.city || "";
+      if (name) {
+        setLocationName(name);
+      }
+    } catch (error) {
+      console.warn("Reverse geocode failed", error);
+    }
+  };
+
 
   function handleDateChange(event: { type?: string }, selected?: Date) {
     if (event.type === "set" && selected) {
@@ -88,30 +116,22 @@ export default function AddEvent() {
         setLocationError("Sijaintilupa ei ole käytössä.");
         return;
       }
-
+  
       const currentLocation = await ExpoLocation.getCurrentPositionAsync({
         accuracy: ExpoLocation.Accuracy.Balanced,
       });
-
+  
       const coordinate = {
         latitude: currentLocation.coords.latitude,
         longitude: currentLocation.coords.longitude,
       };
-
+  
       setLocation((prev) => ({ ...prev, ...coordinate }));
       setSelectedCoordinate(coordinate);
       setLatitudeInput(coordinate.latitude.toString());
       setLongitudeInput(coordinate.longitude.toString());
-
-      const [place] = await ExpoLocation.reverseGeocodeAsync(coordinate);
-      const formattedAddress = formatAddress(place);
-      if (formattedAddress) {
-        setLocationAddress(formattedAddress);
-      }
-      const name = place?.name || place?.street || place?.city || "";
-      if (name) {
-        setLocationName(name);
-      }
+  
+      await applyReverseGeocode(coordinate);
     } catch (error) {
       console.warn("Location fetch failed", error);
       setLocationError("Sijainnin haku epäonnistui.");
@@ -131,10 +151,15 @@ export default function AddEvent() {
     setEndTime("");
     setLocationName("");
     setLocationAddress("");
-    setLatitudeInput("");
-    setLongitudeInput("");
+    setLatitudeInput(DEFAULT_COORDINATE.latitude.toString());
+    setLongitudeInput(DEFAULT_COORDINATE.longitude.toString());
     setShowDatePicker(false);
     setType("kävely");
+    setLocation(DEFAULT_REGION);
+    setSelectedCoordinate(DEFAULT_COORDINATE);
+    setLocationError(null);
+  
+    getCurrentLocation();
   }
 
   async function handleFirebaseAddEvent(): Promise<void> {
@@ -212,19 +237,7 @@ export default function AddEvent() {
     setLatitudeInput(coordinate.latitude.toString());
     setLongitudeInput(coordinate.longitude.toString());
   
-    try {
-      const [place] = await ExpoLocation.reverseGeocodeAsync(coordinate);
-      const formattedAddress = formatAddress(place);
-      if (formattedAddress) {
-        setLocationAddress(formattedAddress);
-      }
-      const name = place?.name || place?.street || place?.city || "";
-      if (name) {
-        setLocationName(name);
-      }
-    } catch (error) {
-      console.warn("Reverse geocode failed", error);
-    }
+    await applyReverseGeocode(coordinate);
   };
 
   return (
