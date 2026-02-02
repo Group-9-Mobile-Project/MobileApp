@@ -11,6 +11,7 @@ type LocationFieldsProps = {
   setLatitudeInput: (value: string) => void;
   longitudeInput: string;
   setLongitudeInput: (value: string) => void;
+  coordinatesReadOnly?: boolean;
 };
 
 export function LocationFields({
