@@ -8,7 +8,6 @@ export type Event = {
   attendees: string[],
   organizer: string,
   startTime: string,
-  endTime: string,
   ownerEmail: string,
 }
 

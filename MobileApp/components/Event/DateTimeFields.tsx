@@ -12,8 +12,12 @@ type DateTimeFieldsProps = {
   dateValue: Date;
   handleDateChange: (event: { type?: string }, selected?: Date) => void;
   startTime: string;
-  setStartTime: (value: string) => void;
+  showStartTimePicker: boolean;
+  setShowStartTimePicker: (value: boolean) => void;
+  startTimeValue: Date;
+  handleStartTimeChange: (event: { type?: string }, selected?: Date) => void;
 };
+
 
 export function DateTimeFields({
   labelStyle,
@@ -25,7 +29,10 @@ export function DateTimeFields({
   dateValue,
   handleDateChange,
   startTime,
-  setStartTime,
+  showStartTimePicker,
+  setShowStartTimePicker,
+  startTimeValue,
+  handleStartTimeChange
 }: DateTimeFieldsProps) {
   return (
     <View style={styles.fieldGroup}>
@@ -44,13 +51,25 @@ export function DateTimeFields({
           <Button title="Valmis" onPress={() => setShowDatePicker(false)} />
         </View>
       )}
-
-      <TextInput
-        style={inputStyle}
-        placeholder="Alkaa (HH:mm)"
-        value={startTime}
-        onChangeText={setStartTime}
+      
+      <Text style={labelStyle}>Aloitusaika</Text>
+      <Button
+        title={startTime || "Valitse aloitusaika"}
+        onPress={() => setShowStartTimePicker(true)}
       />
+
+      {showStartTimePicker && (
+        <View style={datePickerContainerStyle}>
+          <DateTimePicker
+            value={startTimeValue}
+            mode="time"
+            display={Platform.OS === "android" ? "clock" : "spinner"}
+            locale="fi-FI"
+            onChange={handleStartTimeChange}
+          />
+          <Button title="Valmis" onPress={() => setShowStartTimePicker(false)} />
+        </View>
+      )}
     </View>
   );
 }

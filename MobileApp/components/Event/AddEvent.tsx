@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
+import { View, Text, TextInput, Button, StyleSheet, Alert, Platform } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { Event, EventType, Location } from "../../types/Event";
@@ -29,8 +29,11 @@ export default function AddEvent() {
   
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  
   const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
+  const [startTimeValue, setStartTimeValue] = useState<Date>(new Date());
+  const [showStartTimePicker, setShowStartTimePicker] = useState(false);
+  
   const [type, setType] = useState<EventType>("kävely");
   const [date, setDate] = useState("");
   const [dateValue, setDateValue] = useState<Date>(new Date());
@@ -83,6 +86,21 @@ export default function AddEvent() {
     }
     if (event.type === "dismissed") {
       setShowDatePicker(false);
+    }
+  }
+  function handleStartTimeChange(event: { type?: string }, selected?: Date) {
+    if (event.type === "set" && selected) {
+      setShowStartTimePicker(false);
+      setStartTimeValue(selected);
+      const formatted = new Intl.DateTimeFormat("fi-FI", {
+        hour: "2-digit",
+        minute: "2-digit",
+      }).format(selected);
+      setStartTime(formatted);
+      return;
+    }
+    if (event.type === "dismissed") {
+      setShowStartTimePicker(false);
     }
   }
 
@@ -148,7 +166,6 @@ export default function AddEvent() {
     setDate("");
     setDateValue(new Date());
     setStartTime("");
-    setEndTime("");
     setLocationName("");
     setLocationAddress("");
     setLatitudeInput(DEFAULT_COORDINATE.latitude.toString());
@@ -170,7 +187,7 @@ export default function AddEvent() {
       Alert.alert("Virhe", "Kirjaudu sisään ennen tapahtuman luontia");
       return;
     }
-    if (!title || !date || !startTime || !endTime) {
+    if (!title || !date || !startTime) {
       Alert.alert("Virhe", "Täytä vähintään nimi, päivä, paikka ja ajat");
       return;
     }
@@ -211,7 +228,6 @@ export default function AddEvent() {
         attendees: [],
         organizer: organizerName,
         startTime,
-        endTime,
         ownerEmail,
       };
 
@@ -257,6 +273,7 @@ export default function AddEvent() {
         onChangeText={setDescription}
         multiline
       />
+      
       <Text style={styles.title}>Aika</Text>
       <DateTimeFields
         labelStyle={styles.label}
@@ -268,8 +285,12 @@ export default function AddEvent() {
         dateValue={dateValue}
         handleDateChange={handleDateChange}
         startTime={startTime}
-        setStartTime={setStartTime}
+        showStartTimePicker={showStartTimePicker}
+        setShowStartTimePicker={setShowStartTimePicker}
+        startTimeValue={startTimeValue}
+        handleStartTimeChange={handleStartTimeChange}
       />
+
       <Text style={styles.title}>Sijainti</Text>
       <StartLocationPicker
         region={location}
