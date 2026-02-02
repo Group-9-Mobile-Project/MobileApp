@@ -29,7 +29,7 @@ export default function EventInfoModal({ showModal, setShowModal, event }: Event
                     </Card.Content>
                     <Card.Content>
                         <View style={styles.basicInfoView}>
-                            <Text style={styles.infoText}>Aika: {event.startTime + ' - ' + event.endTime}</Text>
+                            <Text style={styles.infoText}>Aika: {event.startTime}</Text>
                             <Text style={styles.infoText}>Paikka: {event.location.address}</Text>
                             <Text style={styles.infoText}>Tyyppi: {event.type}</Text>
                             <Text style={styles.infoText}>Tapahtuman lisääjä: {event.organizer}</Text>
