@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
+import { View, Text, TextInput, Button, StyleSheet, Alert, Pressable } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { Event, EventType, Location } from "../../types/Event";
@@ -10,6 +10,7 @@ import * as ExpoLocation from "expo-location";
 import { Region } from "react-native-maps";
 import DateTimePickerField from "../Common/DateTimePickerField";
 import { Card, Button as PaperButton, Dialog, Portal, RadioButton } from "react-native-paper";
+
 
 const DEFAULT_COORDINATE = { latitude: 65.08, longitude: 25.48 };
 
@@ -344,7 +345,10 @@ export default function AddEvent() {
          </Card.Content>
        </Card>
  
-       <Button title="Lisää tapahtuma" onPress={handleFirebaseAddEvent} />
+    
+      <Pressable style={styles.addButton} onPress={handleFirebaseAddEvent}>
+        <Text style={styles.buttonText}>Lisää tapahtuma</Text>
+      </Pressable>
      </View>
    );
  }
@@ -387,4 +391,15 @@ export default function AddEvent() {
      color: "#666",
      fontSize: 12,
    },
- });
+   addButton: {
+     backgroundColor: 'green',
+     alignItems: 'center',
+     padding: 12,
+     borderRadius: 5,
+     margin: 10,
+   },
+   buttonText: {
+     fontSize: 16,
+   }
+ })
+ 
