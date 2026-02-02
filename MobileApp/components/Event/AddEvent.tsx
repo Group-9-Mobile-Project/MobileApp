@@ -269,8 +269,6 @@ export default function AddEvent() {
         handleDateChange={handleDateChange}
         startTime={startTime}
         setStartTime={setStartTime}
-        endTime={endTime}
-        setEndTime={setEndTime}
       />
       <Text style={styles.title}>Sijainti</Text>
       <StartLocationPicker

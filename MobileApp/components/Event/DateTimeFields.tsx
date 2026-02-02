@@ -13,8 +13,6 @@ type DateTimeFieldsProps = {
   handleDateChange: (event: { type?: string }, selected?: Date) => void;
   startTime: string;
   setStartTime: (value: string) => void;
-  endTime: string;
-  setEndTime: (value: string) => void;
 };
 
 export function DateTimeFields({
@@ -28,8 +26,6 @@ export function DateTimeFields({
   handleDateChange,
   startTime,
   setStartTime,
-  endTime,
-  setEndTime,
 }: DateTimeFieldsProps) {
   return (
     <View style={styles.fieldGroup}>
@@ -54,12 +50,6 @@ export function DateTimeFields({
         placeholder="Alkaa (HH:mm)"
         value={startTime}
         onChangeText={setStartTime}
-      />
-      <TextInput
-        style={inputStyle}
-        placeholder="Päättyy (HH:mm)"
-        value={endTime}
-        onChangeText={setEndTime}
       />
     </View>
   );
