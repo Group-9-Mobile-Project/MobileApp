@@ -1,5 +1,5 @@
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { Event, EventType, Location } from "../../types/Event";
 import { firestore, EVENT } from "../../firebase/Config";
@@ -7,9 +7,26 @@ import { collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { Picker } from "@react-native-picker/picker";
 import { LocationFields } from "./LocationFields";
 import { DateTimeFields } from "./DateTimeFields";
+import StartLocationPicker from "./StartLocationPicker";
+import * as ExpoLocation from "expo-location";
+import { Region } from "react-native-maps"
+
+const DEFAULT_COORDINATE = { latitude: 65.08, longitude: 25.48 };
+
+const DEFAULT_REGION: Region = {
+  latitude: 65.08,
+  longitude: 25.48,
+  latitudeDelta: 0.0922,
+  longitudeDelta: 0.0421,
+};
 
 export default function AddEvent() {
   const { user } = useAuth();
+  
+  const [location, setLocation] = useState<Region>(DEFAULT_REGION);
+   const [selectedCoordinate, setSelectedCoordinate] = useState(DEFAULT_COORDINATE);
+   const [locationError, setLocationError] = useState<string | null>(null);
+  
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [startTime, setStartTime] = useState("");
@@ -21,8 +38,12 @@ export default function AddEvent() {
 
   const [locationName, setLocationName] = useState("");
   const [locationAddress, setLocationAddress] = useState("");
-  const [latitudeInput, setLatitudeInput] = useState("");
-  const [longitudeInput, setLongitudeInput] = useState("");
+  const [latitudeInput, setLatitudeInput] = useState(
+    DEFAULT_COORDINATE.latitude.toString()
+  );
+  const [longitudeInput, setLongitudeInput] = useState(
+    DEFAULT_COORDINATE.longitude.toString()
+  );
 
   function handleDateChange(event: { type?: string }, selected?: Date) {
     if (event.type === "set" && selected) {
@@ -45,6 +66,62 @@ export default function AddEvent() {
     }).format(new Date(date))
     : "Valitse päivämäärä";
 
+  const formatAddress = (
+    place?: ExpoLocation.LocationGeocodedAddress
+  ): string => {
+    if (!place) return "";
+    const parts = [
+      place.name,
+      place.street,
+      place.postalCode,
+      place.city,
+      place.region,
+      place.country,
+    ].filter(Boolean);
+    return parts.join(", ");
+  };
+  
+  const getCurrentLocation = async () => {
+    try {
+      const { status } = await ExpoLocation.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setLocationError("Sijaintilupa ei ole käytössä.");
+        return;
+      }
+
+      const currentLocation = await ExpoLocation.getCurrentPositionAsync({
+        accuracy: ExpoLocation.Accuracy.Balanced,
+      });
+
+      const coordinate = {
+        latitude: currentLocation.coords.latitude,
+        longitude: currentLocation.coords.longitude,
+      };
+
+      setLocation((prev) => ({ ...prev, ...coordinate }));
+      setSelectedCoordinate(coordinate);
+      setLatitudeInput(coordinate.latitude.toString());
+      setLongitudeInput(coordinate.longitude.toString());
+
+      const [place] = await ExpoLocation.reverseGeocodeAsync(coordinate);
+      const formattedAddress = formatAddress(place);
+      if (formattedAddress) {
+        setLocationAddress(formattedAddress);
+      }
+      const name = place?.name || place?.street || place?.city || "";
+      if (name) {
+        setLocationName(name);
+      }
+    } catch (error) {
+      console.warn("Location fetch failed", error);
+      setLocationError("Sijainnin haku epäonnistui.");
+    }
+  };
+  
+  useEffect(() => {
+    getCurrentLocation();
+  }, []);
+  
   function resetForm() {
     setTitle("");
     setDescription("");
@@ -125,6 +202,30 @@ export default function AddEvent() {
       Alert.alert("Virhe", "Tapahtuman tallennus epäonnistui");
     }
   }
+  
+  const handleSelectCoordinate = async (coordinate: {
+    latitude: number;
+    longitude: number;
+  }) => {
+    setSelectedCoordinate(coordinate);
+    setLocation((prev) => ({ ...prev, ...coordinate }));
+    setLatitudeInput(coordinate.latitude.toString());
+    setLongitudeInput(coordinate.longitude.toString());
+  
+    try {
+      const [place] = await ExpoLocation.reverseGeocodeAsync(coordinate);
+      const formattedAddress = formatAddress(place);
+      if (formattedAddress) {
+        setLocationAddress(formattedAddress);
+      }
+      const name = place?.name || place?.street || place?.city || "";
+      if (name) {
+        setLocationName(name);
+      }
+    } catch (error) {
+      console.warn("Reverse geocode failed", error);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -159,6 +260,16 @@ export default function AddEvent() {
         setEndTime={setEndTime}
       />
       <Text style={styles.title}>Sijainti</Text>
+      <StartLocationPicker
+        region={location}
+        selectedCoordinate={selectedCoordinate}
+        onSelect={handleSelectCoordinate}
+        onRegionChangeComplete={setLocation}
+      />
+      {locationError ? (
+        <Text style={styles.helperText}>{locationError}</Text>
+      ) : null}
+
       <LocationFields
         inputStyle={styles.input}
         locationName={locationName}
@@ -170,7 +281,7 @@ export default function AddEvent() {
         longitudeInput={longitudeInput}
         setLongitudeInput={setLongitudeInput}
       />
-
+      
       <Text style={styles.title}>Tyyppi</Text>
       <View style={styles.pickerWrapper}>
         <Picker
@@ -218,5 +329,9 @@ const styles = StyleSheet.create({
   },
   datePickerContainer: {
     gap: 8,
+  },
+  helperText: {
+    color: "#666",
+    fontSize: 12,
   },
 });
