@@ -4,12 +4,12 @@ import { useAuth } from "../../context/AuthContext";
 import { Event, EventType, Location } from "../../types/Event";
 import { firestore, EVENT } from "../../firebase/Config";
 import { collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
-import { Picker } from "@react-native-picker/picker";
 import { LocationFields } from "./LocationFields";
 import StartLocationPicker from "./StartLocationPicker";
 import * as ExpoLocation from "expo-location";
 import { Region } from "react-native-maps";
 import DateTimePickerField from "../Common/DateTimePickerField";
+import { Card, Button as PaperButton, Dialog, Portal, RadioButton } from "react-native-paper";
 
 const DEFAULT_COORDINATE = { latitude: 65.08, longitude: 25.48 };
 
@@ -32,9 +32,13 @@ export default function AddEvent() {
   
   const [startTime, setStartTime] = useState("");
   const [startTimeValue, setStartTimeValue] = useState<Date>(new Date());
-  const [showStartTimePicker, setShowStartTimePicker] = useState(false);
   
-  const [type, setType] = useState<EventType>("kävely");
+  const [type, setType] = useState<EventType>("Kävely");
+  const [typeDialogVisible, setTypeDialogVisible] = useState(false);
+  
+  const openTypeDialog = () => setTypeDialogVisible(true);
+  const closeTypeDialog = () => setTypeDialogVisible(false);
+  
   const [date, setDate] = useState("");
   const [dateValue, setDateValue] = useState<Date>(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -47,6 +51,9 @@ export default function AddEvent() {
   const [longitudeInput, setLongitudeInput] = useState(
     DEFAULT_COORDINATE.longitude.toString()
   );
+  
+  const openTypeMenu = () => setTypeDialogVisible(true);
+  const closeTypeMenu = () => setTypeDialogVisible(false);
   
   const reverseGeocodeRequestId = useRef(0);
   
@@ -161,7 +168,7 @@ export default function AddEvent() {
     setLatitudeInput(DEFAULT_COORDINATE.latitude.toString());
     setLongitudeInput(DEFAULT_COORDINATE.longitude.toString());
     setShowDatePicker(false);
-    setType("kävely");
+    setType("Kävely");
     setLocation(DEFAULT_REGION);
     setSelectedCoordinate(DEFAULT_COORDINATE);
     setLocationError(null);
@@ -247,112 +254,137 @@ export default function AddEvent() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Perustiedot</Text>
+     <View style={styles.container}>
+       <Card style={styles.card}>
+         <Card.Content style={styles.cardContent}>
+           <Text style={styles.cardTitle}>Perustiedot</Text>
+ 
+           <TextInput
+             style={styles.input}
+             placeholder="Tapahtuman nimi"
+             value={title}
+             onChangeText={setTitle}
+           />
+           <TextInput
+             style={[styles.input, styles.multiline]}
+             placeholder="Kuvaus (valinnainen)"
+             value={description}
+             onChangeText={setDescription}
+             multiline
+           />
+ 
+           <Text style={styles.label}>Tyyppi</Text>
+           <PaperButton mode="outlined" onPress={openTypeDialog}>
+             {type}
+           </PaperButton>
+           
+           <Portal>
+             <Dialog visible={typeDialogVisible} onDismiss={closeTypeDialog}>
+               <Dialog.Title>Valitse tyyppi</Dialog.Title>
+               <Dialog.Content>
+                 <RadioButton.Group
+                   value={type}
+                   onValueChange={(value) => {
+                     setType(value as EventType);
+                     closeTypeDialog();
+                   }}
+                 >
+                   <RadioButton.Item label="Kävely" value="Kävely" />
+                   <RadioButton.Item label="Juoksu" value="Juoksu" />
+                 </RadioButton.Group>
+               </Dialog.Content>
+             </Dialog>
+          </Portal>
+         </Card.Content> 
+       </Card>
+ 
+       <Card style={styles.card}>
+         <Card.Content style={styles.cardContent}>
+           <Text style={styles.cardTitle}>Aika</Text>
+           <DateTimePickerField
+             label="Päivämäärä"
+             labelStyle={styles.label}
+             value={dateValue}
+             mode="date"
+             buttonLabel={formattedDate}
+             onChange={handleDateSelected}
+           />
+           <DateTimePickerField
+             label="Aloitusaika"
+             labelStyle={styles.label}
+             value={startTimeValue}
+             mode="time"
+             buttonLabel={startTime || "Valitse aloitusaika"}
+             onChange={handleStartTimeSelected}
+           />
+         </Card.Content>
+       </Card>
+ 
+       <Card style={styles.card}>
+         <Card.Content style={styles.cardContent}>
+           <Text style={styles.cardTitle}>Sijainti</Text>
+           <StartLocationPicker
+             region={location}
+             selectedCoordinate={selectedCoordinate}
+             onSelect={handleSelectCoordinate}
+             onRegionChangeComplete={setLocation}
+           />
+           {locationError ? (
+             <Text style={styles.helperText}>{locationError}</Text>
+           ) : null}
+ 
+           <LocationFields
+             inputStyle={styles.input}
+             locationName={locationName}
+             setLocationName={setLocationName}
+             locationAddress={locationAddress}
+             setLocationAddress={setLocationAddress}
+             addressReadOnly
+           />
+         </Card.Content>
+       </Card>
+ 
+       <Button title="Lisää tapahtuma" onPress={handleFirebaseAddEvent} />
+     </View>
+   );
+ }
 
-      <TextInput
-        style={styles.input}
-        placeholder="Tapahtuman nimi"
-        value={title}
-        onChangeText={setTitle}
-      />
-      <TextInput
-        style={[styles.input, styles.multiline]}
-        placeholder="Kuvaus (valinnainen)"
-        value={description}
-        onChangeText={setDescription}
-        multiline
-      />
-      
-      <Text style={styles.title}>Aika</Text>
-      <DateTimePickerField
-        label="Päivämäärä"
-        labelStyle={styles.label}
-        value={dateValue}
-        mode="date"
-        buttonLabel={formattedDate}
-        onChange={handleDateSelected}
-      />
-      <DateTimePickerField
-        label="Aloitusaika"
-        labelStyle={styles.label}
-        value={startTimeValue}
-        mode="time"
-        buttonLabel={startTime || "Valitse aloitusaika"}
-        onChange={handleStartTimeSelected}
-      />
-
-
-      <Text style={styles.title}>Sijainti</Text>
-      <StartLocationPicker
-        region={location}
-        selectedCoordinate={selectedCoordinate}
-        onSelect={handleSelectCoordinate}
-        onRegionChangeComplete={setLocation}
-      />
-      {locationError ? (
-        <Text style={styles.helperText}>{locationError}</Text>
-      ) : null}
-
-      <LocationFields
-        inputStyle={styles.input}
-        locationName={locationName}
-        setLocationName={setLocationName}
-        locationAddress={locationAddress}
-        setLocationAddress={setLocationAddress}
-        addressReadOnly
-      />
-      
-      <Text style={styles.title}>Tyyppi</Text>
-      <View style={styles.pickerWrapper}>
-        <Picker
-          selectedValue={type}
-          onValueChange={(value) => setType(value as EventType)}
-        >
-          <Picker.Item label="Kävely" value="kävely" />
-          <Picker.Item label="Juoksu" value="juoksu" />
-        </Picker>
-      </View>
-
-      <Button title="Uusi tapahtuma" onPress={handleFirebaseAddEvent} />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-    gap: 12,
-    width: "90%",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-  },
-  multiline: {
-    minHeight: 80,
-    textAlignVertical: "top",
-  },
-  label: {
-    fontWeight: "600",
-  },
-  pickerWrapper: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-  },
-  datePickerContainer: {
-    gap: 8,
-  },
-  helperText: {
-    color: "#666",
-    fontSize: 12,
-  },
-});
+ 
+ const styles = StyleSheet.create({
+   container: {
+     padding: 16,
+     gap: 16,
+     width: "100%",
+   },
+   card: {
+     width: "100%",
+     backgroundColor: "lightgrey",
+   },
+   cardContent: {
+     gap: 12,
+   },
+   cardTitle: {
+     fontSize: 18,
+     fontWeight: "bold",
+     marginBottom: 4,
+   },
+   input: {
+     borderWidth: 1,
+     borderColor: "#ccc",
+     borderRadius: 8,
+     paddingHorizontal: 12,
+     paddingVertical: 10,
+     backgroundColor: "white",
+   },
+   multiline: {
+     minHeight: 80,
+     textAlignVertical: "top",
+   },
+   label: {
+     fontWeight: "600",
+   },
+   helperText: {
+     color: "#666",
+     fontSize: 12,
+   },
+ });

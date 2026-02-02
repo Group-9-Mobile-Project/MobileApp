@@ -11,7 +11,7 @@ export type Event = {
   ownerEmail: string,
 }
 
-export type EventType = "juoksu" | "kävely";
+export type EventType = "Juoksu" | "Kävely";
 
 export interface Location {
   name: string;
