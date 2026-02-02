@@ -1,13 +1,14 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, FlatList } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { doc, updateDoc, getDoc } from 'firebase/firestore'
 import { auth, firestore, USERINFO } from '../../firebase/Config'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 export default function EditUserInfo({ onClose }: { onClose: () => void }) {
 
   const [email, setEmail] = useState("");
   const [name, setName] = useState("")
-  const [ description, setDescription ] = useState("")
+  const [description, setDescription] = useState("")
   const [birthdate, setBirthdate] = useState("")
   const [city, setCity] = useState("")
   const [hobbies, setHobbies] = useState<string[]>([])
@@ -83,97 +84,104 @@ export default function EditUserInfo({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <ScrollView>
-      <Text style={styles.heading} >Muokkaa omia tietoja</Text>
-      <View style={styles.container}>
-        <Text style={styles.label}>Nimi:</Text>
-        <TextInput style={styles.input}
-          placeholder='Syötä nimesi'
-          value={name}
-          onChangeText={setName}
-          editable={!loading}
-        />
-        <Text style={styles.label}>Kuvaus:</Text>
-        <TextInput style={styles.input}
-          placeholder='Syötä Kuvaus'
-          value={description}
-          onChangeText={setDescription}
-          editable={!loading}
-        />
-        <Text style={styles.label}>Syntymäpäivä:</Text>
-        <TextInput style={styles.input}
-          placeholder='PP/KK/VVVV'
-          value={birthdate}
-          onChangeText={setBirthdate}
-          editable={!loading}
-        />
-        <Text style={styles.label}>Kaupunki:</Text>
-        <TextInput style={styles.input}
-          placeholder='Syötä kaupunkisi'
-          value={city}
-          onChangeText={setCity}
-          editable={!loading}
-        />
-        <Text style={styles.label}>Harrastukset:</Text>
-        <View style={styles.hobbyInputContainer}>
-          <TextInput style={styles.hobbyInput}
-            placeholder='Lisää harrastus'
-            value={hobbyInput}
-            onChangeText={setHobbyInput}
+
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <KeyboardAwareScrollView
+        keyboardShouldPersistTaps="handled"
+        //  enableOnAndroid 
+        extraScrollHeight={24}
+      >
+        <Text style={styles.heading} >Muokkaa omia tietoja</Text>
+        <View style={styles.container}>
+          <Text style={styles.label}>Nimi:</Text>
+          <TextInput style={styles.input}
+            placeholder='Syötä nimesi'
+            value={name}
+            onChangeText={setName}
             editable={!loading}
           />
-          <TouchableOpacity style={styles.addButton} onPress={addHobby}>
-            <Text style={styles.addButtonText}>+</Text>
-          </TouchableOpacity>
+          <Text style={styles.label}>Kuvaus:</Text>
+          <TextInput style={styles.input}
+            placeholder='Syötä Kuvaus'
+            value={description}
+            onChangeText={setDescription}
+            editable={!loading}
+          />
+          <Text style={styles.label}>Syntymäpäivä:</Text>
+          <TextInput style={styles.input}
+            placeholder='PP/KK/VVVV'
+            value={birthdate}
+            onChangeText={setBirthdate}
+            editable={!loading}
+          />
+          <Text style={styles.label}>Kaupunki:</Text>
+          <TextInput style={styles.input}
+            placeholder='Syötä kaupunkisi'
+            value={city}
+            onChangeText={setCity}
+            editable={!loading}
+          />
+          <Text style={styles.label}>Harrastukset:</Text>
+          <View style={styles.hobbyInputContainer}>
+            <TextInput style={styles.hobbyInput}
+              placeholder='Lisää harrastus'
+              value={hobbyInput}
+              onChangeText={setHobbyInput}
+              editable={!loading}
+            />
+            <TouchableOpacity style={styles.addButton} onPress={addHobby}>
+              <Text style={styles.addButtonText}>+</Text>
+            </TouchableOpacity>
+          </View>
+          <FlatList
+            scrollEnabled={false}
+            data={hobbies}
+            keyExtractor={(_, index) => index.toString()}
+            renderItem={({ item, index }) => (
+              <View style={styles.hobbyItem}>
+                <Text style={styles.hobbyText}>{item}</Text>
+                <TouchableOpacity
+                  style={styles.deleteButton}
+                  onPress={() => removeHobby(index)}
+                >
+                  <Text style={styles.deleteButtonText}>x</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          />
+          <Text style={styles.label}>Kiinnostusten kohteet:</Text>
+          <TextInput style={styles.input}
+            placeholder='Syötä kiinnostusten kohteet'
+            value={interests}
+            onChangeText={setInterests}
+            editable={!loading}
+          />
+          <Text style={styles.label}>Pronominit:</Text>
+          <TextInput style={styles.input}
+            placeholder='Syötä pronominit'
+            value={pronouns}
+            onChangeText={setPronouns}
+            editable={!loading}
+          />
         </View>
-        <FlatList
-          scrollEnabled={false}
-          data={hobbies}
-          keyExtractor={(_, index) => index.toString()}
-          renderItem={({ item, index }) => (
-            <View style={styles.hobbyItem}>
-              <Text style={styles.hobbyText}>{item}</Text>
-              <TouchableOpacity
-                style={styles.deleteButton}
-                onPress={() => removeHobby(index)}
-              >
-                <Text style={styles.deleteButtonText}>x</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-        />
-        <Text style={styles.label}>Kiinostusten kohteet:</Text>
-        <TextInput style={styles.input}
-          placeholder='Syötä kiinnostusten kohteet'
-          value={interests}
-          onChangeText={setInterests}
-          editable={!loading}
-        />
-        <Text style={styles.label}>Pronominit:</Text>
-        <TextInput style={styles.input}
-          placeholder='Syötä pronominit'
-          value={pronouns}
-          onChangeText={setPronouns}
-          editable={!loading}
-        />
-      </View>
 
 
-      <TouchableOpacity style={[styles.buttonSave, loading && styles.buttonDisabled]}
-        onPress={handleSave}
-        disabled={loading}
-      >
-        <Text style={styles.buttonText}>
-          {loading ? "Tallennetaan..." : "Tallenna muutokset"}
-        </Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={[styles.buttonSave, loading && styles.buttonDisabled]}
+          onPress={handleSave}
+          disabled={loading}
+        >
+          <Text style={styles.buttonText}>
+            {loading ? "Tallennetaan..." : "Tallenna muutokset"}
+          </Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity style={styles.buttonCancel}
-        onPress={onClose}
-      >
-        <Text style={styles.buttonText}>Peruuta</Text>
-      </TouchableOpacity>
-    </ScrollView>
+        <TouchableOpacity style={styles.buttonCancel}
+          onPress={onClose}
+        >
+          <Text style={styles.buttonText}>Peruuta</Text>
+        </TouchableOpacity>
+      </KeyboardAwareScrollView>
+    </TouchableWithoutFeedback>
   )
 }
 
@@ -184,7 +192,12 @@ const styles = StyleSheet.create({
   fieldContainer: {
     margin: 20,
   },
-    heading: {
+  contentContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 16,
+  },
+  heading: {
     fontSize: 20,
     fontWeight: 'bold',
     marginTop: 50,
