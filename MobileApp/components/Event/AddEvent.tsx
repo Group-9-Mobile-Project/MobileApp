@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Button, StyleSheet, Alert, Pressable } from "react-native";
+import { View, Text, TextInput, StyleSheet, Alert, Pressable } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { Event, EventType, Location } from "../../types/Event";
@@ -10,7 +10,6 @@ import * as ExpoLocation from "expo-location";
 import { Region } from "react-native-maps";
 import DateTimePickerField from "../Common/DateTimePickerField";
 import { Card, Button as PaperButton, Dialog, Portal, RadioButton } from "react-native-paper";
-
 
 const DEFAULT_COORDINATE = { latitude: 65.08, longitude: 25.48 };
 
@@ -42,7 +41,6 @@ export default function AddEvent() {
   
   const [date, setDate] = useState("");
   const [dateValue, setDateValue] = useState<Date>(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const [locationName, setLocationName] = useState("");
   const [locationAddress, setLocationAddress] = useState("");
@@ -52,9 +50,6 @@ export default function AddEvent() {
   const [longitudeInput, setLongitudeInput] = useState(
     DEFAULT_COORDINATE.longitude.toString()
   );
-  
-  const openTypeMenu = () => setTypeDialogVisible(true);
-  const closeTypeMenu = () => setTypeDialogVisible(false);
   
   const reverseGeocodeRequestId = useRef(0);
   
@@ -168,7 +163,6 @@ export default function AddEvent() {
     setLocationAddress("");
     setLatitudeInput(DEFAULT_COORDINATE.latitude.toString());
     setLongitudeInput(DEFAULT_COORDINATE.longitude.toString());
-    setShowDatePicker(false);
     setType("Kävely");
     setLocation(DEFAULT_REGION);
     setSelectedCoordinate(DEFAULT_COORDINATE);
