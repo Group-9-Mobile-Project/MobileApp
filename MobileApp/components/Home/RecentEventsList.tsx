@@ -44,7 +44,7 @@ export default function RecentEventsList() {
                         {events.map((event) => (
                             <>
                             <SingleEventRow event={event} key={event.id} />
-                            <Divider style={styles.divider} bold={true} />
+                            <Divider style={styles.divider} bold={true} key={event.date} />
                             </>
                         ))}
                     </ScrollView>

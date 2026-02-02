@@ -3,6 +3,7 @@ import React from 'react'
 import { Event } from '../../types/Event'
 import { Modal } from 'react-native'
 import { Card } from 'react-native-paper'
+import { auth } from '../../firebase/Config'
 
 interface EventInfoProps {
     showModal: boolean,
@@ -11,6 +12,8 @@ interface EventInfoProps {
 }
 
 export default function EventInfoModal({ showModal, setShowModal, event }: EventInfoProps) {
+    const currentUser = auth.currentUser
+
     return (
 
         <Modal
@@ -43,16 +46,35 @@ export default function EventInfoModal({ showModal, setShowModal, event }: Event
                         </View>
                     </Card.Content>
                     <Card.Content>
-                        <View style={styles.pressableView}>
+                        <View>
+                            {(currentUser?.email == event.ownerEmail) ? (
+                                <>
+                                    <View style={styles.pressableView}>
+                                        <Pressable
+                                            style={({ pressed }) => pressed && styles.textPressed}>
+                                            <Text style={styles.buttonText}>Muokkaa TODO</Text>
+                                        </Pressable>
+                                        <Pressable
+                                            style={({ pressed }) => pressed && styles.textPressed}>
+                                            <Text style={styles.buttonText}>Poista Tapahtuma TODO</Text>
+                                        </Pressable>
+                                    </View>
+                                </>
+                            ) : (
+                                <>
+                                    <View style={styles.pressableView}>
+                                        <Pressable
+                                            style={({ pressed }) => pressed && styles.textPressed}>
+                                            <Text style={styles.buttonText}>Ilmoittaudu TODO</Text>
+                                        </Pressable>
+                                    </View>
+                                </>)}
                             <Pressable
                                 style={({ pressed }) => pressed && styles.textPressed}
                                 onPress={() => setShowModal(!showModal)}>
                                 <Text style={styles.buttonText}>Sulje</Text>
                             </Pressable>
-                            <Pressable
-                                style={({ pressed }) => pressed && styles.textPressed}>
-                                <Text style={styles.buttonText}>Ilmoittaudu EI TEE MITÄÄN</Text>
-                            </Pressable>
+
                         </View>
                     </Card.Content>
                 </Card>
