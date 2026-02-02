@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Button,
-  Modal,
   Platform,
   StyleProp,
   StyleSheet,
@@ -19,7 +18,6 @@ type DateTimePickerFieldProps = {
   onChange: (value: Date) => void;
   locale?: string;
   buttonLabel: string;
-  display?: "default" | "spinner" | "calendar" | "clock" | "inline";
   minimumDate?: Date;
   maximumDate?: Date;
 };
@@ -32,28 +30,11 @@ export default function DateTimePickerField({
   onChange,
   locale = "fi-FI",
   buttonLabel,
-  display,
   minimumDate,
   maximumDate,
 }: DateTimePickerFieldProps) {
   const [show, setShow] = useState(false);
   const [draft, setDraft] = useState(value);
-
-  useEffect(() => {
-    if (!show) {
-      setDraft(value);
-    }
-  }, [value, show]);
-
-  const resolvedDisplay =
-    display ??
-    (Platform.OS === "ios"
-      ? mode === "date"
-        ? "inline"
-        : "spinner"
-      : mode === "date"
-        ? "calendar"
-        : "clock");
 
   const open = () => {
     setDraft(value);
@@ -62,7 +43,11 @@ export default function DateTimePickerField({
 
   const close = () => {
     setShow(false);
-    setDraft(value);
+  };
+
+  const confirm = () => {
+    onChange(draft);
+    setShow(false);
   };
 
   const handleChange = (event: { type?: string }, selected?: Date) => {
@@ -79,55 +64,29 @@ export default function DateTimePickerField({
     setDraft(selected);
   };
 
-  const confirm = () => {
-    onChange(draft);
-    setShow(false);
-  };
-
   return (
     <View style={styles.container}>
       <Text style={labelStyle}>{label}</Text>
       <Button title={buttonLabel} onPress={open} />
 
-      {Platform.OS === "android" && show && (
+      {show && (
         <View style={styles.pickerContainer}>
           <DateTimePicker
-            value={value}
+            value={Platform.OS === "ios" ? draft : value}
             mode={mode}
-            display={resolvedDisplay}
+            display={Platform.OS === "ios" ? "spinner" : (mode === "date" ? "calendar" : "clock")}
             locale={locale}
             onChange={handleChange}
             minimumDate={minimumDate}
             maximumDate={maximumDate}
           />
-        </View>
-      )}
-
-      {Platform.OS === "ios" && (
-        <Modal
-          visible={show}
-          transparent
-          animationType="slide"
-          onRequestClose={close}
-        >
-          <View style={styles.modalBackdrop}>
-            <View style={styles.modalContent}>
-              <DateTimePicker
-                value={draft}
-                mode={mode}
-                display={resolvedDisplay}
-                locale={locale}
-                onChange={handleChange}
-                minimumDate={minimumDate}
-                maximumDate={maximumDate}
-              />
-              <View style={styles.modalActions}>
-                <Button title="Peruuta" onPress={close} />
-                <Button title="Valmis" onPress={confirm} />
-              </View>
+          {Platform.OS === "ios" && (
+            <View style={styles.actions}>
+              <Button title="Peruuta" onPress={close} />
+              <Button title="Valmis" onPress={confirm} />
             </View>
-          </View>
-        </Modal>
+          )}
+        </View>
       )}
     </View>
   );
@@ -138,20 +97,12 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   pickerContainer: {
+    backgroundColor: "white",
+    borderRadius: 12,
+    padding: 12,
     marginTop: 8,
   },
-  modalBackdrop: {
-    flex: 1,
-    justifyContent: "flex-end",
-    backgroundColor: "rgba(0,0,0,0.35)",
-  },
-  modalContent: {
-    backgroundColor: "white",
-    padding: 16,
-    borderTopLeftRadius: 12,
-    borderTopRightRadius: 12,
-  },
-  modalActions: {
+  actions: {
     marginTop: 12,
     flexDirection: "row",
     justifyContent: "space-between",

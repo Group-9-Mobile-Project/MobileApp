@@ -1,15 +1,15 @@
-import { View, Text, TextInput, Button, StyleSheet, Alert, Platform } from "react-native";
-import React, { useState, useEffect, useRef } from "react";
+import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
+import React, { useEffect, useState, useRef } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { Event, EventType, Location } from "../../types/Event";
 import { firestore, EVENT } from "../../firebase/Config";
 import { collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { Picker } from "@react-native-picker/picker";
 import { LocationFields } from "./LocationFields";
-import { DateTimeFields } from "./DateTimeFields";
 import StartLocationPicker from "./StartLocationPicker";
 import * as ExpoLocation from "expo-location";
-import { Region } from "react-native-maps"
+import { Region } from "react-native-maps";
+import DateTimePickerField from "../Common/DateTimePickerField";
 
 const DEFAULT_COORDINATE = { latitude: 65.08, longitude: 25.48 };
 
@@ -76,33 +76,23 @@ export default function AddEvent() {
   };
 
 
-  function handleDateChange(event: { type?: string }, selected?: Date) {
-    if (event.type === "set" && selected) {
-      setShowDatePicker(false);
-      setDateValue(selected);
-      const iso = selected.toISOString().slice(0, 10);
-      setDate(iso);
-      return;
-    }
-    if (event.type === "dismissed") {
-      setShowDatePicker(false);
-    }
-  }
-  function handleStartTimeChange(event: { type?: string }, selected?: Date) {
-    if (event.type === "set" && selected) {
-      setShowStartTimePicker(false);
-      setStartTimeValue(selected);
-      const formatted = new Intl.DateTimeFormat("fi-FI", {
-        hour: "2-digit",
-        minute: "2-digit",
-      }).format(selected);
-      setStartTime(formatted);
-      return;
-    }
-    if (event.type === "dismissed") {
-      setShowStartTimePicker(false);
-    }
-  }
+  const formatTime = (value: Date) =>
+    new Intl.DateTimeFormat("fi-FI", {
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(value);
+  
+  const handleDateSelected = (selected: Date) => {
+    setDateValue(selected);
+    const iso = selected.toISOString().slice(0, 10);
+    setDate(iso);
+  };
+  
+  const handleStartTimeSelected = (selected: Date) => {
+    setStartTimeValue(selected);
+    setStartTime(formatTime(selected));
+  };
+
 
   const formattedDate = date
     ? new Intl.DateTimeFormat("fi-FI", {
@@ -275,21 +265,23 @@ export default function AddEvent() {
       />
       
       <Text style={styles.title}>Aika</Text>
-      <DateTimeFields
+      <DateTimePickerField
+        label="Päivämäärä"
         labelStyle={styles.label}
-        inputStyle={styles.input}
-        datePickerContainerStyle={styles.datePickerContainer}
-        formattedDate={formattedDate}
-        showDatePicker={showDatePicker}
-        setShowDatePicker={setShowDatePicker}
-        dateValue={dateValue}
-        handleDateChange={handleDateChange}
-        startTime={startTime}
-        showStartTimePicker={showStartTimePicker}
-        setShowStartTimePicker={setShowStartTimePicker}
-        startTimeValue={startTimeValue}
-        handleStartTimeChange={handleStartTimeChange}
+        value={dateValue}
+        mode="date"
+        buttonLabel={formattedDate}
+        onChange={handleDateSelected}
       />
+      <DateTimePickerField
+        label="Aloitusaika"
+        labelStyle={styles.label}
+        value={startTimeValue}
+        mode="time"
+        buttonLabel={startTime || "Valitse aloitusaika"}
+        onChange={handleStartTimeSelected}
+      />
+
 
       <Text style={styles.title}>Sijainti</Text>
       <StartLocationPicker
