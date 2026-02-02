@@ -22,3 +22,7 @@ export interface Location {
     longitude: number;
   };
 }
+
+export interface EventProps {
+  event: Event
+}

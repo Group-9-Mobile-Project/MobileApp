@@ -11,7 +11,7 @@ export default function RecentEventsList() {
 
     useEffect(() => {
         let today = new Date().toISOString().slice(0, 10)
-        console.log(today)
+        //console.log(today)
 
         const colRef = collection(firestore, EVENT)
         const q = query(colRef, orderBy('date', 'asc'), where('date', '>=', today), limit(5))
@@ -20,7 +20,7 @@ export default function RecentEventsList() {
             querySnapshot.forEach((doc) => {
                 apulista.push(doc.data() as Event)
             })
-            console.log(apulista)
+            //console.log(apulista)
             setEvents(apulista)
         })
 
@@ -39,13 +39,12 @@ export default function RecentEventsList() {
                         contentContainerStyle={{ flexGrow: 1, gap: 8 }}
                         onStartShouldSetResponder={() => true}
                         nestedScrollEnabled
-                        
-                        >
+
+                    >
                         {events.map((event) => (
-                            <>
+
                             <SingleEventRow event={event} key={event.id} />
-                            <Divider style={styles.divider} bold={true} key={event.date} />
-                            </>
+
                         ))}
                     </ScrollView>
                 </Card.Content>

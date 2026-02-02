@@ -3,7 +3,9 @@ import React from 'react'
 import { Event } from '../../types/Event'
 import { Modal } from 'react-native'
 import { Card } from 'react-native-paper'
-import { auth } from '../../firebase/Config'
+import { auth, EVENT, firestore } from '../../firebase/Config'
+import { doc, updateDoc } from 'firebase/firestore'
+import JoinEventButton from './JoinEventButton'
 
 interface EventInfoProps {
     showModal: boolean,
@@ -13,6 +15,7 @@ interface EventInfoProps {
 
 export default function EventInfoModal({ showModal, setShowModal, event }: EventInfoProps) {
     const currentUser = auth.currentUser
+
 
     return (
 
@@ -63,10 +66,7 @@ export default function EventInfoModal({ showModal, setShowModal, event }: Event
                             ) : (
                                 <>
                                     <View style={styles.pressableView}>
-                                        <Pressable
-                                            style={({ pressed }) => pressed && styles.textPressed}>
-                                            <Text style={styles.buttonText}>Ilmoittaudu TODO</Text>
-                                        </Pressable>
+                                        <JoinEventButton event={event} />
                                     </View>
                                 </>)}
                             <Pressable
