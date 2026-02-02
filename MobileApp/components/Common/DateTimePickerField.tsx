@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Platform,
@@ -18,6 +18,7 @@ type DateTimePickerFieldProps = {
   onChange: (value: Date) => void;
   locale?: string;
   buttonLabel: string;
+  display?: "default" | "spinner" | "calendar" | "clock" | "inline";
   minimumDate?: Date;
   maximumDate?: Date;
 };
@@ -30,11 +31,26 @@ export default function DateTimePickerField({
   onChange,
   locale = "fi-FI",
   buttonLabel,
+  display,
   minimumDate,
   maximumDate,
 }: DateTimePickerFieldProps) {
   const [show, setShow] = useState(false);
   const [draft, setDraft] = useState(value);
+
+  useEffect(() => {
+    if (!show) {
+      setDraft(value);
+    }
+  }, [value, show]);
+
+  const resolvedDisplay =
+    display ??
+    (Platform.OS === "ios"
+      ? "spinner"
+      : mode === "date"
+        ? "calendar"
+        : "clock");
 
   const open = () => {
     setDraft(value);
@@ -43,11 +59,7 @@ export default function DateTimePickerField({
 
   const close = () => {
     setShow(false);
-  };
-
-  const confirm = () => {
-    onChange(draft);
-    setShow(false);
+    setDraft(value);
   };
 
   const handleChange = (event: { type?: string }, selected?: Date) => {
@@ -64,28 +76,45 @@ export default function DateTimePickerField({
     setDraft(selected);
   };
 
+  const confirm = () => {
+    onChange(draft);
+    setShow(false);
+  };
+
   return (
     <View style={styles.container}>
       <Text style={labelStyle}>{label}</Text>
       <Button title={buttonLabel} onPress={open} />
 
-      {show && (
+      {Platform.OS === "android" && show && (
         <View style={styles.pickerContainer}>
           <DateTimePicker
-            value={Platform.OS === "ios" ? draft : value}
+            value={value}
             mode={mode}
-            display={Platform.OS === "ios" ? "spinner" : (mode === "date" ? "calendar" : "clock")}
+            display={resolvedDisplay}
             locale={locale}
             onChange={handleChange}
             minimumDate={minimumDate}
             maximumDate={maximumDate}
           />
-          {Platform.OS === "ios" && (
-            <View style={styles.actions}>
-              <Button title="Peruuta" onPress={close} />
-              <Button title="Valmis" onPress={confirm} />
-            </View>
-          )}
+        </View>
+      )}
+
+      {Platform.OS === "ios" && show && (
+        <View style={styles.inlinePickerContainer}>
+          <DateTimePicker
+            value={draft}
+            mode={mode}
+            display={resolvedDisplay}
+            locale={locale}
+            onChange={handleChange}
+            minimumDate={minimumDate}
+            maximumDate={maximumDate}
+          />
+          <View style={styles.inlineActions}>
+            <Button title="Peruuta" onPress={close} />
+            <Button title="Valmis" onPress={confirm} />
+          </View>
         </View>
       )}
     </View>
@@ -97,12 +126,15 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   pickerContainer: {
+    marginTop: 8,
+  },
+  inlinePickerContainer: {
     backgroundColor: "white",
     borderRadius: 12,
     padding: 12,
     marginTop: 8,
   },
-  actions: {
+  inlineActions: {
     marginTop: 12,
     flexDirection: "row",
     justifyContent: "space-between",
