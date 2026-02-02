@@ -1,11 +1,10 @@
-import { StyleSheet, View, Text, Pressable, Modal } from 'react-native';
+import { StyleSheet, View, Text, Pressable, Modal, ScrollView } from 'react-native';
 import { auth, firestore, USERINFO } from '../../firebase/Config';
 import React, { useEffect, useState } from 'react';
 import EditUserInfo from './EditUserInfo';
 import { UserInfo } from '../../types/UserInfo';
 import { doc, getDoc } from "firebase/firestore";
 import { Card } from 'react-native-paper';
-import CardContent from 'react-native-paper/lib/typescript/components/Card/CardContent';
 
 export default function ShowUserInfo() {
 
@@ -13,52 +12,61 @@ export default function ShowUserInfo() {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [email, setEmail] = useState("");
 
-  useEffect(() => {
+  const fetchUserInfo = async () => {
+    const profile = auth.currentUser;
+    const profileEmail = profile?.email;
+    if (!profileEmail) return;
 
-    (async () => {
+    setEmail(profileEmail);
+    const docRef = doc(firestore, USERINFO, profileEmail);
 
-      const profile = auth.currentUser;
-      const profileEmail = profile?.email;
-      if (!profileEmail) return;
-
-      setEmail(profileEmail);
-
-      const docRef = doc(firestore, USERINFO, profileEmail);
-
-      try {
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-          setUserInfo(docSnap.data({ serverTimestamps: 'estimate' }) as UserInfo);
-        } else {
-          console.log("User info not found")
-        }
-
-      } catch (e) {
-        console.log('getDoc error', e)
+    try {
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setUserInfo(docSnap.data({ serverTimestamps: 'estimate' }) as UserInfo);
+      } else {
+        console.log("User info not found")
       }
+    } catch (e) {
+      console.log('getDoc error', e)
+    }
+  };
 
-    })();
+  useEffect(() => {
+    fetchUserInfo();
   }, []);
 
   return (
     <View style={styles.container}>
       <Card style={styles.cardContainer}>
-        <Card.Content>
-          <Text style={styles.heading} >Omat tiedot</Text>
-        </Card.Content>
-        <Card.Content>
-          {userInfo ? <View>
-            <Text style={styles.infoText}>Nimi: {userInfo.name}</Text>
-            <Text style={styles.infoText}>Sähköposti: {userInfo.email}</Text>
-            <Text style={styles.infoText}>Kuvaus: {userInfo.description}</Text>
-            <Text style={styles.infoText}>Syntymäpäivä: {userInfo.birthdate}</Text>
-            <Text style={styles.infoText}>Kaupunki: {userInfo.city}</Text>
-            <Text style={styles.infoText}>Harrastukset: {userInfo.hobbies}</Text>
-            <Text style={styles.infoText}>Kiinnostusten kohteet: {userInfo.interests}</Text>
-            <Text style={styles.infoText}>Pronominit: {userInfo.pronouns}</Text>
-          </View> : null}
-        </Card.Content>
+        <ScrollView nestedScrollEnabled={true}>
+          <Card.Content>
+            <Text style={styles.heading} >Omat tiedot</Text>
+          </Card.Content>
+          <Card.Content>
+            {userInfo ? <View>
+              <Text style={styles.infoText}>Nimi: {userInfo.name}</Text>
+              <Text style={styles.infoText}>Sähköposti: {userInfo.email}</Text>
+              <Text style={styles.infoText}>Kuvaus: {userInfo.description}</Text>
+              <Text style={styles.infoText}>Syntymäpäivä: {userInfo.birthdate}</Text>
+              <Text style={styles.infoText}>Kaupunki: {userInfo.city}</Text>
+              <Text style={styles.infoText}>Harrastukset:</Text>
+              <View style={styles.hobbiesTable}>
+                {userInfo.hobbies && userInfo.hobbies.length > 0 ? (
+                  userInfo.hobbies.map((hobby, index) => (
+                    <View key={index} style={styles.hobbyRow}>
+                      <Text style={styles.hobbyText}>{hobby}</Text>
+                    </View>
+                  ))
+                ) : (
+                  <Text style={styles.infoText}>Ei harrastuksia lisätty</Text>
+                )}
+              </View>
+              <Text style={styles.infoText}>Kiinnostusten kohteet: {userInfo.interests}</Text>
+              <Text style={styles.infoText}>Pronominit: {userInfo.pronouns}</Text>
+            </View> : null}
+          </Card.Content>
+        </ScrollView>
       </Card>
 
       <Pressable
@@ -75,11 +83,13 @@ export default function ShowUserInfo() {
         onRequestClose={() => setModalVisible(false)}
         animationType="slide"
       >
-        <EditUserInfo onClose={() => setModalVisible(false)} />
+        <EditUserInfo
+          onClose={() => {
+            setModalVisible(false);
+            fetchUserInfo(); // Päivitä tiedot kun modal suljetaan
+          }}
+        />
       </Modal>
-
-
-
     </View>
   )
 }
@@ -92,13 +102,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   cardContainer: {
+    maxHeight: 300,
     alignContent: 'flex-start',
-    marginBlockStart: 20,
+    marginBlockStart: 10,
     width: '100%',
     backgroundColor: 'lightgrey',
+    paddingVertical: 20,
   },
   heading: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
   },
@@ -121,7 +133,22 @@ const styles = StyleSheet.create({
     opacity: 0.6
   },
   infoText: {
-    fontSize: 12,
-    padding: 5,
-  }
+    fontSize: 13,
+    padding: 3,
+    color: '#666',
+  },
+  hobbiesTable: {
+    marginVertical: 5,
+  },
+  hobbyRow: {
+    paddingVertical: 8,
+    paddingHorizontal: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: 'lightgrey',
+    backgroundColor: '#b5b5b5',
+  },
+  hobbyText: {
+    fontSize: 13,
+    color: '#333',
+  },
 });
