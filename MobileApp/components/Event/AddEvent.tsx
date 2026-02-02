@@ -289,10 +289,7 @@ export default function AddEvent() {
         setLocationName={setLocationName}
         locationAddress={locationAddress}
         setLocationAddress={setLocationAddress}
-        latitudeInput={latitudeInput}
-        setLatitudeInput={setLatitudeInput}
-        longitudeInput={longitudeInput}
-        setLongitudeInput={setLongitudeInput}
+        addressReadOnly
       />
       
       <Text style={styles.title}>Tyyppi</Text>
