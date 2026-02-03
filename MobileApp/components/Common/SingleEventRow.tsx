@@ -3,17 +3,19 @@ import React, { useState } from 'react'
 import { Event, EventProps } from '../../types/Event'
 import { Card, Divider } from 'react-native-paper'
 import EventInfoModal from './EventInfoModal'
+import { NavigationProp, useNavigation } from '@react-navigation/native'
+import { RootTabParamList } from '../../types/Navigation'
 
 
 
 export default function SingleEventRow({ event }: EventProps) {
-  const [showModal, setShowModal] = useState<boolean>(false)
+  const navigation = useNavigation<NavigationProp<RootTabParamList>>();
 
   return (
     <View>
 
       <Pressable
-        onPress={() => setShowModal(true)}
+        onPress={() => navigation.navigate('Tapahtuman tiedot', { eventId : event.id})}
 
       >
         <Text style={styles.subHeading}>{event.title}</Text>
@@ -22,7 +24,6 @@ export default function SingleEventRow({ event }: EventProps) {
         <Text style={styles.infoText}>{event.description}</Text>
       </Pressable>
       <Divider style={styles.divider} bold={true} key={event.date} />
-      <EventInfoModal showModal={showModal} setShowModal={setShowModal} event={event} />
 
     </View>
   )
