@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useLinkBuilder, useTheme } from "@react-navigation/native";
 import { Text, PlatformPressable } from "@react-navigation/elements";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
@@ -8,16 +8,22 @@ export default function BottomNavBar({ state, descriptors, navigation }: BottomT
   const { colors } = useTheme();
   const { buildHref } = useLinkBuilder();
 
+  const visibleRoutes = state.routes.filter((route) => {
+    const options = descriptors[route.key].options;
+    const flattenedStyle = StyleSheet.flatten(options.tabBarItemStyle);
+    return flattenedStyle?.display !== "none";
+  });
+
   return (
     <View style={{ flexDirection: "row", height: 60, backgroundColor: colors.card, borderTopWidth: 1, borderTopColor: colors.border }}>
-      {state.routes.map((route, index) => {
+      {visibleRoutes.map((route) => {
         const { options } = descriptors[route.key];
-        const isFocused = state.index === index;
-        
+        const isFocused = state.routes[state.index].key === route.key;
+
         const label =
           options.tabBarLabel !== undefined
-            ? typeof options.tabBarLabel === 'function'
-              ? options.tabBarLabel({ focused: isFocused, color: isFocused ? colors.primary : colors.text, position: 'below-icon', children: route.name })
+            ? typeof options.tabBarLabel === "function"
+              ? options.tabBarLabel({ focused: isFocused, color: isFocused ? colors.primary : colors.text, position: "below-icon", children: route.name })
               : options.tabBarLabel
             : options.title !== undefined
               ? options.title
@@ -51,13 +57,14 @@ export default function BottomNavBar({ state, descriptors, navigation }: BottomT
             testID={options.tabBarButtonTestID}
             onPress={onPress}
             onLongPress={onLongPress}
-            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
           >
-            {options.tabBarIcon && options.tabBarIcon({ 
-              focused: isFocused, 
-              color: isFocused ? colors.primary : colors.text, 
-              size: 24 
-            })}
+            {options.tabBarIcon &&
+              options.tabBarIcon({
+                focused: isFocused,
+                color: isFocused ? colors.primary : colors.text,
+                size: 24,
+              })}
             <Text style={{ color: isFocused ? colors.primary : colors.text, fontSize: 12, marginTop: 4 }}>
               {label}
             </Text>
