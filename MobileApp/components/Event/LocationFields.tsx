@@ -7,10 +7,7 @@ type LocationFieldsProps = {
   setLocationName: (value: string) => void;
   locationAddress: string;
   setLocationAddress: (value: string) => void;
-  latitudeInput: string;
-  setLatitudeInput: (value: string) => void;
-  longitudeInput: string;
-  setLongitudeInput: (value: string) => void;
+  addressReadOnly?: boolean;
 };
 
 export function LocationFields({
@@ -19,10 +16,7 @@ export function LocationFields({
   setLocationName,
   locationAddress,
   setLocationAddress,
-  latitudeInput,
-  setLatitudeInput,
-  longitudeInput,
-  setLongitudeInput,
+  addressReadOnly = false,
 }: LocationFieldsProps) {
   return (
     <View style={styles.fieldGroup}>
@@ -37,20 +31,8 @@ export function LocationFields({
         placeholder="Osoite"
         value={locationAddress}
         onChangeText={setLocationAddress}
-      />
-      <TextInput
-        style={inputStyle}
-        placeholder="Latitude"
-        value={latitudeInput}
-        onChangeText={setLatitudeInput}
-        keyboardType="numeric"
-      />
-      <TextInput
-        style={inputStyle}
-        placeholder="Longitude"
-        value={longitudeInput}
-        onChangeText={setLongitudeInput}
-        keyboardType="numeric"
+        editable={!addressReadOnly}
+        selectTextOnFocus={!addressReadOnly}
       />
     </View>
   );

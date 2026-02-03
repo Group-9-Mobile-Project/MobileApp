@@ -1,0 +1,310 @@
+import { View, Text, TextInput, StyleSheet, Alert, Pressable } from "react-native";
+import React, { useCallback, useState } from "react";
+import { Event, EventType, Location } from "../../types/Event";
+import { LocationFields } from "./LocationFields";
+import StartLocationPicker from "./StartLocationPicker";
+import { Region } from "react-native-maps";
+import DateTimePickerField from "../Common/DateTimePickerField";
+import { Card, Button as PaperButton, Dialog, Portal, RadioButton } from "react-native-paper";
+import { useEventForm } from "../../hooks/useEventForm";
+import { useEventLocation } from "../../hooks/useEventLocation";
+
+const DEFAULT_COORDINATE = { latitude: 65.08, longitude: 25.48 };
+
+const DEFAULT_REGION: Region = {
+  latitude: 65.08,
+  longitude: 25.48,
+  latitudeDelta: 0.0922,
+  longitudeDelta: 0.0421,
+};
+
+export type EventFormSubmitPayload = {
+  title: string;
+  description: string;
+  date: string;
+  type: EventType;
+  startTime: string;
+  location: Location;
+};
+
+type EventFormProps = {
+  initialEvent?: Event;
+  submitLabel?: string;
+  resetOnSuccess?: boolean;
+  onSubmit: (payload: EventFormSubmitPayload) => Promise<boolean>;
+};
+
+export default function EventForm({
+  initialEvent,
+  submitLabel,
+  resetOnSuccess,
+  onSubmit,
+}: EventFormProps) {
+  const [typeDialogVisible, setTypeDialogVisible] = useState(false);
+
+  const openTypeDialog = () => setTypeDialogVisible(true);
+  const closeTypeDialog = () => setTypeDialogVisible(false);
+
+  const initialCoordinate =
+    initialEvent?.location.coordinates ?? DEFAULT_COORDINATE;
+
+  const initialRegion: Region = {
+    ...DEFAULT_REGION,
+    latitude: initialCoordinate.latitude,
+    longitude: initialCoordinate.longitude,
+  };
+
+  const {
+    title,
+    setTitle,
+    description,
+    setDescription,
+    date,
+    dateValue,
+    formattedDate,
+    handleDateSelected,
+    startTime,
+    startTimeValue,
+    handleStartTimeSelected,
+    type,
+    setType,
+    locationName,
+    setLocationName,
+    locationAddress,
+    setLocationAddress,
+    setLatitudeInput,
+    setLongitudeInput,
+    resetForm,
+    validateForm,
+  } = useEventForm({
+    defaultCoordinate: initialCoordinate,
+    initialValues: initialEvent
+      ? {
+          title: initialEvent.title,
+          description: initialEvent.description,
+          date: initialEvent.date,
+          startTime: initialEvent.startTime,
+          type: initialEvent.type,
+          locationName: initialEvent.location.name,
+          locationAddress: initialEvent.location.address,
+          latitude: initialEvent.location.coordinates.latitude,
+          longitude: initialEvent.location.coordinates.longitude,
+        }
+      : undefined,
+  });
+
+  const handleCoordinateChange = useCallback(
+    (coordinate: { latitude: number; longitude: number }) => {
+      setLatitudeInput(coordinate.latitude.toString());
+      setLongitudeInput(coordinate.longitude.toString());
+    },
+    [setLatitudeInput, setLongitudeInput]
+  );
+
+  const {
+    location,
+    setLocation,
+    selectedCoordinate,
+    locationError,
+    handleSelectCoordinate,
+    refreshCurrentLocation,
+    resetLocation,
+  } = useEventLocation({
+    defaultCoordinate: initialCoordinate,
+    defaultRegion: initialRegion,
+    autoFetch: !initialEvent,
+    onResolvedName: setLocationName,
+    onResolvedAddress: setLocationAddress,
+    onCoordinateChange: handleCoordinateChange,
+  });
+
+  const shouldResetOnSuccess = resetOnSuccess ?? !initialEvent;
+  const resolvedSubmitLabel =
+    submitLabel ?? (initialEvent ? "Tallenna muutokset" : "Lisää tapahtuma");
+
+  function resetAll() {
+    resetForm();
+    resetLocation();
+    if (!initialEvent) {
+      refreshCurrentLocation(true);
+    }
+  }
+
+  async function handleSubmit(): Promise<void> {
+    const validation = validateForm();
+    if (!validation.ok) {
+      Alert.alert("Virhe", validation.message);
+      return;
+    }
+
+    const { latitude, longitude } = validation;
+
+    const payload: EventFormSubmitPayload = {
+      title,
+      description,
+      date,
+      type,
+      startTime,
+      location: {
+        name: locationName,
+        address: locationAddress,
+        coordinates: {
+          latitude,
+          longitude,
+        },
+      },
+    };
+
+    const ok = await onSubmit(payload);
+
+    if (ok && shouldResetOnSuccess) {
+      resetAll();
+    }
+  }
+
+  return (
+     <View style={styles.container}>
+       <Card style={styles.card}>
+         <Card.Content style={styles.cardContent}>
+           <Text style={styles.cardTitle}>Perustiedot</Text>
+ 
+           <TextInput
+             style={styles.input}
+             placeholder="Tapahtuman nimi"
+             value={title}
+             onChangeText={setTitle}
+           />
+           <TextInput
+             style={[styles.input, styles.multiline]}
+             placeholder="Kuvaus (valinnainen)"
+             value={description}
+             onChangeText={setDescription}
+             multiline
+           />
+ 
+           <Text style={styles.label}>Tyyppi</Text>
+           <PaperButton mode="outlined" onPress={openTypeDialog}>
+             {type}
+           </PaperButton>
+           
+           <Portal>
+             <Dialog visible={typeDialogVisible} onDismiss={closeTypeDialog}>
+               <Dialog.Title>Valitse tyyppi</Dialog.Title>
+               <Dialog.Content>
+                 <RadioButton.Group
+                   value={type}
+                   onValueChange={(value) => {
+                     setType(value as EventType);
+                     closeTypeDialog();
+                   }}
+                 >
+                   <RadioButton.Item label="Kävely" value="Kävely" />
+                   <RadioButton.Item label="Juoksu" value="Juoksu" />
+                 </RadioButton.Group>
+               </Dialog.Content>
+             </Dialog>
+          </Portal>
+         </Card.Content> 
+       </Card>
+ 
+       <Card style={styles.card}>
+         <Card.Content style={styles.cardContent}>
+           <Text style={styles.cardTitle}>Aika</Text>
+           <DateTimePickerField
+             label="Päivämäärä"
+             labelStyle={styles.label}
+             value={dateValue}
+             mode="date"
+             buttonLabel={formattedDate}
+             onChange={handleDateSelected}
+           />
+           <DateTimePickerField
+             label="Aloitusaika"
+             labelStyle={styles.label}
+             value={startTimeValue}
+             mode="time"
+             buttonLabel={startTime || "Valitse aloitusaika"}
+             onChange={handleStartTimeSelected}
+           />
+         </Card.Content>
+       </Card>
+ 
+       <Card style={styles.card}>
+         <Card.Content style={styles.cardContent}>
+           <Text style={styles.cardTitle}>Sijainti</Text>
+           <StartLocationPicker
+             region={location}
+             selectedCoordinate={selectedCoordinate}
+             onSelect={handleSelectCoordinate}
+             onRegionChangeComplete={setLocation}
+           />
+           {locationError ? (
+             <Text style={styles.helperText}>{locationError}</Text>
+           ) : null}
+ 
+           <LocationFields
+             inputStyle={styles.input}
+             locationName={locationName}
+             setLocationName={setLocationName}
+             locationAddress={locationAddress}
+             setLocationAddress={setLocationAddress}
+             addressReadOnly
+           />
+         </Card.Content>
+       </Card>
+ 
+      <Pressable style={styles.addButton} onPress={handleSubmit}>
+        <Text style={styles.buttonText}>{resolvedSubmitLabel}</Text>
+      </Pressable>
+     </View>
+   );
+ }
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 16,
+    gap: 16,
+    width: "100%",
+  },
+  card: {
+    width: "100%",
+    backgroundColor: "white",
+  },
+  cardContent: {
+    gap: 12,
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 4,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    backgroundColor: "white",
+  },
+  multiline: {
+    minHeight: 80,
+    textAlignVertical: "top",
+  },
+  label: {
+    fontWeight: "600",
+  },
+  helperText: {
+    color: "#666",
+    fontSize: 12,
+  },
+  addButton: {
+    backgroundColor: "green",
+    alignItems: "center",
+    padding: 12,
+    borderRadius: 5,
+    margin: 10,
+  },
+  buttonText: {
+    fontSize: 16,
+  },
+});
