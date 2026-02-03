@@ -19,7 +19,7 @@ export default function HomeScreen() {
 }
 const styles = StyleSheet.create({
   scrollview: {
-    height: '100%',
+    
   },
   container: {
     flex: 1,

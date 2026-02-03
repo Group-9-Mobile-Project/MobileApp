@@ -62,7 +62,7 @@ export default function AllEventsMapView() {
       querySnapshot.forEach((doc) => {
         apulista.push(doc.data() as Event)
       })
-      console.log(apulista)
+      //console.log(apulista)
       setEventList(apulista)
     })
 

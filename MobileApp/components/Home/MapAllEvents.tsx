@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import MapView, { Marker, Region } from 'react-native-maps';
 import { Event } from '../../types/Event';
 import EventInfoModal from '../Common/EventInfoModal';
+import EventMapMarker from './EventMapMarker';
 
 interface EventList {
     currentRegion: Region,
@@ -10,7 +11,7 @@ interface EventList {
 }
 
 export default function MapAllEvents({ currentRegion, eventList }: EventList) {
-    const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
+    // const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
     const [showModal, setShowModal] = useState<boolean>(false)
 
     return (
@@ -18,27 +19,14 @@ export default function MapAllEvents({ currentRegion, eventList }: EventList) {
             <MapView style={styles.map} region={currentRegion} showsUserLocation>
                 
                 {eventList.map((event, index) => (
-                    <Marker
-                        coordinate={{
-                            latitude: event.location.coordinates.latitude,
-                            longitude: event.location.coordinates.longitude,
-                        }}
-                        key={index}
-                        title={event.title + ' ' + event.date + ' ' + event.startTime}
-                        description={ '\t' + 'Klikkaa tästä tarkastellaksesi'}
-                        
-                        pinColor={(event.type.toString() === "juoksu") ? "red" : "blue" }
-                        onCalloutPress={() => {setSelectedEvent(event); setShowModal(true)}}
-                    >
-                        
-                    </Marker>
+                    
+                    <EventMapMarker event={event} key={index}/>
+                    
+                    
                 ))}
             </MapView>
             
-            {(selectedEvent && showModal) && (
-                
-                <EventInfoModal showModal={showModal} setShowModal={setShowModal} event={selectedEvent} />
-            )}
+           
         </>
     )
 }
