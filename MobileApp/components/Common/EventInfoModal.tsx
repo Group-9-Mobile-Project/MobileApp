@@ -1,13 +1,13 @@
-import { View, Text, StyleSheet, Pressable } from 'react-native'
+import { View, Text, StyleSheet, Pressable, Alert } from 'react-native'
 import React from 'react'
 import { Event } from '../../types/Event'
 import { Modal } from 'react-native'
 import { Card } from 'react-native-paper'
-import { auth, EVENT, firestore } from '../../firebase/Config'
-import { doc, updateDoc } from 'firebase/firestore'
 import JoinEventButton from './JoinEventButton'
 import { useNavigation, NavigationProp } from '@react-navigation/native'
 import { RootTabParamList } from '../../types/Navigation'
+import { deleteEvent } from '../../services/eventService'
+import { useAuth } from '../../context/AuthContext'
 
 interface EventInfoProps {
     showModal: boolean,
@@ -16,8 +16,41 @@ interface EventInfoProps {
 }
 
 export default function EventInfoModal({ showModal, setShowModal, event }: EventInfoProps) {
-  const currentUser = auth.currentUser
+  const { user } = useAuth()
   const navigation = useNavigation<NavigationProp<RootTabParamList>>()
+  
+  const currentEmail = user?.email?.trim().toLowerCase() ?? null
+  const eventOwnerEmail = event.ownerEmail?.trim().toLowerCase() ?? null
+  const isOwner = !!currentEmail && !!eventOwnerEmail && currentEmail === eventOwnerEmail
+  
+  const handleDelete = () => {
+      if (!isOwner) {
+          Alert.alert("Ei oikeutta", "Sinulla ei ole oikeutta poistaa tätä tapahtumaa.")
+          return
+      }
+
+      Alert.alert(
+          "Poista tapahtuma",
+          "Haluatko varmasti poistaa tämän tapahtuman?",
+          [
+              { text: "Peruuta", style: "cancel" },
+              {
+                  text: "Poista",
+                  style: "destructive",
+                  onPress: async () => {
+                      try {
+                          await deleteEvent(event.id)
+                          Alert.alert("Poistettu", "Tapahtuma poistettu")
+                          setShowModal(false)
+                      } catch (err) {
+                          console.error("Failed to delete event", err)
+                          Alert.alert("Virhe", "Tapahtuman poisto epäonnistui")
+                      }
+                  },
+              },
+          ]
+      )
+  }
 
 
     return (
@@ -53,7 +86,7 @@ export default function EventInfoModal({ showModal, setShowModal, event }: Event
                     </Card.Content>
                     <Card.Content>
                         <View>
-                            {(currentUser?.email == event.ownerEmail) ? (
+                            { isOwner ? (
                                 <>
                                     <View style={styles.pressableView}>
                                       <Pressable
@@ -66,10 +99,12 @@ export default function EventInfoModal({ showModal, setShowModal, event }: Event
                                           <Text style={styles.buttonText}>Muokkaa</Text>
                                       </Pressable>
 
-                                        <Pressable
-                                            style={({ pressed }) => pressed && styles.textPressed}>
-                                            <Text style={styles.buttonText}>Poista Tapahtuma TODO</Text>
-                                        </Pressable>
+                                      <Pressable
+                                          style={({ pressed }) => pressed && styles.textPressed}
+                                          onPress={handleDelete}
+                                      >
+                                          <Text style={styles.buttonText}>Poista tapahtuma</Text>
+                                      </Pressable>
                                     </View>
                                 </>
                             ) : (

@@ -5,6 +5,7 @@ import {
   setDoc,
   serverTimestamp,
   updateDoc,
+  deleteDoc
 } from "firebase/firestore";
 import { EVENT, firestore } from "../firebase/Config";
 import { Event } from "../types/Event";
@@ -35,6 +36,11 @@ export async function updateEvent(
     ...payload,
     updatedAt: serverTimestamp(),
   });
+}
+
+export async function deleteEvent(eventId: string): Promise<void> {
+  const eventRef = doc(firestore, EVENT, eventId);
+  await deleteDoc(eventRef);
 }
 
 export async function getEventById(eventId: string): Promise<Event | null> {

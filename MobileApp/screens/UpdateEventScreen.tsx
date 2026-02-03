@@ -2,6 +2,7 @@ import {
   ActivityIndicator,
   Alert,
   Keyboard,
+  Pressable,
   StyleSheet,
   Text,
   TouchableWithoutFeedback,
@@ -14,6 +15,7 @@ import EventForm, { EventFormSubmitPayload } from "../components/Event/EventForm
 import { Event } from "../types/Event";
 import { getEventById, updateEvent } from "../services/eventService";
 import { RootTabParamList } from "../types/Navigation";
+import { useAuth } from "../context/AuthContext";
 
 type RouteParams = {
   eventId: string;
@@ -23,6 +25,9 @@ export default function UpdateEventScreen() {
   const route = useRoute<RouteProp<RootTabParamList, "Muokkaa tapahtumaa">>();
   const navigation = useNavigation<NavigationProp<RootTabParamList>>();
   const { eventId } = route.params;
+
+  const { user } = useAuth();
+  const ownerEmail = user?.email;
 
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
@@ -52,8 +57,15 @@ export default function UpdateEventScreen() {
     };
   }, [eventId]);
 
+  const isOwner = !!event && !!ownerEmail && event.ownerEmail === ownerEmail;
+
   const handleSubmit = useCallback(
     async (payload: EventFormSubmitPayload): Promise<boolean> => {
+      if (!isOwner) {
+        Alert.alert("Ei oikeutta", "Sinulla ei ole oikeutta muokata tätä tapahtumaa.");
+        return false;
+      }
+
       try {
         await updateEvent(eventId, payload);
         Alert.alert("Onnistui", "Tapahtuma päivitetty");
@@ -65,7 +77,7 @@ export default function UpdateEventScreen() {
         return false;
       }
     },
-    [eventId, navigation]
+    [eventId, isOwner, navigation]
   );
 
   if (loading) {
@@ -81,6 +93,19 @@ export default function UpdateEventScreen() {
     return (
       <View style={styles.centered}>
         <Text style={styles.helperText}>Tapahtumaa ei löytynyt.</Text>
+      </View>
+    );
+  }
+
+  if (!isOwner) {
+    return (
+      <View style={styles.centered}>
+        <Text style={styles.helperText}>
+          Sinulla ei ole oikeutta muokata tätä tapahtumaa.
+        </Text>
+        <Pressable onPress={() => navigation.goBack()}>
+          <Text style={styles.linkText}>Palaa takaisin</Text>
+        </Pressable>
       </View>
     );
   }
@@ -122,5 +147,10 @@ const styles = StyleSheet.create({
   },
   helperText: {
     color: "#666",
+    textAlign: "center",
+  },
+  linkText: {
+    color: "#1e88e5",
+    marginTop: 8,
   },
 });
