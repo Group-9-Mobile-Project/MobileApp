@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
-import CreateScreen from '../screens/CreateScreen';
+import CreateEventScreen from '../screens/CreateEventScreen';
 import BottomNavBar from './BottomNavBar';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -21,7 +21,7 @@ export default function Navigator() {
       />
       <Tab.Screen 
         name="Uusi lenkki" 
-        component={CreateScreen}
+        component={CreateEventScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="add" size={size} color={color} />

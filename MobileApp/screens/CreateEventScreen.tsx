@@ -1,9 +1,9 @@
 import { StyleSheet,TouchableWithoutFeedback, Keyboard} from "react-native";
 import React from "react";
-import AddEvent from "../components/Event/AddEvent";
+import EventForm from "../components/Event/EventForm";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
-export default function CreateScreen() {
+export default function CreateEventScreen() {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
     <KeyboardAwareScrollView
@@ -13,7 +13,7 @@ export default function CreateScreen() {
          //  enableOnAndroid 
            extraScrollHeight={24}
        >
-        <AddEvent />
+        <EventForm />
        </KeyboardAwareScrollView>
     </TouchableWithoutFeedback>
   );
