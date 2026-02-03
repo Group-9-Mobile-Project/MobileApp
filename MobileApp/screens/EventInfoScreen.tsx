@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Pressable, Alert } from 'react-native'
+import { View, Text, StyleSheet, Pressable, Alert, ScrollView } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Event, EventProps } from '../types/Event'
 import { ActivityIndicator, Card } from 'react-native-paper'
@@ -9,6 +9,7 @@ import { deleteEvent } from '../services/eventService'
 import { useAuth } from '../context/AuthContext'
 import { collection, query, orderBy, where, limit, onSnapshot, doc } from 'firebase/firestore'
 import { firestore, EVENT } from '../firebase/Config'
+import EventAttendees from '../components/EventInfo/EventAttendees'
 
 
 
@@ -26,9 +27,6 @@ export default function EventInfoScreen() {
     const isOwner = !!currentEmail && !!eventOwnerEmail && currentEmail === eventOwnerEmail
 
     useEffect(() => {
-        let today = new Date().toISOString().slice(0, 10)
-        //console.log(today)
-
         const docRef = doc(firestore, EVENT, eventId)
 
         const unsubscribe = onSnapshot(docRef, (doc) => {
@@ -88,69 +86,72 @@ export default function EventInfoScreen() {
     }
 
     return (
+        <ScrollView>
 
+            <View style={styles.modalView}>
+                <Card style={styles.cardContainer}>
+                    <Card.Content>
+                        <Text style={styles.heading}>{event.title}</Text>
+                    </Card.Content>
+                    <Card.Content>
+                        <View style={styles.basicInfoView}>
+                            <Text style={styles.infoText}>Aika: {event.startTime}</Text>
+                            <Text style={styles.infoText}>Paikka: {event.location.address}</Text>
+                            <Text style={styles.infoText}>Tyyppi: {event.type}</Text>
+                            <Text style={styles.infoText}>Tapahtuman lisääjä: {event.organizer}</Text>
+                            <Text style={styles.infoText}>Ilmoittautuneita: {event.attendees.length}</Text>
+                        </View>
+                    </Card.Content>
+                    <Card.Content>
+                        <View style={styles.descriptionView}>
+                            <Text style={styles.infoText}>Kuvaus:</Text>
+                            <Text style={styles.infoText}>{event.description}</Text>
+                        </View>
+                    </Card.Content>
+                    <Card.Content>
+                        <View>
+                            {isOwner ? (
+                                
+                                    <View style={styles.pressableView}>
+                                        <Pressable
+                                            style={({ pressed }) => pressed && styles.textPressed}
+                                            onPress={() => {
 
-        <View style={styles.modalView}>
-            <Card style={styles.cardContainer}>
-                <Card.Content>
-                    <Text style={styles.heading}>{event.title}</Text>
-                </Card.Content>
-                <Card.Content>
-                    <View style={styles.basicInfoView}>
-                        <Text style={styles.infoText}>Aika: {event.startTime}</Text>
-                        <Text style={styles.infoText}>Paikka: {event.location.address}</Text>
-                        <Text style={styles.infoText}>Tyyppi: {event.type}</Text>
-                        <Text style={styles.infoText}>Tapahtuman lisääjä: {event.organizer}</Text>
-                        <Text style={styles.infoText}>Ilmoittautuneita: {event.attendees.length}</Text>
-                    </View>
-                </Card.Content>
-                <Card.Content>
-                    <View style={styles.descriptionView}>
-                        <Text style={styles.infoText}>Kuvaus:</Text>
-                        <Text style={styles.infoText}>{event.description}</Text>
-                    </View>
-                </Card.Content>
-                <Card.Content>
-                    <View>
-                        {isOwner ? (
-                            <>
-                                <View style={styles.pressableView}>
-                                    <Pressable
-                                        style={({ pressed }) => pressed && styles.textPressed}
-                                        onPress={() => {
+                                                navigation.navigate("Muokkaa tapahtumaa", { eventId: event.id })
+                                            }}
+                                        >
+                                            <Text style={styles.buttonText}>Muokkaa</Text>
+                                        </Pressable>
 
-                                            navigation.navigate("Muokkaa tapahtumaa", { eventId: event.id })
-                                        }}
-                                    >
-                                        <Text style={styles.buttonText}>Muokkaa</Text>
-                                    </Pressable>
+                                        <Pressable
+                                            style={({ pressed }) => pressed && styles.textPressed}
+                                            onPress={handleDelete}
+                                        >
+                                            <Text style={styles.buttonText}>Poista tapahtuma</Text>
+                                        </Pressable>
+                                    </View>
+                                
+                            ) : (
+                                
+                                    <View style={styles.pressableView}>
+                                        <JoinEventButton event={event} />
+                                    </View>
+                                )}
+                            <Pressable
+                                style={({ pressed }) => pressed && styles.textPressed}
+                                onPress={() => navigation.goBack()}>
+                                <Text style={styles.buttonText}>Sulje</Text>
+                            </Pressable>
 
-                                    <Pressable
-                                        style={({ pressed }) => pressed && styles.textPressed}
-                                        onPress={handleDelete}
-                                    >
-                                        <Text style={styles.buttonText}>Poista tapahtuma</Text>
-                                    </Pressable>
-                                </View>
-                            </>
-                        ) : (
-                            <>
-                                <View style={styles.pressableView}>
-                                    <JoinEventButton event={event} />
-                                </View>
-                            </>)}
-                        <Pressable
-                            style={({ pressed }) => pressed && styles.textPressed}
-                            onPress={() => navigation.goBack()}>
-                            <Text style={styles.buttonText}>Sulje</Text>
-                        </Pressable>
+                        </View>
+                    </Card.Content>
 
-                    </View>
-                </Card.Content>
-            </Card>
-        </View>
+                </Card>
+                {(event.attendees[0]) && <EventAttendees attendees={event.attendees} />}
 
+            </View>
 
+        </ScrollView>
 
 
     )
