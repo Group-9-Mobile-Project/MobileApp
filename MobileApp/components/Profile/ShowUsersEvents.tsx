@@ -1,10 +1,11 @@
 import { View, Text, StyleSheet, ScrollView } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { Card } from 'react-native-paper'
 import { UserInfo } from 'firebase/auth'
 import { auth, firestore, USERINFO } from '../../firebase/Config'
 import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore'
 import { Event } from '../../types/Event'
+import { useFocusEffect } from '@react-navigation/native'
 
 export default function ShowUsersEvents() {
 
@@ -13,50 +14,51 @@ export default function ShowUsersEvents() {
     const [userCreatedEvents, setUserCreatedEvents] = useState<Event[]>([]);
     const [userJoinedEvents, setUserJoinedEvents] = useState<Event[]>([]);
 
-    useEffect(() => {
+const fetchEvents = useCallback(async () => {
+        const profile = auth.currentUser;
+        const profileEmail = profile?.email;
+        if (!profileEmail) return;
 
-        (async () => {
+        setEmail(profileEmail);
 
-            const profile = auth.currentUser;
-            const profileEmail = profile?.email;
-            if (!profileEmail) return;
+        const docRef = doc(firestore, USERINFO, profileEmail);
 
-            setEmail(profileEmail);
+        try {
+            const docSnap = await getDoc(docRef);
 
-            const docRef = doc(firestore, USERINFO, profileEmail);
+            if (docSnap.exists()) {
+                const createdQ = query(collection(firestore, 'events'), where('ownerEmail', '==', profileEmail));
+                const createdSnapshot = await getDocs(createdQ);
+                const createdEvents: Event[] = [];
+                createdSnapshot.forEach((doc) => {
+                    createdEvents.push({ id: doc.id, ...doc.data() } as Event);
+                });
+                setUserCreatedEvents(createdEvents);
 
-            try {
-                const docSnap = await getDoc(docRef);
-
-                if (docSnap.exists()) {
-                    const createdQ = query(collection(firestore, 'events'), where('ownerEmail', '==', profileEmail));
-                    const createdSnapshot = await getDocs(createdQ);
-                    const createdEvents: Event[] = [];
-                    createdSnapshot.forEach((doc) => {
-                        createdEvents.push({ id: doc.id, ...doc.data() } as Event);
-                    });
-                    setUserCreatedEvents(createdEvents);
-
-                    const joinedQ = query(collection(firestore, 'events'), where('attendees', 'array-contains', profileEmail));
-                    const joinedSnapshot = await getDocs(joinedQ);
-                    const joinedEvents: Event[] = [];
-                    joinedSnapshot.forEach((doc) => {
-                        const eventData = doc.data() as Event;
-                        if (eventData.ownerEmail !== profileEmail) {
-                            joinedEvents.push({ id: doc.id, ...doc.data() } as Event);
-                        }
-                    });
-                    setUserJoinedEvents(joinedEvents);
-                } else {
-                    console.log("No such document!");
-                }
-
-            } catch (e) {
-                console.log('getDoc error', e)
+                const joinedQ = query(collection(firestore, 'events'), where('attendees', 'array-contains', profileEmail));
+                const joinedSnapshot = await getDocs(joinedQ);
+                const joinedEvents: Event[] = [];
+                joinedSnapshot.forEach((doc) => {
+                    const eventData = doc.data() as Event;
+                    if (eventData.ownerEmail !== profileEmail) {
+                        joinedEvents.push({ id: doc.id, ...doc.data() } as Event);
+                    }
+                });
+                setUserJoinedEvents(joinedEvents);
+            } else {
+                console.log("No such document!");
             }
 
-        })();
+        } catch (e) {
+            console.log('getDoc error', e)
+        }
     }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchEvents();
+        }, [fetchEvents])
+    );
 
     return (
         <View style={styles.container}>
