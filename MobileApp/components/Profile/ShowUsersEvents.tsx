@@ -3,7 +3,7 @@ import React, { useEffect, useState, useCallback } from 'react'
 import { Card } from 'react-native-paper'
 import { UserInfo } from 'firebase/auth'
 import { auth, firestore, USERINFO } from '../../firebase/Config'
-import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore'
+import { collection, doc, getDoc, getDocs, query, where, orderBy } from 'firebase/firestore'
 import { Event } from '../../types/Event'
 import { useFocusEffect } from '@react-navigation/native'
 import { useAuth } from '../../context/AuthContext'
@@ -16,6 +16,9 @@ export default function ShowUsersEvents() {
     const [userJoinedEvents, setUserJoinedEvents] = useState<Event[]>([]);
 
     const fetchEvents = useCallback(async () => {
+
+        let today = new Date().toISOString().slice(0, 10)
+
         const profileEmail = user?.email?.trim().toLowerCase() ?? null
         if (!profileEmail) return;
 
@@ -27,7 +30,12 @@ export default function ShowUsersEvents() {
             const docSnap = await getDoc(docRef);
 
             if (docSnap.exists()) {
-                const createdQ = query(collection(firestore, 'events'), where('ownerEmail', '==', profileEmail));
+                const createdQ = query(
+                    collection(firestore, 'events'),
+                    where('ownerEmail', '==', profileEmail),
+                    where('date', '>=', today),
+                    orderBy('date', 'asc')
+                );
                 const createdSnapshot = await getDocs(createdQ);
                 const createdEvents: Event[] = [];
                 createdSnapshot.forEach((doc) => {
@@ -35,7 +43,12 @@ export default function ShowUsersEvents() {
                 });
                 setUserCreatedEvents(createdEvents);
 
-                const joinedQ = query(collection(firestore, 'events'), where('attendees', 'array-contains', profileEmail));
+                const joinedQ = query(
+                    collection(firestore, 'events'),
+                    where('attendees', 'array-contains', profileEmail),
+                    where('date', '>=', today),
+                    orderBy('date', 'asc')
+                );
                 const joinedSnapshot = await getDocs(joinedQ);
                 const joinedEvents: Event[] = [];
                 joinedSnapshot.forEach((doc) => {
