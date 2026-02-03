@@ -7,27 +7,29 @@ type Coordinate = { latitude: number; longitude: number };
 type UseEventLocationOptions = {
   defaultCoordinate: Coordinate;
   defaultRegion: Region;
-  setLocationName: (value: string) => void;
-  setLocationAddress: (value: string) => void;
-  setLatitudeInput: (value: string) => void;
-  setLongitudeInput: (value: string) => void;
   autoFetch?: boolean;
+  onResolvedName?: (value: string) => void;
+  onResolvedAddress?: (value: string) => void;
+  onCoordinateChange?: (coordinate: Coordinate) => void;
+  reverseGeocodeDelayMs?: number;
 };
 
 export function useEventLocation({
   defaultCoordinate,
   defaultRegion,
-  setLocationName,
-  setLocationAddress,
-  setLatitudeInput,
-  setLongitudeInput,
   autoFetch = true,
+  onResolvedName,
+  onResolvedAddress,
+  onCoordinateChange,
+  reverseGeocodeDelayMs = 600,
 }: UseEventLocationOptions) {
   const [location, setLocation] = useState<Region>(defaultRegion);
   const [selectedCoordinate, setSelectedCoordinate] = useState(defaultCoordinate);
   const [locationError, setLocationError] = useState<string | null>(null);
 
   const reverseGeocodeRequestId = useRef(0);
+  const reverseGeocodeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const manualSelectionRef = useRef(false);
 
   const formatAddress = (
     place?: ExpoLocation.LocationGeocodedAddress
@@ -56,61 +58,85 @@ export function useEventLocation({
 
         const formattedAddress = formatAddress(place);
         if (formattedAddress) {
-          setLocationAddress(formattedAddress);
+          onResolvedAddress?.(formattedAddress);
         }
         const name = place?.name || place?.street || place?.city || "";
         if (name) {
-          setLocationName(name);
+          onResolvedName?.(name);
         }
       } catch (error) {
         console.warn("Reverse geocode failed", error);
       }
     },
-    [setLocationAddress, setLocationName]
+    [onResolvedAddress, onResolvedName]
   );
 
-  const refreshCurrentLocation = useCallback(async () => {
-    try {
-      const { status } = await ExpoLocation.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        setLocationError("Sijaintilupa ei ole käytössä.");
+  const scheduleReverseGeocode = useCallback(
+    (coordinate: Coordinate) => {
+      if (reverseGeocodeTimer.current) {
+        clearTimeout(reverseGeocodeTimer.current);
+      }
+      reverseGeocodeTimer.current = setTimeout(() => {
+        applyReverseGeocode(coordinate);
+      }, reverseGeocodeDelayMs);
+    },
+    [applyReverseGeocode, reverseGeocodeDelayMs]
+  );
+
+  const refreshCurrentLocation = useCallback(
+    async (force = false) => {
+      if (manualSelectionRef.current && !force) {
         return;
       }
 
-      const currentLocation = await ExpoLocation.getCurrentPositionAsync({
-        accuracy: ExpoLocation.Accuracy.Balanced,
-      });
+      try {
+        const { status } = await ExpoLocation.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          setLocationError("Sijaintilupa ei ole käytössä.");
+          return;
+        }
 
-      const coordinate = {
-        latitude: currentLocation.coords.latitude,
-        longitude: currentLocation.coords.longitude,
-      };
+        const currentLocation = await ExpoLocation.getCurrentPositionAsync({
+          accuracy: ExpoLocation.Accuracy.Balanced,
+        });
 
-      setLocation((prev) => ({ ...prev, ...coordinate }));
-      setSelectedCoordinate(coordinate);
-      setLatitudeInput(coordinate.latitude.toString());
-      setLongitudeInput(coordinate.longitude.toString());
+        const coordinate = {
+          latitude: currentLocation.coords.latitude,
+          longitude: currentLocation.coords.longitude,
+        };
 
-      await applyReverseGeocode(coordinate);
-    } catch (error) {
-      console.warn("Location fetch failed", error);
-      setLocationError("Sijainnin haku epäonnistui.");
-    }
-  }, [applyReverseGeocode, setLatitudeInput, setLongitudeInput]);
+        if (manualSelectionRef.current && !force) {
+          return;
+        }
+
+        setLocation((prev) => ({ ...prev, ...coordinate }));
+        setSelectedCoordinate(coordinate);
+        onCoordinateChange?.(coordinate);
+
+        scheduleReverseGeocode(coordinate);
+      } catch (error) {
+        console.warn("Location fetch failed", error);
+        setLocationError("Sijainnin haku epäonnistui.");
+      }
+    },
+    [onCoordinateChange, scheduleReverseGeocode]
+  );
 
   const handleSelectCoordinate = useCallback(
     async (coordinate: Coordinate) => {
+      manualSelectionRef.current = true;
+
       setSelectedCoordinate(coordinate);
       setLocation((prev) => ({ ...prev, ...coordinate }));
-      setLatitudeInput(coordinate.latitude.toString());
-      setLongitudeInput(coordinate.longitude.toString());
+      onCoordinateChange?.(coordinate);
 
-      await applyReverseGeocode(coordinate);
+      scheduleReverseGeocode(coordinate);
     },
-    [applyReverseGeocode, setLatitudeInput, setLongitudeInput]
+    [onCoordinateChange, scheduleReverseGeocode]
   );
 
   const resetLocation = useCallback(() => {
+    manualSelectionRef.current = false;
     setLocation(defaultRegion);
     setSelectedCoordinate(defaultCoordinate);
     setLocationError(null);
@@ -121,6 +147,14 @@ export function useEventLocation({
       refreshCurrentLocation();
     }
   }, [autoFetch, refreshCurrentLocation]);
+
+  useEffect(() => {
+    return () => {
+      if (reverseGeocodeTimer.current) {
+        clearTimeout(reverseGeocodeTimer.current);
+      }
+    };
+  }, []);
 
   return {
     location,

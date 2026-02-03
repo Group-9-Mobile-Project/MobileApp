@@ -1,5 +1,5 @@
 import { View, Text, TextInput, StyleSheet, Alert, Pressable } from "react-native";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { Event, EventType, Location } from "../../types/Event";
 import { LocationFields } from "./LocationFields";
@@ -52,6 +52,14 @@ export default function EventForm() {
     validateForm,
   } = useEventForm({ defaultCoordinate: DEFAULT_COORDINATE });
 
+  const handleCoordinateChange = useCallback(
+    (coordinate: { latitude: number; longitude: number }) => {
+      setLatitudeInput(coordinate.latitude.toString());
+      setLongitudeInput(coordinate.longitude.toString());
+    },
+    [setLatitudeInput, setLongitudeInput]
+  );
+
   const {
     location,
     setLocation,
@@ -63,16 +71,16 @@ export default function EventForm() {
   } = useEventLocation({
     defaultCoordinate: DEFAULT_COORDINATE,
     defaultRegion: DEFAULT_REGION,
-    setLocationName,
-    setLocationAddress,
-    setLatitudeInput,
-    setLongitudeInput,
+    onResolvedName: setLocationName,
+    onResolvedAddress: setLocationAddress,
+    onCoordinateChange: handleCoordinateChange,
   });
+
   
   function resetAll() {
     resetForm();
     resetLocation();
-    refreshCurrentLocation();
+    refreshCurrentLocation(true);
   }
 
   async function handleFirebaseAddEvent(): Promise<void> {
