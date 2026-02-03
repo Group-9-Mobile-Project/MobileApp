@@ -2,14 +2,14 @@ import { View, Text, TextInput, StyleSheet, Alert, Pressable } from "react-nativ
 import React, { useEffect, useState, useRef } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { Event, EventType, Location } from "../../types/Event";
-import { firestore, EVENT } from "../../firebase/Config";
-import { collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { LocationFields } from "./LocationFields";
 import StartLocationPicker from "./StartLocationPicker";
 import * as ExpoLocation from "expo-location";
 import { Region } from "react-native-maps";
 import DateTimePickerField from "../Common/DateTimePickerField";
 import { Card, Button as PaperButton, Dialog, Portal, RadioButton } from "react-native-paper";
+import { createEvent } from "../../services/eventService";
+
 
 const DEFAULT_COORDINATE = { latitude: 65.08, longitude: 25.48 };
 
@@ -172,7 +172,7 @@ export default function AddEvent() {
   async function handleFirebaseAddEvent(): Promise<void> {
     const ownerEmail = user?.email;
     const organizerName = user?.displayName?.trim() || ownerEmail || "Tuntematon";
-
+  
     if (!ownerEmail) {
       Alert.alert("Virhe", "Kirjaudu sisään ennen tapahtuman luontia");
       return;
@@ -181,10 +181,10 @@ export default function AddEvent() {
       Alert.alert("Virhe", "Täytä vähintään nimi, päivä, paikka ja ajat");
       return;
     }
-
+  
     const latitude = parseFloat(latitudeInput);
     const longitude = parseFloat(longitudeInput);
-
+  
     if (
       !locationName ||
       !locationAddress ||
@@ -194,11 +194,8 @@ export default function AddEvent() {
       Alert.alert("Virhe", "Täytä sijainti ja kelvolliset koordinaatit");
       return;
     }
-
+  
     try {
-      const eventsRef = collection(firestore, EVENT);
-      const eventRef = doc(eventsRef);
-
       const location: Location = {
         name: locationName,
         address: locationAddress,
@@ -207,9 +204,8 @@ export default function AddEvent() {
           longitude,
         },
       };
-
-      const payload: Event = {
-        id: eventRef.id,
+  
+      const payload: Omit<Event, "id"> = {
         title,
         description,
         date,
@@ -220,12 +216,9 @@ export default function AddEvent() {
         startTime,
         ownerEmail,
       };
-
-      await setDoc(eventRef, {
-        ...payload,
-        createdAt: serverTimestamp(),
-      });
-
+  
+      await createEvent(payload);
+  
       Alert.alert("Onnistui", "Tapahtuma luotu");
       resetForm();
     } catch (err) {
@@ -233,6 +226,7 @@ export default function AddEvent() {
       Alert.alert("Virhe", "Tapahtuman tallennus epäonnistui");
     }
   }
+
   
   const handleSelectCoordinate = async (coordinate: {
     latitude: number;
