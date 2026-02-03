@@ -5,10 +5,7 @@ import { setDoc, collection, Firestore, getFirestore, serverTimestamp } from "fi
 //@ts-ignore this is a temporary fix for the error
 import { initializeAuth, getReactNativePersistence } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_APIKEY,
   authDomain: process.env.EXPO_PUBLIC_authDomain,

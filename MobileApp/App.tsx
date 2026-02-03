@@ -1,14 +1,14 @@
 import { StatusBar } from "expo-status-bar";
 import { Platform, View, ActivityIndicator } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
-import Navigator from "./components/Navigator";
+import RootNavigator from "./navigation/RootNavigator";
 import { useEffect, useState } from "react";
 import RegisterScreen from "./screens/RegisterScreen";
 import { AuthProvider } from "./context/AuthContext";
 import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-context";
-import { firestore } from './firebase/Config';
 import { onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "./firebase/Config";
+import { Provider as PaperProvider } from "react-native-paper";
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -25,33 +25,39 @@ export default function App() {
 
   if (loading) {
     return (
+      <PaperProvider>
       <SafeAreaProvider style={isAndroid15 ? { marginBottom: initialWindowMetrics?.insets.bottom } : {}}>
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
           <ActivityIndicator size="large" />
         </View>
-      </SafeAreaProvider>
+        </SafeAreaProvider>
+      </PaperProvider>
     );
   }
 
   if (!user) {
     return (
       <AuthProvider user={user} loading={loading}>
+        <PaperProvider>
         <SafeAreaProvider style={isAndroid15 ? { marginBottom: initialWindowMetrics?.insets.bottom } : {}}>
           <RegisterScreen />
           <StatusBar style="auto" />
-        </SafeAreaProvider>
+          </SafeAreaProvider>
+        </PaperProvider>
       </AuthProvider>
     );
   }
 
   return (
     <AuthProvider user={user} loading={loading}>
+      <PaperProvider>
       <SafeAreaProvider style={{ marginBottom: initialWindowMetrics?.insets.bottom }}>
         <NavigationContainer>
-          <Navigator />
+          <RootNavigator />
           <StatusBar style="auto" />
         </NavigationContainer>
-      </SafeAreaProvider>
+        </SafeAreaProvider>
+      </PaperProvider>
     </AuthProvider>
   );
 }
