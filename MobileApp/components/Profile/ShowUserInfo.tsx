@@ -5,6 +5,7 @@ import EditUserInfo from './EditUserInfo';
 import { UserInfo } from '../../types/UserInfo';
 import { doc, getDoc } from "firebase/firestore";
 import { Card } from 'react-native-paper';
+import CardContent from 'react-native-paper/lib/typescript/components/Card/CardContent';
 
 export default function ShowUserInfo() {
 
@@ -35,6 +36,7 @@ export default function ShowUserInfo() {
   useEffect(() => {
     fetchUserInfo();
   }, []);
+
 
   return (
     <View style={styles.container}>
@@ -102,17 +104,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   cardContainer: {
-    maxHeight: 300,
     alignContent: 'flex-start',
     marginBlockStart: 10,
     width: '100%',
     backgroundColor: 'lightgrey',
-    paddingVertical: 20,
   },
   heading: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 10,
+    margin: 10,
   },
   buttonText: {
     backgroundColor: 'lightgrey',
@@ -133,11 +133,10 @@ const styles = StyleSheet.create({
     opacity: 0.6
   },
   infoText: {
-    fontSize: 13,
-    padding: 3,
-    color: '#666',
+    fontSize: 12,
+    padding: 5,
   },
-  hobbiesTable: {
+    hobbiesTable: {
     marginVertical: 5,
   },
   hobbyRow: {

@@ -10,7 +10,8 @@ export default function ShowUsersEvents() {
 
     const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
     const [email, setEmail] = useState("");
-    const [userEvents, setUserEvents] = useState<Event[]>([]);
+    const [userCreatedEvents, setUserCreatedEvents] = useState<Event[]>([]);
+    const [userJoinedEvents, setUserJoinedEvents] = useState<Event[]>([]);
 
     useEffect(() => {
 
@@ -28,13 +29,24 @@ export default function ShowUsersEvents() {
                 const docSnap = await getDoc(docRef);
 
                 if (docSnap.exists()) {
-                    const q = query(collection(firestore, 'events'), where('ownerEmail', '==', profileEmail));
-                    const querySnapshot = await getDocs(q);
-                    const events: Event[] = [];
-                    querySnapshot.forEach((doc) => {
-                        events.push({ id: doc.id, ...doc.data() } as Event);
+                    const createdQ = query(collection(firestore, 'events'), where('ownerEmail', '==', profileEmail));
+                    const createdSnapshot = await getDocs(createdQ);
+                    const createdEvents: Event[] = [];
+                    createdSnapshot.forEach((doc) => {
+                        createdEvents.push({ id: doc.id, ...doc.data() } as Event);
                     });
-                    setUserEvents(events);
+                    setUserCreatedEvents(createdEvents);
+
+                    const joinedQ = query(collection(firestore, 'events'), where('attendees', 'array-contains', profileEmail));
+                    const joinedSnapshot = await getDocs(joinedQ);
+                    const joinedEvents: Event[] = [];
+                    joinedSnapshot.forEach((doc) => {
+                        const eventData = doc.data() as Event;
+                        if (eventData.ownerEmail !== profileEmail) {
+                            joinedEvents.push({ id: doc.id, ...doc.data() } as Event);
+                        }
+                    });
+                    setUserJoinedEvents(joinedEvents);
                 } else {
                     console.log("No such document!");
                 }
@@ -53,8 +65,30 @@ export default function ShowUsersEvents() {
                     <Text style={styles.heading}>Omat tapahtumat</Text>
                 </Card.Content>
                 <ScrollView>
-                {userEvents.length > 0 ? (
-                    userEvents.map((event) => (
+                {userCreatedEvents.length > 0 ? (
+                    userCreatedEvents.map((event) => (
+                        <Card.Content key={event.id} style={styles.eventContent}>
+                            <Text style={styles.eventTitle}>{event.title}</Text>
+                            <Text style={styles.eventText}>{event.description}</Text>
+                            <Text style={styles.eventText}>{event.date} {event.startTime}</Text>
+                            <Text style={styles.eventText}>{event.location.name}</Text>
+                        </Card.Content>
+                    ))
+                ) : (
+                    <Card.Content>
+                        <Text style={styles.infoText}>Ei tapahtumia.</Text>
+                    </Card.Content>
+                )}
+                </ScrollView>
+            </Card>
+
+            <Card style={styles.cardContainer}>
+                <Card.Content>
+                    <Text style={styles.heading}>Liitytyt tapahtumat</Text>
+                </Card.Content>
+                <ScrollView>
+                {userJoinedEvents.length > 0 ? (
+                    userJoinedEvents.map((event) => (
                         <Card.Content key={event.id} style={styles.eventContent}>
                             <Text style={styles.eventTitle}>{event.title}</Text>
                             <Text style={styles.eventText}>{event.description}</Text>
@@ -76,10 +110,9 @@ export default function ShowUsersEvents() {
 const styles = StyleSheet.create({
 
     container: {
+        flex: 1,
         width: '100%',
-        height: '20%',
         paddingHorizontal: 10,
-        marginBottom: 100,
     },
     cardContainer: {
         alignContent: 'flex-start',
@@ -105,12 +138,11 @@ const styles = StyleSheet.create({
     },
     eventText: {
         fontSize: 14,
-        color: '#666',
-        marginVertical: 2
+        marginBottom: 3
     },
     infoText: {
-        fontSize: 12,
-        padding: 5,
-        fontWeight: 'bold'
+        fontSize: 14,
+        fontStyle: 'italic',
+        color: '#666'
     }
 });
