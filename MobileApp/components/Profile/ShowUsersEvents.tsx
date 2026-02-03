@@ -6,17 +6,17 @@ import { auth, firestore, USERINFO } from '../../firebase/Config'
 import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore'
 import { Event } from '../../types/Event'
 import { useFocusEffect } from '@react-navigation/native'
+import { useAuth } from '../../context/AuthContext'
 
 export default function ShowUsersEvents() {
 
-    const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+    const { user } = useAuth()
     const [email, setEmail] = useState("");
     const [userCreatedEvents, setUserCreatedEvents] = useState<Event[]>([]);
     const [userJoinedEvents, setUserJoinedEvents] = useState<Event[]>([]);
 
-const fetchEvents = useCallback(async () => {
-        const profile = auth.currentUser;
-        const profileEmail = profile?.email;
+    const fetchEvents = useCallback(async () => {
+        const profileEmail = user?.email?.trim().toLowerCase() ?? null
         if (!profileEmail) return;
 
         setEmail(profileEmail);
@@ -67,20 +67,20 @@ const fetchEvents = useCallback(async () => {
                     <Text style={styles.heading}>Omat tapahtumat</Text>
                 </Card.Content>
                 <ScrollView>
-                {userCreatedEvents.length > 0 ? (
-                    userCreatedEvents.map((event) => (
-                        <Card.Content key={event.id} style={styles.eventContent}>
-                            <Text style={styles.eventTitle}>{event.title}</Text>
-                            <Text style={styles.eventText}>{event.description}</Text>
-                            <Text style={styles.eventText}>{event.date} {event.startTime}</Text>
-                            <Text style={styles.eventText}>{event.location.name}</Text>
+                    {userCreatedEvents.length > 0 ? (
+                        userCreatedEvents.map((event) => (
+                            <Card.Content key={event.id} style={styles.eventContent}>
+                                <Text style={styles.eventTitle}>{event.title}</Text>
+                                <Text style={styles.eventText}>{event.description}</Text>
+                                <Text style={styles.eventText}>{event.date} {event.startTime}</Text>
+                                <Text style={styles.eventText}>{event.location.name}</Text>
+                            </Card.Content>
+                        ))
+                    ) : (
+                        <Card.Content>
+                            <Text style={styles.infoText}>Ei tapahtumia.</Text>
                         </Card.Content>
-                    ))
-                ) : (
-                    <Card.Content>
-                        <Text style={styles.infoText}>Ei tapahtumia.</Text>
-                    </Card.Content>
-                )}
+                    )}
                 </ScrollView>
             </Card>
 
@@ -89,20 +89,20 @@ const fetchEvents = useCallback(async () => {
                     <Text style={styles.heading}>Liitytyt tapahtumat</Text>
                 </Card.Content>
                 <ScrollView>
-                {userJoinedEvents.length > 0 ? (
-                    userJoinedEvents.map((event) => (
-                        <Card.Content key={event.id} style={styles.eventContent}>
-                            <Text style={styles.eventTitle}>{event.title}</Text>
-                            <Text style={styles.eventText}>{event.description}</Text>
-                            <Text style={styles.eventText}>{event.date} {event.startTime}</Text>
-                            <Text style={styles.eventText}>{event.location.name}</Text>
+                    {userJoinedEvents.length > 0 ? (
+                        userJoinedEvents.map((event) => (
+                            <Card.Content key={event.id} style={styles.eventContent}>
+                                <Text style={styles.eventTitle}>{event.title}</Text>
+                                <Text style={styles.eventText}>{event.description}</Text>
+                                <Text style={styles.eventText}>{event.date} {event.startTime}</Text>
+                                <Text style={styles.eventText}>{event.location.name}</Text>
+                            </Card.Content>
+                        ))
+                    ) : (
+                        <Card.Content>
+                            <Text style={styles.infoText}>Ei tapahtumia.</Text>
                         </Card.Content>
-                    ))
-                ) : (
-                    <Card.Content>
-                        <Text style={styles.infoText}>Ei tapahtumia.</Text>
-                    </Card.Content>
-                )}
+                    )}
                 </ScrollView>
             </Card>
         </View>
