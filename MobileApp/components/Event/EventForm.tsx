@@ -1,13 +1,11 @@
 import { View, Text, TextInput, StyleSheet, Alert, Pressable } from "react-native";
 import React, { useCallback, useState } from "react";
-import { useAuth } from "../../context/AuthContext";
 import { Event, EventType, Location } from "../../types/Event";
 import { LocationFields } from "./LocationFields";
 import StartLocationPicker from "./StartLocationPicker";
 import { Region } from "react-native-maps";
 import DateTimePickerField from "../Common/DateTimePickerField";
 import { Card, Button as PaperButton, Dialog, Portal, RadioButton } from "react-native-paper";
-import { createEvent } from "../../services/eventService";
 import { useEventForm } from "../../hooks/useEventForm";
 import { useEventLocation } from "../../hooks/useEventLocation";
 
@@ -20,13 +18,41 @@ const DEFAULT_REGION: Region = {
   longitudeDelta: 0.0421,
 };
 
-export default function EventForm() {
-  const { user } = useAuth();
+export type EventFormSubmitPayload = {
+  title: string;
+  description: string;
+  date: string;
+  type: EventType;
+  startTime: string;
+  location: Location;
+};
 
+type EventFormProps = {
+  initialEvent?: Event;
+  submitLabel?: string;
+  resetOnSuccess?: boolean;
+  onSubmit: (payload: EventFormSubmitPayload) => Promise<boolean>;
+};
+
+export default function EventForm({
+  initialEvent,
+  submitLabel,
+  resetOnSuccess,
+  onSubmit,
+}: EventFormProps) {
   const [typeDialogVisible, setTypeDialogVisible] = useState(false);
-  
+
   const openTypeDialog = () => setTypeDialogVisible(true);
   const closeTypeDialog = () => setTypeDialogVisible(false);
+
+  const initialCoordinate =
+    initialEvent?.location.coordinates ?? DEFAULT_COORDINATE;
+
+  const initialRegion: Region = {
+    ...DEFAULT_REGION,
+    latitude: initialCoordinate.latitude,
+    longitude: initialCoordinate.longitude,
+  };
 
   const {
     title,
@@ -50,7 +76,22 @@ export default function EventForm() {
     setLongitudeInput,
     resetForm,
     validateForm,
-  } = useEventForm({ defaultCoordinate: DEFAULT_COORDINATE });
+  } = useEventForm({
+    defaultCoordinate: initialCoordinate,
+    initialValues: initialEvent
+      ? {
+          title: initialEvent.title,
+          description: initialEvent.description,
+          date: initialEvent.date,
+          startTime: initialEvent.startTime,
+          type: initialEvent.type,
+          locationName: initialEvent.location.name,
+          locationAddress: initialEvent.location.address,
+          latitude: initialEvent.location.coordinates.latitude,
+          longitude: initialEvent.location.coordinates.longitude,
+        }
+      : undefined,
+  });
 
   const handleCoordinateChange = useCallback(
     (coordinate: { latitude: number; longitude: number }) => {
@@ -69,29 +110,27 @@ export default function EventForm() {
     refreshCurrentLocation,
     resetLocation,
   } = useEventLocation({
-    defaultCoordinate: DEFAULT_COORDINATE,
-    defaultRegion: DEFAULT_REGION,
+    defaultCoordinate: initialCoordinate,
+    defaultRegion: initialRegion,
+    autoFetch: !initialEvent,
     onResolvedName: setLocationName,
     onResolvedAddress: setLocationAddress,
     onCoordinateChange: handleCoordinateChange,
   });
 
-  
+  const shouldResetOnSuccess = resetOnSuccess ?? !initialEvent;
+  const resolvedSubmitLabel =
+    submitLabel ?? (initialEvent ? "Tallenna muutokset" : "Lisää tapahtuma");
+
   function resetAll() {
     resetForm();
     resetLocation();
-    refreshCurrentLocation(true);
+    if (!initialEvent) {
+      refreshCurrentLocation(true);
+    }
   }
 
-  async function handleFirebaseAddEvent(): Promise<void> {
-    const ownerEmail = user?.email;
-    const organizerName = user?.displayName?.trim() || ownerEmail || "Tuntematon";
-  
-    if (!ownerEmail) {
-      Alert.alert("Virhe", "Kirjaudu sisään ennen tapahtuman luontia");
-      return;
-    }
-
+  async function handleSubmit(): Promise<void> {
     const validation = validateForm();
     if (!validation.ok) {
       Alert.alert("Virhe", validation.message);
@@ -99,36 +138,27 @@ export default function EventForm() {
     }
 
     const { latitude, longitude } = validation;
-  
-    try {
-      const location: Location = {
+
+    const payload: EventFormSubmitPayload = {
+      title,
+      description,
+      date,
+      type,
+      startTime,
+      location: {
         name: locationName,
         address: locationAddress,
         coordinates: {
           latitude,
           longitude,
         },
-      };
-  
-      const payload: Omit<Event, "id"> = {
-        title,
-        description,
-        date,
-        type,
-        location,
-        attendees: [],
-        organizer: organizerName,
-        startTime,
-        ownerEmail,
-      };
-  
-      await createEvent(payload);
-  
-      Alert.alert("Onnistui", "Tapahtuma luotu");
+      },
+    };
+
+    const ok = await onSubmit(payload);
+
+    if (ok && shouldResetOnSuccess) {
       resetAll();
-    } catch (err) {
-      console.error("Failed to save new event", err);
-      Alert.alert("Virhe", "Tapahtuman tallennus epäonnistui");
     }
   }
 
@@ -223,8 +253,8 @@ export default function EventForm() {
          </Card.Content>
        </Card>
  
-      <Pressable style={styles.addButton} onPress={handleFirebaseAddEvent}>
-        <Text style={styles.buttonText}>Lisää tapahtuma</Text>
+      <Pressable style={styles.addButton} onPress={handleSubmit}>
+        <Text style={styles.buttonText}>{resolvedSubmitLabel}</Text>
       </Pressable>
      </View>
    );

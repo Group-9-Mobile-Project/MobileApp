@@ -6,6 +6,8 @@ import { Card } from 'react-native-paper'
 import { auth, EVENT, firestore } from '../../firebase/Config'
 import { doc, updateDoc } from 'firebase/firestore'
 import JoinEventButton from './JoinEventButton'
+import { useNavigation, NavigationProp } from '@react-navigation/native'
+import { RootTabParamList } from '../../types/Navigation'
 
 interface EventInfoProps {
     showModal: boolean,
@@ -14,7 +16,8 @@ interface EventInfoProps {
 }
 
 export default function EventInfoModal({ showModal, setShowModal, event }: EventInfoProps) {
-    const currentUser = auth.currentUser
+  const currentUser = auth.currentUser
+  const navigation = useNavigation<NavigationProp<RootTabParamList>>()
 
 
     return (
@@ -53,10 +56,16 @@ export default function EventInfoModal({ showModal, setShowModal, event }: Event
                             {(currentUser?.email == event.ownerEmail) ? (
                                 <>
                                     <View style={styles.pressableView}>
-                                        <Pressable
-                                            style={({ pressed }) => pressed && styles.textPressed}>
-                                            <Text style={styles.buttonText}>Muokkaa TODO</Text>
-                                        </Pressable>
+                                      <Pressable
+                                          style={({ pressed }) => pressed && styles.textPressed}
+                                          onPress={() => {
+                                              setShowModal(false)
+                                              navigation.navigate("Muokkaa tapahtumaa", { eventId: event.id })
+                                          }}
+                                      >
+                                          <Text style={styles.buttonText}>Muokkaa</Text>
+                                      </Pressable>
+
                                         <Pressable
                                             style={({ pressed }) => pressed && styles.textPressed}>
                                             <Text style={styles.buttonText}>Poista Tapahtuma TODO</Text>

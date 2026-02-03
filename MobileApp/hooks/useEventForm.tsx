@@ -3,38 +3,77 @@ import { EventType } from "../types/Event";
 
 type Coordinate = { latitude: number; longitude: number };
 
+type UseEventFormInitialValues = {
+  title?: string;
+  description?: string;
+  date?: string;
+  startTime?: string;
+  type?: EventType;
+  locationName?: string;
+  locationAddress?: string;
+  latitude?: number;
+  longitude?: number;
+};
+
 type UseEventFormOptions = {
   defaultCoordinate: Coordinate;
   defaultType?: EventType;
+  initialValues?: UseEventFormInitialValues;
 };
 
 type ValidationResult =
   | { ok: true; latitude: number; longitude: number }
   | { ok: false; message: string };
 
+const parseTimeToDate = (value: string) => {
+  const [hours, minutes] = value.split(/[:.]/);
+  const date = new Date();
+  date.setHours(Number(hours) || 0, Number(minutes) || 0, 0, 0);
+  return date;
+};
+
 export function useEventForm({
   defaultCoordinate,
   defaultType = "Kävely",
+  initialValues,
 }: UseEventFormOptions) {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const initialTitle = initialValues?.title ?? "";
+  const initialDescription = initialValues?.description ?? "";
+  const initialDate = initialValues?.date ?? "";
+  const initialStartTime = initialValues?.startTime ?? "";
+  const initialType = initialValues?.type ?? defaultType;
 
-  const [startTime, setStartTime] = useState("");
-  const [startTimeValue, setStartTimeValue] = useState<Date>(new Date());
+  const initialLocationName = initialValues?.locationName ?? "";
+  const initialLocationAddress = initialValues?.locationAddress ?? "";
 
-  const [type, setType] = useState<EventType>(defaultType);
+  const initialLatitude =
+    initialValues?.latitude ?? defaultCoordinate.latitude;
+  const initialLongitude =
+    initialValues?.longitude ?? defaultCoordinate.longitude;
 
-  const [date, setDate] = useState("");
-  const [dateValue, setDateValue] = useState<Date>(new Date());
+  const [title, setTitle] = useState(initialTitle);
+  const [description, setDescription] = useState(initialDescription);
 
-  const [locationName, setLocationName] = useState("");
-  const [locationAddress, setLocationAddress] = useState("");
+  const [startTime, setStartTime] = useState(initialStartTime);
+  const [startTimeValue, setStartTimeValue] = useState<Date>(
+    initialStartTime ? parseTimeToDate(initialStartTime) : new Date()
+  );
+
+  const [type, setType] = useState<EventType>(initialType);
+
+  const [date, setDate] = useState(initialDate);
+  const [dateValue, setDateValue] = useState<Date>(
+    initialDate ? new Date(initialDate) : new Date()
+  );
+
+  const [locationName, setLocationName] = useState(initialLocationName);
+  const [locationAddress, setLocationAddress] = useState(initialLocationAddress);
 
   const [latitudeInput, setLatitudeInput] = useState(
-    defaultCoordinate.latitude.toString()
+    initialLatitude.toString()
   );
   const [longitudeInput, setLongitudeInput] = useState(
-    defaultCoordinate.longitude.toString()
+    initialLongitude.toString()
   );
 
   const formatTime = (value: Date) =>
@@ -63,17 +102,19 @@ export function useEventForm({
     : "Valitse päivämäärä";
 
   const resetForm = () => {
-    setTitle("");
-    setDescription("");
-    setDate("");
-    setDateValue(new Date());
-    setStartTime("");
-    setStartTimeValue(new Date());
-    setType(defaultType);
-    setLocationName("");
-    setLocationAddress("");
-    setLatitudeInput(defaultCoordinate.latitude.toString());
-    setLongitudeInput(defaultCoordinate.longitude.toString());
+    setTitle(initialTitle);
+    setDescription(initialDescription);
+    setDate(initialDate);
+    setDateValue(initialDate ? new Date(initialDate) : new Date());
+    setStartTime(initialStartTime);
+    setStartTimeValue(
+      initialStartTime ? parseTimeToDate(initialStartTime) : new Date()
+    );
+    setType(initialType);
+    setLocationName(initialLocationName);
+    setLocationAddress(initialLocationAddress);
+    setLatitudeInput(initialLatitude.toString());
+    setLongitudeInput(initialLongitude.toString());
   };
 
   const validateForm = (): ValidationResult => {
