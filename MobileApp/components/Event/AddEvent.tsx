@@ -24,8 +24,8 @@ export default function AddEvent() {
   const { user } = useAuth();
   
   const [location, setLocation] = useState<Region>(DEFAULT_REGION);
-   const [selectedCoordinate, setSelectedCoordinate] = useState(DEFAULT_COORDINATE);
-   const [locationError, setLocationError] = useState<string | null>(null);
+  const [selectedCoordinate, setSelectedCoordinate] = useState(DEFAULT_COORDINATE);
+  const [locationError, setLocationError] = useState<string | null>(null);
   
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -78,7 +78,6 @@ export default function AddEvent() {
     }
   };
 
-
   const formatTime = (value: Date) =>
     new Intl.DateTimeFormat("fi-FI", {
       hour: "2-digit",
@@ -95,7 +94,6 @@ export default function AddEvent() {
     setStartTimeValue(selected);
     setStartTime(formatTime(selected));
   };
-
 
   const formattedDate = date
     ? new Intl.DateTimeFormat("fi-FI", {
