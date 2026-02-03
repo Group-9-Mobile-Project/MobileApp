@@ -1,7 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import { Platform, View, ActivityIndicator } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
-import Navigator from "./components/Navigator";
+import RootNavigator from "./navigation/RootNavigator";
 import { useEffect, useState } from "react";
 import RegisterScreen from "./screens/RegisterScreen";
 import { AuthProvider } from "./context/AuthContext";
@@ -53,7 +53,7 @@ export default function App() {
       <PaperProvider>
       <SafeAreaProvider style={{ marginBottom: initialWindowMetrics?.insets.bottom }}>
         <NavigationContainer>
-          <Navigator />
+          <RootNavigator />
           <StatusBar style="auto" />
         </NavigationContainer>
         </SafeAreaProvider>

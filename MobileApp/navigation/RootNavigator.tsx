@@ -9,7 +9,7 @@ import { RootTabParamList } from '../types/Navigation';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
-export default function Navigator() {
+export default function RootNavigator() {
   return (
     <Tab.Navigator tabBar={(props) => <BottomNavBar {...props} />}>
       <Tab.Screen 
