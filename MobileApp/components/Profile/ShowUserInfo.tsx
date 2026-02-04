@@ -5,16 +5,18 @@ import EditUserInfo from './EditUserInfo';
 import { UserInfo } from '../../types/UserInfo';
 import { doc, getDoc } from "firebase/firestore";
 import { Card } from 'react-native-paper';
+import { useAuth } from '../../context/AuthContext';
 
 export default function ShowUserInfo() {
+
+  const { user } = useAuth()
 
   const [modalVisible, setModalVisible] = useState(false);
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [email, setEmail] = useState("");
 
   const fetchUserInfo = async () => {
-    const profile = auth.currentUser;
-    const profileEmail = profile?.email;
+    const profileEmail = user?.email?.trim().toLowerCase() ?? null
     if (!profileEmail) return;
 
     setEmail(profileEmail);
@@ -35,6 +37,7 @@ export default function ShowUserInfo() {
   useEffect(() => {
     fetchUserInfo();
   }, []);
+
 
   return (
     <View style={styles.container}>
@@ -86,7 +89,7 @@ export default function ShowUserInfo() {
         <EditUserInfo
           onClose={() => {
             setModalVisible(false);
-            fetchUserInfo(); // Päivitä tiedot kun modal suljetaan
+            fetchUserInfo();
           }}
         />
       </Modal>
@@ -102,17 +105,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   cardContainer: {
-    maxHeight: 300,
     alignContent: 'flex-start',
     marginBlockStart: 10,
     width: '100%',
     backgroundColor: 'lightgrey',
-    paddingVertical: 20,
   },
   heading: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 10,
+    margin: 10,
   },
   buttonText: {
     backgroundColor: 'lightgrey',
@@ -133,11 +134,10 @@ const styles = StyleSheet.create({
     opacity: 0.6
   },
   infoText: {
-    fontSize: 13,
-    padding: 3,
-    color: '#666',
+    fontSize: 12,
+    padding: 5,
   },
-  hobbiesTable: {
+    hobbiesTable: {
     marginVertical: 5,
   },
   hobbyRow: {
