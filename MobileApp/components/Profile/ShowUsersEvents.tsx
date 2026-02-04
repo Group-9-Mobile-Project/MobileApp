@@ -1,12 +1,12 @@
 import { View, Text, StyleSheet, ScrollView } from 'react-native'
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useState, useCallback } from 'react'
 import { Card } from 'react-native-paper'
-import { UserInfo } from 'firebase/auth'
-import { auth, firestore, USERINFO } from '../../firebase/Config'
+import { firestore, USERINFO } from '../../firebase/Config'
 import { collection, doc, getDoc, getDocs, query, where, orderBy } from 'firebase/firestore'
 import { Event } from '../../types/Event'
 import { useFocusEffect } from '@react-navigation/native'
 import { useAuth } from '../../context/AuthContext'
+import SingleEventRow from '../Common/SingleEventRow'
 
 export default function ShowUsersEvents() {
 
@@ -14,6 +14,8 @@ export default function ShowUsersEvents() {
     const [email, setEmail] = useState("");
     const [userCreatedEvents, setUserCreatedEvents] = useState<Event[]>([]);
     const [userJoinedEvents, setUserJoinedEvents] = useState<Event[]>([]);
+    const [createdIsExpanded, setCreatedIsExpanded] = useState<boolean>(false)
+    const [joinedIsExpanded, setJoinedIsExpanded] = useState<boolean>(false)
 
     const fetchEvents = useCallback(async () => {
 
@@ -76,18 +78,22 @@ export default function ShowUsersEvents() {
     return (
         <View style={styles.container}>
             <Card style={styles.cardContainer}>
-                <Card.Content>
+                 <Card.Content style={styles.expandableHeader} onTouchEnd={() => setCreatedIsExpanded(!createdIsExpanded)}>
                     <Text style={styles.heading}>Omat tapahtumat</Text>
+                    {createdIsExpanded ? <Text style={styles.heading}>▲</Text> : <Text style={styles.heading}>▼</Text>}
                 </Card.Content>
-                <ScrollView>
+                {createdIsExpanded && (
+                <ScrollView
+                    style={styles.scrollview}
+                    contentContainerStyle={{ flexGrow: 1, gap: 8 }}
+                    onStartShouldSetResponder={() => true}
+                    nestedScrollEnabled
+                >
                     {userCreatedEvents.length > 0 ? (
                         userCreatedEvents.map((event) => (
-                            <Card.Content key={event.id} style={styles.eventContent}>
-                                <Text style={styles.eventTitle}>{event.title}</Text>
-                                <Text style={styles.eventText}>{event.description}</Text>
-                                <Text style={styles.eventText}>{event.date} {event.startTime}</Text>
-                                <Text style={styles.eventText}>{event.location.name}</Text>
-                            </Card.Content>
+
+                            <SingleEventRow event={event} key={event.id} />
+
                         ))
                     ) : (
                         <Card.Content>
@@ -95,21 +101,25 @@ export default function ShowUsersEvents() {
                         </Card.Content>
                     )}
                 </ScrollView>
+                )}
             </Card>
 
             <Card style={styles.cardContainer}>
-                <Card.Content>
+                <Card.Content style={styles.expandableHeader} onTouchEnd={() => setJoinedIsExpanded(!joinedIsExpanded)}>
                     <Text style={styles.heading}>Liitytyt tapahtumat</Text>
+                    {joinedIsExpanded ? <Text style={styles.heading}>▲</Text> : <Text style={styles.heading}>▼</Text>}
                 </Card.Content>
-                <ScrollView>
+                {joinedIsExpanded && (
+                <ScrollView
+                    style={styles.scrollview}
+                    contentContainerStyle={{ flexGrow: 1, gap: 8 }}
+                    onStartShouldSetResponder={() => true}
+                    nestedScrollEnabled
+                >
                     {userJoinedEvents.length > 0 ? (
                         userJoinedEvents.map((event) => (
-                            <Card.Content key={event.id} style={styles.eventContent}>
-                                <Text style={styles.eventTitle}>{event.title}</Text>
-                                <Text style={styles.eventText}>{event.description}</Text>
-                                <Text style={styles.eventText}>{event.date} {event.startTime}</Text>
-                                <Text style={styles.eventText}>{event.location.name}</Text>
-                            </Card.Content>
+
+                            <SingleEventRow event={event} key={event.id} />
                         ))
                     ) : (
                         <Card.Content>
@@ -117,6 +127,7 @@ export default function ShowUsersEvents() {
                         </Card.Content>
                     )}
                 </ScrollView>
+                )}
             </Card>
         </View>
     )
@@ -134,11 +145,20 @@ const styles = StyleSheet.create({
         marginBlockStart: 10,
         width: '100%',
         backgroundColor: 'lightgrey'
+
+    },
+    scrollview: {
+        flexGrow: 1,
+        maxHeight: 200,
     },
     heading: {
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 10
+    },
+    expandableHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between'
     },
     eventContent: {
         borderTopWidth: 1,
