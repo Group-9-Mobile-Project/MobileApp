@@ -3,9 +3,11 @@ import React, { useState } from 'react'
 import { Marker } from 'react-native-maps';
 import EventInfoModal from '../Common/EventInfoModal';
 import { EventProps } from '../../types/Event';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { RootTabParamList } from '../../types/Navigation';
 
 export default function EventMapMarker({ event }: EventProps) {
-    const [showModal, setShowModal] = useState<boolean>(false)
+    const navigation = useNavigation<NavigationProp<RootTabParamList>>();
     
     return (
         <Marker
@@ -17,10 +19,10 @@ export default function EventMapMarker({ event }: EventProps) {
             description={'\t' + 'Klikkaa tästä tarkastellaksesi'}
 
             pinColor={(event.type.toString() === "juoksu") ? "red" : "blue"}
-            onCalloutPress={() => { setShowModal(true); }}
+            onCalloutPress={() => { navigation.navigate('Tapahtuman tiedot', { eventId : event.id}) }}
 
         >
-            <EventInfoModal showModal={showModal} setShowModal={setShowModal} event={event} />
+
         </Marker>
     )
 }
