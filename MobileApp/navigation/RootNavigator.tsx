@@ -6,6 +6,7 @@ import UpdateEventScreen from '../screens/UpdateEventScreen';
 import BottomNavBar from './BottomNavBar';
 import { Ionicons } from '@expo/vector-icons';
 import { RootTabParamList } from '../types/Navigation';
+import EventInfoScreen from '../screens/EventInfoScreen';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
@@ -42,6 +43,15 @@ export default function RootNavigator() {
       <Tab.Screen
         name="Muokkaa tapahtumaa"
         component={UpdateEventScreen}
+        options={{
+          tabBarButton: () => null,
+          tabBarItemStyle: { display: "none" },
+          tabBarStyle: { display: "none" },
+        }}
+      />
+      <Tab.Screen
+        name="Tapahtuman tiedot"
+        component={EventInfoScreen}
         options={{
           tabBarButton: () => null,
           tabBarItemStyle: { display: "none" },
