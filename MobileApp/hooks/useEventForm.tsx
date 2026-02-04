@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { EventType } from "../types/Event";
 
 type Coordinate = { latitude: number; longitude: number };
