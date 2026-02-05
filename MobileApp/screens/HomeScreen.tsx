@@ -10,7 +10,7 @@ export default function HomeScreen() {
     <ScrollView contentContainerStyle={styles.scrollview}>
       <View style={styles.container}>
         <RecentEventsList />
-        <EventSearchModal />
+        
         <AllEventsMapView />
       </View>
     </ScrollView>

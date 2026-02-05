@@ -18,7 +18,7 @@ export default function EventMapMarker({ event }: EventProps) {
             title={event.title + ' ' + event.date + ' ' + event.startTime}
             description={'\t' + 'Klikkaa tästä tarkastellaksesi'}
 
-            pinColor={(event.type.toString() === "juoksu") ? "red" : "blue"}
+            pinColor={(event.type.toString().toLowerCase().trim() == "juoksu") ? "red" : "blue"}
             onCalloutPress={() => { navigation.navigate('Tapahtuman tiedot', { eventId : event.id}) }}
 
         >

@@ -116,7 +116,7 @@ export default function AllEventsMapView() {
 
   return (
     <>
-      <Text style={styles.heading}>Kaikki tapahtumat</Text>
+      <Text style={styles.title}>Kaikki tapahtumat</Text>
       <View style={styles.filtersView}>
         <Card style={styles.cardContainer}>
           <Card.Content style={styles.expandableHeader} onTouchEnd={() => setIsExpanded(!isExpanded)}>
@@ -137,7 +137,7 @@ export default function AllEventsMapView() {
                     <RadioButton.Group
                       value={eventType}
                       onValueChange={(value) => {
-                        setEventType(value as EventType || null);
+                        setEventType(value as EventType || "Molemmat");
                         closeTypeDialog();
                       }}
                     >
@@ -157,6 +157,7 @@ export default function AllEventsMapView() {
                 mode="date"
                 buttonLabel={formattedDate}
                 onChange={handleDateSelected}
+                minimumDate={new Date()}
               />
 
 
@@ -170,7 +171,6 @@ export default function AllEventsMapView() {
         </Card>
       </View>
       <View style={styles.mapContainer}>
-        <Text>Tähän tulee kaikkien tapahtumien karttanäkymä</Text>
         <MapAllEvents currentRegion={location} eventList={eventList} />
       </View>
 
@@ -181,10 +181,8 @@ export default function AllEventsMapView() {
 const styles = StyleSheet.create({
   cardContainer: {
     alignContent: 'flex-start',
-    marginBlockStart: 20,
     width: '100%',
     backgroundColor: 'lightgrey',
-    marginBlockEnd: 10
   },
   expandableHeader: {
     flexDirection: 'row',
@@ -194,6 +192,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginTop: 16
   },
   basicInfoView: {
     margin: 0,
