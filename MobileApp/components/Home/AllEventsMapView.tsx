@@ -4,9 +4,8 @@ import { Region } from 'react-native-maps'
 import MapAllEvents from './MapAllEvents';
 import * as Location from 'expo-location'
 import { Event, EventType } from '../../types/Event';
-import { collection, getDocs, onSnapshot, orderBy, query, where } from 'firebase/firestore';
+import { collection, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { EVENT, firestore } from '../../firebase/Config';
-import { currentTimestamp } from 'firebase/firestore/pipelines';
 import { Card, Button as PaperButton, Dialog, Portal, RadioButton } from "react-native-paper";
 import DateTimePickerField from '../Common/DateTimePickerField';
 
@@ -91,15 +90,29 @@ export default function AllEventsMapView() {
     const q = query(colRef, orderBy('date', 'desc'), where('date', '>=', today))
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const apulista: Event[] = []
+      
+      
       querySnapshot.forEach((doc) => {
         apulista.push(doc.data() as Event)
       })
+
+      var dateFilteredList: Event[] = apulista
+      if (date != '') {
+        console.log(date)
+        dateFilteredList = apulista.filter(event => event.date.trim() == date.trim())
+      }
+
+      var typeFilteredList: Event[] = dateFilteredList
+      if (eventType != 'Molemmat') {
+        console.log(eventType.toLowerCase())
+        typeFilteredList = dateFilteredList.filter(event => event.type.toLowerCase().trim() == eventType.toLowerCase().trim())
+      }
       //console.log(apulista)
-      setEventList(apulista)
+      setEventList(typeFilteredList)
     })
 
     return () => { unsubscribe(); };
-  }, [])
+  }, [date, eventType])
 
   return (
     <>
