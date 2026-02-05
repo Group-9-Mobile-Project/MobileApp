@@ -3,9 +3,11 @@ import React, { useEffect, useState } from 'react'
 import { doc, updateDoc, getDoc } from 'firebase/firestore'
 import { auth, firestore, USERINFO } from '../../firebase/Config'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { useAuth } from '../../context/AuthContext';
 
 export default function EditUserInfo({ onClose }: { onClose: () => void }) {
 
+  const { user } = useAuth()
   const [email, setEmail] = useState("");
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
@@ -21,8 +23,7 @@ export default function EditUserInfo({ onClose }: { onClose: () => void }) {
 
     (async () => {
 
-      const profile = auth.currentUser;
-      const profileEmail = profile?.email;
+      const profileEmail = user?.email?.trim().toLowerCase() ?? null
       if (!profileEmail) return;
 
       setEmail(profileEmail);

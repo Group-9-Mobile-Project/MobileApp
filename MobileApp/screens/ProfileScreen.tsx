@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import LogOutButton from '../components/Profile/LogOutButton';
 import ShowUserInfo from '../components/Profile/ShowUserInfo';
 import ShowUsersEvents from '../components/Profile/ShowUsersEvents';
@@ -10,18 +10,17 @@ export default function ProfileScreen() {
 
   return (
 
-    <View style={styles.container}>
+    <ScrollView style={styles.contentContainer}>
       <ShowUsersEvents/>
       <ShowUserInfo/>
       <LogOutButton/>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  contentContainer: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    padding: 5,
   },
 });
