@@ -93,9 +93,10 @@ export default function AllEventsMapView() {
       
       
       querySnapshot.forEach((doc) => {
-        apulista.push(doc.data() as Event)
+          apulista.push(doc.data() as Event) 
       })
 
+      
       var dateFilteredList: Event[] = apulista
       if (date != '') {
         console.log(date)
@@ -107,6 +108,7 @@ export default function AllEventsMapView() {
         console.log(eventType.toLowerCase())
         typeFilteredList = dateFilteredList.filter(event => event.type.toLowerCase().trim() == eventType.toLowerCase().trim())
       }
+      
       //console.log(apulista)
       setEventList(typeFilteredList)
     })
