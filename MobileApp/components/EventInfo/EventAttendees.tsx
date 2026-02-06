@@ -1,8 +1,8 @@
 import { View, Text, StyleSheet } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Card, Divider } from 'react-native-paper'
-import { EventProps } from '../../types/Event'
 import AttendeeInfoRow from './AttendeeInfoRow'
+import ExpandableListCard from '../Common/ExpandableListCard'
 
 interface AttendeesProps {
     attendees: string[]
@@ -11,10 +11,7 @@ interface AttendeesProps {
 export default function EventAttendees({ attendees }: AttendeesProps) {
     const [isExpanded, setIsExpanded] = useState<boolean>(false)
 
-    useEffect(() => {
-        setIsExpanded(false)
-    }, [])
-
+    /*
     return (
         <Card style={styles.cardContainer} >
             <Card.Content style={styles.expandableHeader} onTouchEnd={() => setIsExpanded(!isExpanded)}>
@@ -34,6 +31,14 @@ export default function EventAttendees({ attendees }: AttendeesProps) {
             }
 
         </Card>
+    )
+        */
+    return (
+        <ExpandableListCard
+            title='Ilmoittautuneet käyttäjät'
+            listType={'attendees'}
+            list={attendees}        
+        />
     )
 }
 
