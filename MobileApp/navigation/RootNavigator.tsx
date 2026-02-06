@@ -12,7 +12,7 @@ const Tab = createBottomTabNavigator<RootTabParamList>();
 
 export default function RootNavigator() {
   return (
-    <Tab.Navigator tabBar={(props) => <BottomNavBar {...props} />}>
+    <Tab.Navigator tabBar={(props) => <BottomNavBar {...props} />} backBehavior='history'>
       <Tab.Screen 
         name="Koti" 
         component={HomeScreen}
