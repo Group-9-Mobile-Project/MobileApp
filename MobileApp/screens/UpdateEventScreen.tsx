@@ -34,6 +34,9 @@ export default function UpdateEventScreen() {
 
   useEffect(() => {
     let isMounted = true;
+    
+    setLoading(true);
+    setEvent(null);
 
     const load = async () => {
       try {
@@ -119,6 +122,7 @@ export default function UpdateEventScreen() {
         extraScrollHeight={24}
       >
         <EventForm
+          key={event.id}
           initialEvent={event}
           submitLabel="Tallenna muutokset"
           resetOnSuccess={false}

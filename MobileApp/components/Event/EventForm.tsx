@@ -117,7 +117,7 @@ export default function EventForm({
     onResolvedAddress: setLocationAddress,
     onCoordinateChange: handleCoordinateChange,
   });
-
+  
   const shouldResetOnSuccess = resetOnSuccess ?? !initialEvent;
   const resolvedSubmitLabel =
     submitLabel ?? (initialEvent ? "Tallenna muutokset" : "Lisää tapahtuma");
