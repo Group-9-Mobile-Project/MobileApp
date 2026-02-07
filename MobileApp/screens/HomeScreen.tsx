@@ -3,12 +3,15 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import RecentEventsList from '../components/Home/RecentEventsList';
 import AllEventsMapView from '../components/Home/AllEventsMapView';
 import EventSearchModal from '../components/Home/EventSearchModal';
+import EventStartingBanner from '../components/Home/EventStartingBanner';
 
 export default function HomeScreen() {
   return (
 
     <ScrollView contentContainerStyle={styles.scrollview}>
       <View style={styles.container}>
+        <EventStartingBanner />
+        
         <RecentEventsList />
         
         <AllEventsMapView />
