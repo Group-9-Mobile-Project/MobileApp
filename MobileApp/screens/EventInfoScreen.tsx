@@ -31,6 +31,10 @@ export default function EventInfoScreen() {
     const [organizer, setOrganizer] = useState<UserInfo | null>(null)
     const [showOrganizerModal, setShowOrganizerModal] = useState<boolean>(false)
 
+    let today = new Date()
+    let todayISO = today.toISOString().slice(0, 10)
+    const hours = today.getHours()
+
 
     useEffect(() => {
         const docRef = doc(firestore, EVENT, eventId)
@@ -164,11 +168,25 @@ export default function EventInfoScreen() {
                                     <JoinEventButton event={event} />
                                 </View>
                             )}
+
                             <Pressable
                                 style={({ pressed }) => pressed && styles.textPressed}
                                 onPress={() => navigation.goBack()}>
                                 <Text style={styles.buttonText}>Sulje</Text>
                             </Pressable>
+
+                            {((event.date == todayISO)
+                                &&
+                                ((event.startTime.split(/\.|\:/)[0] as unknown as number >= hours - 1) && (event.startTime.split(/\.|\:/)[0] as unknown as number <= hours + 1))
+                                &&
+                                (((currentEmail) && (event.attendees.includes(currentEmail))) || isOwner)) && (
+                                    <Pressable
+                                        style={({ pressed }) => pressed && styles.textPressed}
+                                        onPress={() => navigation.navigate('Tallenna tapahtuma', { eventId: event.id })}
+                                    >
+                                        <Text style={styles.buttonText}>Tallenna suoritus</Text>
+                                    </Pressable>
+                                )}
 
                         </View>
                     </Card.Content>
