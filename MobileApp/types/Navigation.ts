@@ -5,5 +5,6 @@ export type RootTabParamList = {
   "Uusi lenkki": undefined;
   Profiili: undefined;
   "Muokkaa tapahtumaa": { eventId: string };
-  "Tapahtuman tiedot": { eventId: string}
+  "Tapahtuman tiedot": { eventId: string};
+  "Tallenna tapahtuma": { eventId: string};
 };

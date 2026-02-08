@@ -84,7 +84,6 @@ export default function AllEventsMapView() {
 
   useEffect(() => {
     let today = new Date().toISOString().slice(0, 10)
-    console.log(today)
 
     const colRef = collection(firestore, EVENT)
     const q = query(colRef, orderBy('date', 'desc'), where('date', '>=', today))
