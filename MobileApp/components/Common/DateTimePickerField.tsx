@@ -8,7 +8,12 @@ import {
   TextStyle,
   View,
 } from "react-native";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import DateTimePicker, {
+  DateTimePickerAndroid,
+  DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
+
+type Display = "default" | "spinner" | "calendar" | "clock";
 
 type DateTimePickerFieldProps = {
   label: string;
@@ -18,7 +23,7 @@ type DateTimePickerFieldProps = {
   onChange: (value: Date) => void;
   locale?: string;
   buttonLabel: string;
-  display?: "default" | "spinner" | "calendar" | "clock" | "inline";
+  display?: Display;
   minimumDate?: Date;
   maximumDate?: Date;
 };
@@ -35,6 +40,7 @@ export default function DateTimePickerField({
   minimumDate,
   maximumDate,
 }: DateTimePickerFieldProps) {
+  const isAndroid = Platform.OS === "android";
   const [show, setShow] = useState(false);
   const [draft, setDraft] = useState(value);
 
@@ -45,14 +51,36 @@ export default function DateTimePickerField({
   }, [value, show]);
 
   const resolvedDisplay =
-    display ??
-    (Platform.OS === "ios"
-      ? "spinner"
-      : mode === "date"
-        ? "calendar"
-        : "clock");
+    display ?? (Platform.OS === "ios" ? "spinner" : "default");
+
+  const handleAndroidChange = (
+    event: DateTimePickerEvent,
+    selected?: Date
+  ) => {
+    if (event.type === "set" && selected) {
+      onChange(selected);
+    }
+  };
+
+  const handleChange = (_event: DateTimePickerEvent, selected?: Date) => {
+    if (!selected) return;
+    setDraft(selected);
+  };
 
   const open = () => {
+    if (isAndroid) {
+      DateTimePickerAndroid.open({
+        value,
+        mode,
+        display: resolvedDisplay,
+        onChange: handleAndroidChange,
+        minimumDate,
+        maximumDate,
+        is24Hour: true,
+      });
+      return;
+    }
+
     setDraft(value);
     setShow(true);
   };
@@ -60,20 +88,6 @@ export default function DateTimePickerField({
   const close = () => {
     setShow(false);
     setDraft(value);
-  };
-
-  const handleChange = (event: { type?: string }, selected?: Date) => {
-    if (!selected) return;
-
-    if (Platform.OS === "android") {
-      if (event.type === "set") {
-        onChange(selected);
-      }
-      setShow(false);
-      return;
-    }
-
-    setDraft(selected);
   };
 
   const confirm = () => {
@@ -85,20 +99,6 @@ export default function DateTimePickerField({
     <View style={styles.container}>
       <Text style={labelStyle}>{label}</Text>
       <Button title={buttonLabel} onPress={open} />
-
-      {Platform.OS === "android" && show && (
-        <View style={styles.pickerContainer}>
-          <DateTimePicker
-            value={value}
-            mode={mode}
-            display={resolvedDisplay}
-            locale={locale}
-            onChange={handleChange}
-            minimumDate={minimumDate}
-            maximumDate={maximumDate}
-          />
-        </View>
-      )}
 
       {Platform.OS === "ios" && show && (
         <View style={styles.inlinePickerContainer}>
