@@ -23,7 +23,7 @@ export default function AttendeeInfoModal({
 
   return (
     <Modal
-      animationType="slide"
+      animationType="fade"
       visible={showModal}
       onRequestClose={() => setShowModal(!showModal)}
       backdropColor={"#ffffff83"}
