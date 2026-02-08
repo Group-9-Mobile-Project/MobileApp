@@ -8,8 +8,10 @@ import { RootTabParamList } from '../types/Navigation'
 import { deleteEvent } from '../services/eventService'
 import { useAuth } from '../context/AuthContext'
 import { collection, query, orderBy, where, limit, onSnapshot, doc } from 'firebase/firestore'
-import { firestore, EVENT } from '../firebase/Config'
+import { firestore, EVENT, USERINFO } from '../firebase/Config'
 import EventAttendees from '../components/EventInfo/EventAttendees'
+import AttendeeInfoModal from '../components/EventInfo/AttendeeInfoModal'
+import { UserInfo } from '../types/UserInfo'
 
 
 
@@ -26,6 +28,10 @@ export default function EventInfoScreen() {
     const eventOwnerEmail = event?.ownerEmail?.trim().toLowerCase() ?? null
     const isOwner = !!currentEmail && !!eventOwnerEmail && currentEmail === eventOwnerEmail
 
+    const [organizer, setOrganizer] = useState<UserInfo | null>(null)
+    const [showOrganizerModal, setShowOrganizerModal] = useState<boolean>(false)
+
+
     useEffect(() => {
         const docRef = doc(firestore, EVENT, eventId)
 
@@ -36,6 +42,20 @@ export default function EventInfoScreen() {
 
         return () => { unsubscribe(); };
     }, [eventId])
+
+
+    useEffect(() => {
+        if (!eventOwnerEmail) return
+
+        const docRef = doc(firestore, USERINFO, eventOwnerEmail)
+
+        const unsubscribe = onSnapshot(docRef, (doc) => {
+            setOrganizer(doc.data() as UserInfo)
+            setLoading(false)
+        })
+
+        return () => { unsubscribe(); };
+    }, [eventOwnerEmail])
 
 
     const handleDelete = () => {
@@ -98,7 +118,14 @@ export default function EventInfoScreen() {
                             <Text style={styles.infoText}>Aika: {event.startTime}</Text>
                             <Text style={styles.infoText}>Paikka: {event.location.address}</Text>
                             <Text style={styles.infoText}>Tyyppi: {event.type}</Text>
-                            <Text style={styles.infoText}>Tapahtuman lisääjä: {event.organizer}</Text>
+                            <View style={{ flexDirection: 'row' }}>
+                                <Text style={styles.infoText}>Tapahtuman lisääjä: </Text>
+                                <Pressable onPress={() => { setShowOrganizerModal(true) }}>
+                                    <Text style={styles.organizerLink}>{event.organizer}</Text>
+                                </Pressable>
+
+                            </View>
+
                             <Text style={styles.infoText}>Ilmoittautuneita: {event.attendees.length}</Text>
                         </View>
                     </Card.Content>
@@ -111,32 +138,32 @@ export default function EventInfoScreen() {
                     <Card.Content>
                         <View>
                             {isOwner ? (
-                                
-                                    <View style={styles.pressableView}>
-                                        <Pressable
-                                            style={({ pressed }) => pressed && styles.textPressed}
-                                            onPress={() => {
 
-                                                navigation.navigate("Muokkaa tapahtumaa", { eventId: event.id })
-                                            }}
-                                        >
-                                            <Text style={styles.buttonText}>Muokkaa</Text>
-                                        </Pressable>
+                                <View style={styles.pressableView}>
+                                    <Pressable
+                                        style={({ pressed }) => pressed && styles.textPressed}
+                                        onPress={() => {
 
-                                        <Pressable
-                                            style={({ pressed }) => pressed && styles.textPressed}
-                                            onPress={handleDelete}
-                                        >
-                                            <Text style={styles.buttonText}>Poista tapahtuma</Text>
-                                        </Pressable>
-                                    </View>
-                                
+                                            navigation.navigate("Muokkaa tapahtumaa", { eventId: event.id })
+                                        }}
+                                    >
+                                        <Text style={styles.buttonText}>Muokkaa</Text>
+                                    </Pressable>
+
+                                    <Pressable
+                                        style={({ pressed }) => pressed && styles.textPressed}
+                                        onPress={handleDelete}
+                                    >
+                                        <Text style={styles.buttonText}>Poista tapahtuma</Text>
+                                    </Pressable>
+                                </View>
+
                             ) : (
-                                
-                                    <View style={styles.pressableView}>
-                                        <JoinEventButton event={event} />
-                                    </View>
-                                )}
+
+                                <View style={styles.pressableView}>
+                                    <JoinEventButton event={event} />
+                                </View>
+                            )}
                             <Pressable
                                 style={({ pressed }) => pressed && styles.textPressed}
                                 onPress={() => navigation.goBack()}>
@@ -151,6 +178,10 @@ export default function EventInfoScreen() {
 
             </View>
 
+            {organizer && <AttendeeInfoModal
+                showModal={showOrganizerModal}
+                setShowModal={setShowOrganizerModal}
+                attendee={organizer} />}
         </ScrollView>
 
 
@@ -214,6 +245,11 @@ const styles = StyleSheet.create({
     infoText: {
         fontSize: 12,
         padding: 5,
+    },
+    organizerLink: {
+        fontSize: 12,
+        padding: 5,
+        color: "#1e88e5"
     },
     centered: {
         flex: 1,
