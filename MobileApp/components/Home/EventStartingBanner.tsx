@@ -79,7 +79,7 @@ export default function EventStartingBanner() {
                         <Pressable onTouchEnd={() => navigation.navigate('Tapahtuman tiedot', { eventId: events[0].id })}>
                             <Text>Tapahtuman sivu</Text>
                         </Pressable>
-                        <Pressable>
+                        <Pressable onTouchEnd={() => navigation.navigate('Tallenna tapahtuma', { eventId: events[0].id })}>
                             <Text>Tallenna suoritus</Text>
                         </Pressable>
                     </Card.Actions>
