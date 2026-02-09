@@ -34,4 +34,4 @@ export type RoutePoint = {
   accuracy?: number;
   speed?: number;
   altitude?: number;
-}
+};
