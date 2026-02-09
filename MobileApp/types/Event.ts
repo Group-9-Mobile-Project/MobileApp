@@ -9,6 +9,7 @@ export type Event = {
   organizer: string,
   startTime: string,
   ownerEmail: string,
+  route?: RoutePoint[],
 }
 
 export type EventType = "Juoksu" | "Kävely";
@@ -24,4 +25,13 @@ export interface Location {
 
 export interface EventProps {
   event: Event
+}
+
+export type RoutePoint = {
+  latitude: number;
+  longitude: number;
+  timestamp: number;
+  accuracy?: number;
+  speed?: number;
+  altitude?: number;
 }
