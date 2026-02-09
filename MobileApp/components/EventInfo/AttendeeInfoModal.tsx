@@ -1,8 +1,9 @@
-import { View, Text, Modal, StyleSheet, Pressable } from "react-native";
+import { View, Text, Modal, Pressable } from "react-native";
 import React from "react";
 import { UserInfo } from "../../types/UserInfo";
 import { Card } from "react-native-paper";
 import { Timestamp } from "firebase/firestore";
+import globalStyles from "../../themes/GlobalStyles";
 
 interface AttendeeFullInfoProps {
   showModal: boolean;
@@ -28,33 +29,33 @@ export default function AttendeeInfoModal({
       onRequestClose={() => setShowModal(!showModal)}
       backdropColor={"#ffffff83"}
     >
-      <View style={styles.modalView}>
-        <Card style={styles.cardContainer}>
+      <View style={globalStyles.modalView}>
+        <Card style={globalStyles.cardContainer}>
           <Card.Content>
-            <Text style={styles.heading}>{attendee.name}</Text>
+            <Text style={globalStyles.heading}>{attendee.name}</Text>
           </Card.Content>
           <Card.Content>
-            <View style={styles.basicInfoView}>
+            <View style={globalStyles.basicInfoView}>
               {attendee.birthdate && (
-                <Text style={styles.infoText}>
+                <Text style={globalStyles.infoText}>
                   Syntymäaika: {attendee.birthdate}
                 </Text>
               )}
               {attendee.city && (
-                <Text style={styles.infoText}>Paikka: {attendee.city}</Text>
+                <Text style={globalStyles.infoText}>Paikka: {attendee.city}</Text>
               )}
-              {time && <Text style={styles.infoText}>Liittynyt: {time}</Text>}
+              {time && <Text style={globalStyles.infoText}>Liittynyt: {time}</Text>}
               {attendee.interests && (
-                <Text style={styles.infoText}>
+                <Text style={globalStyles.infoText}>
                   Kiinnostukset: {attendee.interests}
                 </Text>
               )}
               {attendee.hobbies && (
                 <View>
-                  <Text style={styles.infoText}>Harrastukset: </Text>
-                  <View style={styles.descriptionView}>
+                  <Text style={globalStyles.infoText}>Harrastukset: </Text>
+                  <View style={globalStyles.descriptionView}>
                     {attendee.hobbies.map((hobby) => (
-                      <Text style={styles.infoText} key={hobby}>
+                      <Text style={globalStyles.infoText} key={hobby}>
                         {hobby}
                       </Text>
                     ))}
@@ -63,7 +64,7 @@ export default function AttendeeInfoModal({
               )}
 
               {attendee.pronouns && (
-                <Text style={styles.infoText}>
+                <Text style={globalStyles.infoText}>
                   Pronominit: {attendee.pronouns}
                 </Text>
               )}
@@ -71,18 +72,18 @@ export default function AttendeeInfoModal({
           </Card.Content>
           <Card.Content>
             {attendee.description && (
-              <View style={styles.descriptionView}>
-                <Text style={styles.infoText}>Kuvaus:</Text>
-                <Text style={styles.infoText}>{attendee.description}</Text>
+              <View style={globalStyles.descriptionView}>
+                <Text style={globalStyles.infoText}>Kuvaus:</Text>
+                <Text style={globalStyles.infoText}>{attendee.description}</Text>
               </View>
             )}
           </Card.Content>
           <Card.Content>
             <Pressable
-              style={({ pressed }) => pressed && styles.textPressed}
+              style={({ pressed }) => pressed && globalStyles.textPressed}
               onPress={() => setShowModal(!showModal)}
             >
-              <Text style={styles.buttonText}>Sulje</Text>
+              <Text style={globalStyles.buttonText}>Sulje</Text>
             </Pressable>
           </Card.Content>
         </Card>
@@ -90,66 +91,3 @@ export default function AttendeeInfoModal({
     </Modal>
   );
 }
-
-const styles = StyleSheet.create({
-  modalView: {
-    flex: 1,
-    justifyContent: "center",
-    margin: 8,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-    gap: 24,
-  },
-  cardContainer: {
-    alignContent: "flex-start",
-    marginBlockStart: 20,
-    width: "100%",
-    backgroundColor: "lightgrey",
-  },
-  heading: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  basicInfoView: {
-    margin: 0,
-    alignItems: "flex-start",
-    justifyContent: "flex-start",
-    width: "95%",
-  },
-  descriptionView: {
-    width: "95%",
-    margin: 8,
-  },
-  pressableView: {
-    flexDirection: "row",
-    gap: 32,
-  },
-  button: {
-    alignContent: "center",
-    justifyContent: "center",
-    borderRadius: 10,
-    margin: 10,
-    backgroundColor: "lightblue",
-    width: "auto",
-    padding: 10,
-  },
-  buttonText: {
-    backgroundColor: "lightgrey",
-    fontWeight: "bold",
-    alignItems: "center",
-    padding: 12,
-    marginVertical: 10,
-    borderRadius: 10,
-  },
-  textPressed: {
-    opacity: 0.6,
-  },
-  infoText: {
-    fontSize: 12,
-    padding: 5,
-  },
-});

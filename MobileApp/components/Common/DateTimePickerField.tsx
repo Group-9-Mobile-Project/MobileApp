@@ -98,7 +98,7 @@ export default function DateTimePickerField({
   return (
     <View style={styles.container}>
       <Text style={labelStyle}>{label}</Text>
-      <Button title={buttonLabel} onPress={open} />
+      <Button title={buttonLabel} onPress={open} color={(Platform.OS === "ios" ? "black" : "")} />
 
       {Platform.OS === "ios" && show && (
         <View style={styles.inlinePickerContainer}>

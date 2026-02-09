@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Region } from 'react-native-maps'
 import MapAllEvents from './MapAllEvents';
@@ -8,8 +8,7 @@ import { collection, onSnapshot, orderBy, query, where } from 'firebase/firestor
 import { EVENT, firestore } from '../../firebase/Config';
 import { Card, Button as PaperButton, Dialog, Portal, RadioButton } from "react-native-paper";
 import DateTimePickerField from '../Common/DateTimePickerField';
-
-
+import globalStyles from '../../themes/GlobalStyles';
 
 export default function AllEventsMapView() {
   const [location, setLocation] = useState<Region>({
@@ -117,17 +116,17 @@ export default function AllEventsMapView() {
 
   return (
     <>
-      <Text style={styles.title}>Kaikki tapahtumat</Text>
-      <View style={styles.filtersView}>
-        <Card style={styles.cardContainer}>
-          <Card.Content style={styles.expandableHeader} onTouchEnd={() => setIsExpanded(!isExpanded)}>
-            <Text style={styles.heading}>Suodattimet</Text>
-            {isExpanded ? <Text style={styles.heading}>▲</Text> : <Text style={styles.heading}>▼</Text>}
+      <Text style={globalStyles.title}>Kaikki tapahtumat</Text>
+      <View style={globalStyles.filtersView}>
+        <Card style={globalStyles.cardContainer}>
+          <Card.Content style={globalStyles.expandableHeader} onTouchEnd={() => setIsExpanded(!isExpanded)}>
+            <Text style={globalStyles.heading}>Suodattimet</Text>
+            {isExpanded ? <Text style={globalStyles.heading}>▲</Text> : <Text style={globalStyles.heading}>▼</Text>}
           </Card.Content>
           {isExpanded && (
             <View style={{ padding: 16, gap: 16 }}>
-              <Text style={styles.label}>Tyyppi:</Text>
-              <PaperButton mode="outlined" onPress={openTypeDialog}>
+              <Text style={globalStyles.label}>Tyyppi:</Text>
+              <PaperButton mode="outlined" onPress={openTypeDialog} textColor='black'>
                 {eventType}
               </PaperButton>
 
@@ -153,7 +152,7 @@ export default function AllEventsMapView() {
 
               <DateTimePickerField
                 label="Päivämäärä"
-                labelStyle={styles.label}
+                labelStyle={globalStyles.label}
                 value={dateValue}
                 mode="date"
                 buttonLabel={formattedDate}
@@ -164,63 +163,17 @@ export default function AllEventsMapView() {
 
 
 
-              <PaperButton mode="outlined" onPress={resetFilters}>
+              <PaperButton mode="outlined" onPress={resetFilters} textColor='black'>
                 Tyhjennä suodattimet
               </PaperButton>
             </View>
           )}
         </Card>
       </View>
-      <View style={styles.mapContainer}>
+      <View style={globalStyles.mapContainer}>
         <MapAllEvents currentRegion={location} eventList={eventList} />
       </View>
 
     </>
   )
 }
-
-const styles = StyleSheet.create({
-  cardContainer: {
-    alignContent: 'flex-start',
-    width: '100%',
-    backgroundColor: 'lightgrey',
-  },
-  expandableHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
-  heading: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginTop: 16
-  },
-  basicInfoView: {
-    margin: 0,
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    width: '95%',
-  },
-  filtersView: {
-    flex: 1,
-    width: '95%',
-    justifyContent: 'space-evenly',
-    margin: 8
-  },
-  mapContainer: {
-    margin: 8,
-    padding: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    maxHeight: 300
-
-  },
-  label: {
-    fontWeight: "600",
-  },
-});
