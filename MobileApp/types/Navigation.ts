@@ -7,4 +7,5 @@ export type RootTabParamList = {
   "Muokkaa tapahtumaa": { eventId: string };
   "Tapahtuman tiedot": { eventId: string};
   "Tallenna tapahtuma": { eventId: string};
+  "Tilastot": undefined;
 };

@@ -8,6 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { RootTabParamList } from '../types/Navigation';
 import EventInfoScreen from '../screens/EventInfoScreen';
 import RecordEventScreen from '../screens/RecordEventScreen';
+import StatisticsScreen from '../screens/StatisticsScreen';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
@@ -62,6 +63,15 @@ export default function RootNavigator() {
       <Tab.Screen
         name="Tallenna tapahtuma"
         component={RecordEventScreen}
+        options={{
+          tabBarButton: () => null,
+          tabBarItemStyle: { display: "none" },
+          tabBarStyle: { display: "none" },
+        }}
+      />
+      <Tab.Screen
+        name="Tilastot"
+        component={StatisticsScreen}
         options={{
           tabBarButton: () => null,
           tabBarItemStyle: { display: "none" },
