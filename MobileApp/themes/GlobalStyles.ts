@@ -116,6 +116,16 @@ const globalStyles = StyleSheet.create({
         padding: 12,
         borderRadius: 5,
     },
+    logOutButton: {
+        backgroundColor: 'grey',
+        alignItems: 'center',
+        padding: 12,
+        borderRadius: 5,
+        margin: 10,
+    },
+    logOutButtonText: {
+        fontSize: 16,
+    },
     textPressed: {
         opacity: 0.6,
     },
@@ -194,6 +204,16 @@ const globalStyles = StyleSheet.create({
     hobbyText: {
         fontSize: 14,
         flex: 1,
+    },
+    hobbiesTable: {
+        marginVertical: 5,
+    },
+    hobbyRow: {
+        paddingVertical: 8,
+        paddingHorizontal: 8,
+        borderBottomWidth: 1,
+        borderBottomColor: 'lightgrey',
+        backgroundColor: '#b5b5b5',
     },
     deleteButton: {
         padding: 5,
