@@ -12,6 +12,20 @@ const globalStyles = StyleSheet.create({
         elevation: 5,
         gap: 24,
     },
+    container: {
+        flex: 1,
+    },
+    editUserContainer: {
+        flex: 1,
+        padding: 20,
+        marginTop: 20,
+        gap: 5
+    },
+    contentContainer: {
+        alignItems: "center",
+        justifyContent: "center",
+        paddingVertical: 16,
+    },
     cardContainer: {
         alignContent: 'flex-start',
         marginBlockStart: 20,
@@ -19,7 +33,7 @@ const globalStyles = StyleSheet.create({
         backgroundColor: 'lightgrey',
         marginBlockEnd: 10
     },
-    container: {
+    EventFormContainer: {
         padding: 16,
         gap: 16,
         width: "100%",
@@ -101,7 +115,6 @@ const globalStyles = StyleSheet.create({
         alignItems: "center",
         padding: 12,
         borderRadius: 5,
-        margin: 10,
     },
     textPressed: {
         opacity: 0.6,
@@ -138,7 +151,74 @@ const globalStyles = StyleSheet.create({
     divider: {
         color: '#fff',
         width: '100%',
-    }
+    },
+    centered: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 12,
+        padding: 24,
+    },
+    organizerLink: {
+        fontSize: 16,
+        padding: 5,
+        color: "#1e88e5"
+    },
+    linkText: {
+        color: "#1e88e5",
+        marginTop: 8,
+    },
+    hobbyInputContainer: {
+        flexDirection: 'row',
+        gap: 10,
+        marginBottom: 10,
+    },
+    hobbyInput: {
+        flex: 1,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        backgroundColor: '#ddd',
+        padding: 10,
+        borderRadius: 5,
+        fontSize: 14,
+    },
+    hobbyItem: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        backgroundColor: '#f0f0f0',
+        padding: 10,
+        borderRadius: 5,
+        marginBottom: 8,
+    },
+    hobbyText: {
+        fontSize: 14,
+        flex: 1,
+    },
+    deleteButton: {
+        padding: 5,
+    },
+    deleteButtonText: {
+        fontSize: 24,
+        color: '#ff3b30',
+    },
+    buttonSave: {
+        backgroundColor: 'grey',
+        alignItems: 'center',
+        padding: 12,
+        borderRadius: 5,
+        margin: 10,
+    },
+    buttonCancel: {
+        backgroundColor: 'red',
+        alignItems: 'center',
+        padding: 12,
+        borderRadius: 5,
+        margin: 10,
+    },
+    buttonDisabled: {
+        opacity: 0.6,
+    },
 })
 
 export default globalStyles

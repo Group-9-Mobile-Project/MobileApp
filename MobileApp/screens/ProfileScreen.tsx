@@ -1,26 +1,23 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import LogOutButton from '../components/Profile/LogOutButton';
 import ShowUserInfo from '../components/Profile/ShowUserInfo';
 import ShowUsersEvents from '../components/Profile/ShowUsersEvents';
+import globalStyles from '../themes/GlobalStyles';
 
 export default function ProfileScreen() {
 
-
-
   return (
+    <View style={globalStyles.container} >
+      <ScrollView contentContainerStyle={globalStyles.contentContainer}>
 
-    <ScrollView style={styles.contentContainer}>
-      <ShowUsersEvents/>
-      <ShowUserInfo/>
-      <LogOutButton/>
-    </ScrollView>
+        <ShowUsersEvents />
+
+        <ShowUserInfo />
+
+        <LogOutButton />
+        
+      </ScrollView>
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  contentContainer: {
-    flex: 1,
-    padding: 5,
-  },
-});

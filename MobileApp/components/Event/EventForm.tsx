@@ -164,7 +164,7 @@ export default function EventForm({
   }
 
   return (
-    <View style={globalStyles.container}>
+    <View style={globalStyles.EventFormContainer}>
       <Card style={globalStyles.cardContainer}>
         <Card.Content style={globalStyles.cardContent}>
           <Text style={globalStyles.heading}>Perustiedot</Text>
