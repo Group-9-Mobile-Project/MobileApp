@@ -19,7 +19,13 @@ const globalStyles = StyleSheet.create({
         flex: 1,
         padding: 20,
         marginTop: 20,
-        gap: 5
+        gap: 5,
+    },
+    showUserContainer: {
+        flex: 1,
+        paddingVertical: 10,
+        marginTop: 20,
+        backgroundColor: 'lightgrey'
     },
     contentContainer: {
         alignItems: "center",
@@ -37,6 +43,14 @@ const globalStyles = StyleSheet.create({
         padding: 16,
         gap: 16,
         width: "100%",
+    },
+    locationContainer: {
+        gap: 8,
+    },
+    recentViewContainer: {
+        flex: 1,
+        width: '100%',
+        paddingHorizontal: 10,
     },
     card: {
         width: "100%",
@@ -56,6 +70,7 @@ const globalStyles = StyleSheet.create({
     subHeading: {
         fontSize: 16,
         fontWeight: 'bold',
+        padding: 5
     },
     title: {
         fontSize: 20,
@@ -136,6 +151,26 @@ const globalStyles = StyleSheet.create({
     helperText: {
         color: "#666",
         fontSize: 12,
+    },
+    map: {
+        width: "100%",
+        height: 220,
+        borderRadius: 12,
+    },
+    mapAllEvents: {
+        width: '100%',
+        height: '100%',
+        margin: 8
+    },
+    callout: {
+        backgroundColor: 'white',
+        borderStyle: 'solid',
+        borderColor: 'black',
+        borderWidth: 1,
+        padding: 10,
+        width: '100%',
+        height: '100%',
+        position: 'relative'
     },
     noEventsText: {
         fontSize: 16,
@@ -238,6 +273,23 @@ const globalStyles = StyleSheet.create({
     },
     buttonDisabled: {
         opacity: 0.6,
+    },
+    fieldGroup: {
+        gap: 12,
+    },
+    pickerContainer: {
+        marginTop: 8,
+    },
+    inlinePickerContainer: {
+        backgroundColor: "white",
+        borderRadius: 12,
+        padding: 12,
+        marginTop: 8,
+    },
+    inlineActions: {
+        marginTop: 12,
+        flexDirection: "row",
+        justifyContent: "space-between",
     },
 })
 

@@ -42,7 +42,7 @@ export default function ShowUserInfo() {
 
   return (
     <View style={globalStyles.modalView}>
-      <Card style={globalStyles.cardContainer}>
+      <Card style={globalStyles.showUserContainer}>
         <ScrollView nestedScrollEnabled={true}>
           <Card.Content>
             <Text style={globalStyles.heading} >Omat tiedot</Text>
