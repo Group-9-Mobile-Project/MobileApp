@@ -31,18 +31,48 @@ export function useEventLocation({
   const reverseGeocodeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const manualSelectionRef = useRef(false);
 
+  const isNumeric = (value?: string | null) =>
+    !!value && /^\d+$/.test(value.trim());
+
+  const buildStreetLine = (street?: string | null, streetNumber?: string | null) => {
+    const parts = [street, streetNumber].filter(Boolean);
+    return parts.join(" ").trim();
+  };
+
+
+  const resolvePlaceName = (
+    place?: ExpoLocation.LocationGeocodedAddress
+  ): string => {
+    if (!place) return "";
+    const streetLine = buildStreetLine(place.street, place.streetNumber);
+    const nameCandidate = place.name?.trim();
+
+    if (nameCandidate && !isNumeric(nameCandidate) && nameCandidate !== streetLine) {
+      return nameCandidate;
+    }
+
+    if (streetLine) return streetLine;
+    return place.city || place.region || place.country || "";
+  };
+
   const formatAddress = (
     place?: ExpoLocation.LocationGeocodedAddress
   ): string => {
     if (!place) return "";
+    const streetLine = buildStreetLine(place.street, place.streetNumber);
+    const nameCandidate = place.name?.trim();
+    const includeName =
+      !!nameCandidate && !isNumeric(nameCandidate) && nameCandidate !== streetLine;
+
     const parts = [
-      place.name,
-      place.street,
+      includeName ? nameCandidate : undefined,
+      streetLine,
       place.postalCode,
       place.city,
       place.region,
       place.country,
     ].filter(Boolean);
+
     return parts.join(", ");
   };
 
@@ -60,7 +90,7 @@ export function useEventLocation({
         if (formattedAddress) {
           onResolvedAddress?.(formattedAddress);
         }
-        const name = place?.name || place?.street || place?.city || "";
+        const name = resolvePlaceName(place);
         if (name) {
           onResolvedName?.(name);
         }

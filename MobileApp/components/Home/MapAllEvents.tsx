@@ -18,9 +18,9 @@ export default function MapAllEvents({ currentRegion, eventList }: EventList) {
         <>
             <MapView style={styles.map} region={currentRegion} showsUserLocation>
                 
-                {eventList.map((event, index) => (
+                {eventList.map((event) => (
                     
-                    <EventMapMarker event={event} key={index}/>
+                    <EventMapMarker event={event} key={event.id}/>
                     
                     
                 ))}

@@ -7,6 +7,7 @@ import { Event } from '../../types/Event'
 import { useFocusEffect } from '@react-navigation/native'
 import { useAuth } from '../../context/AuthContext'
 import SingleEventRow from '../Common/SingleEventRow'
+import ExpandableListCard from '../Common/ExpandableListCard'
 
 export default function ShowUsersEvents() {
 
@@ -77,58 +78,17 @@ export default function ShowUsersEvents() {
 
     return (
         <View style={styles.container}>
-            <Card style={styles.cardContainer}>
-                 <Card.Content style={styles.expandableHeader} onTouchEnd={() => setCreatedIsExpanded(!createdIsExpanded)}>
-                    <Text style={styles.heading}>Omat tapahtumat</Text>
-                    {createdIsExpanded ? <Text style={styles.heading}>▲</Text> : <Text style={styles.heading}>▼</Text>}
-                </Card.Content>
-                {createdIsExpanded && (
-                <ScrollView
-                    style={styles.scrollview}
-                    contentContainerStyle={{ flexGrow: 1, gap: 8 }}
-                    onStartShouldSetResponder={() => true}
-                    nestedScrollEnabled
-                >
-                    {userCreatedEvents.length > 0 ? (
-                        userCreatedEvents.map((event) => (
+            <ExpandableListCard
+                listType={'events'}
+                list={userCreatedEvents}
+                title={'Omat tapahtumat'}
+            />
 
-                            <SingleEventRow event={event} key={event.id} />
-
-                        ))
-                    ) : (
-                        <Card.Content>
-                            <Text style={styles.infoText}>Ei tapahtumia.</Text>
-                        </Card.Content>
-                    )}
-                </ScrollView>
-                )}
-            </Card>
-
-            <Card style={styles.cardContainer}>
-                <Card.Content style={styles.expandableHeader} onTouchEnd={() => setJoinedIsExpanded(!joinedIsExpanded)}>
-                    <Text style={styles.heading}>Liitytyt tapahtumat</Text>
-                    {joinedIsExpanded ? <Text style={styles.heading}>▲</Text> : <Text style={styles.heading}>▼</Text>}
-                </Card.Content>
-                {joinedIsExpanded && (
-                <ScrollView
-                    style={styles.scrollview}
-                    contentContainerStyle={{ flexGrow: 1, gap: 8 }}
-                    onStartShouldSetResponder={() => true}
-                    nestedScrollEnabled
-                >
-                    {userJoinedEvents.length > 0 ? (
-                        userJoinedEvents.map((event) => (
-
-                            <SingleEventRow event={event} key={event.id} />
-                        ))
-                    ) : (
-                        <Card.Content>
-                            <Text style={styles.infoText}>Ei tapahtumia.</Text>
-                        </Card.Content>
-                    )}
-                </ScrollView>
-                )}
-            </Card>
+            <ExpandableListCard
+                listType={'events'}
+                list={userJoinedEvents}
+                title={'Liitytyt tapahtumat'}
+            />
         </View>
     )
 }

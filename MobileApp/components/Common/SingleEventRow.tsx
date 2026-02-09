@@ -12,7 +12,7 @@ export default function SingleEventRow({ event }: EventProps) {
   const navigation = useNavigation<NavigationProp<RootTabParamList>>();
 
   return (
-    <View>
+    <View style={styles.singleEventView}>
 
       <Pressable
         onPress={() => navigation.navigate('Tapahtuman tiedot', { eventId : event.id})}
@@ -23,20 +23,25 @@ export default function SingleEventRow({ event }: EventProps) {
         <Text style={styles.infoText}>Paikka: {event.location.name}</Text>
         <Text style={styles.infoText}>{event.description}</Text>
       </Pressable>
-      <Divider style={styles.divider} bold={true} key={event.date} />
+      <Divider bold={true} key={event.date} />
 
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  singleEventView: {
+    marginTop: 8,
+    width: '100%'
+  },
   infoText: {
     fontSize: 12,
     padding: 5,
   },
   subHeading: {
     fontSize: 16,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    
   },
   divider: {
     color: '#fff',

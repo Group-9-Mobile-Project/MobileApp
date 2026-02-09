@@ -5,6 +5,7 @@ import { query, orderBy, where, onSnapshot, limit } from 'firebase/firestore'
 import { Event } from '../../types/Event'
 import { Card, Divider } from 'react-native-paper'
 import SingleEventRow from '../Common/SingleEventRow'
+import ExpandableListCard from '../Common/ExpandableListCard'
 
 export default function RecentEventsList() {
     const [events, setEvents] = useState<Event[]>([])
@@ -29,26 +30,11 @@ export default function RecentEventsList() {
 
     return (
         <View style={styles.container}>
-            <Card style={styles.cardContainer}>
-                <Card.Content>
-                    <Text style={styles.heading}>Tulevia tapahtumia</Text>
-                </Card.Content>
-                <Card.Content>
-                    <ScrollView
-                        style={styles.scrollview}
-                        contentContainerStyle={{ flexGrow: 1, gap: 8 }}
-                        onStartShouldSetResponder={() => true}
-                        nestedScrollEnabled
-
-                    >
-                        {events.map((event) => (
-
-                            <SingleEventRow event={event} key={event.id} />
-
-                        ))}
-                    </ScrollView>
-                </Card.Content>
-            </Card>
+            <ExpandableListCard
+                listType={'events'}
+                list={events}
+                title={'Tulevia tapahtumia'}
+            />
         </View>
     )
 }

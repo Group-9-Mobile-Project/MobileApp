@@ -7,12 +7,13 @@ import BottomNavBar from './BottomNavBar';
 import { Ionicons } from '@expo/vector-icons';
 import { RootTabParamList } from '../types/Navigation';
 import EventInfoScreen from '../screens/EventInfoScreen';
+import RecordEventScreen from '../screens/RecordEventScreen';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
 export default function RootNavigator() {
   return (
-    <Tab.Navigator tabBar={(props) => <BottomNavBar {...props} />}>
+    <Tab.Navigator tabBar={(props) => <BottomNavBar {...props} />} backBehavior='history'>
       <Tab.Screen 
         name="Koti" 
         component={HomeScreen}
@@ -52,6 +53,15 @@ export default function RootNavigator() {
       <Tab.Screen
         name="Tapahtuman tiedot"
         component={EventInfoScreen}
+        options={{
+          tabBarButton: () => null,
+          tabBarItemStyle: { display: "none" },
+          tabBarStyle: { display: "none" },
+        }}
+      />
+      <Tab.Screen
+        name="Tallenna tapahtuma"
+        component={RecordEventScreen}
         options={{
           tabBarButton: () => null,
           tabBarItemStyle: { display: "none" },
