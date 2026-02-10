@@ -2,12 +2,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import * as Location from "expo-location";
 import { Pedometer } from "expo-sensors";
 import { RoutePoint } from "../types/Event";
-import {
-  clearRouteDraft,
-  loadRouteDraft,
-  saveRouteDraft,
-  saveRouteFinal,
-} from "../services/routeStorage";
+import { RouteFinal } from "../services/routeStorage";
+import { clearRouteDraft, loadRouteDraft, saveRouteDraft, saveRouteFinal} from "../services/routeStorage";
 
 type RouteRecorderStatus = "idle" | "recording" | "paused";
 type PermissionState = "granted" | "denied" | "undetermined";
@@ -331,7 +327,7 @@ export function useRouteRecorder({
     }
   }, [status, startLocationUpdates, startStepUpdates]);
 
-  const stopAndFinalize = useCallback(async () => {
+  const stopAndFinalize = useCallback(async (): Promise<RouteFinal> => {
     stopLocationUpdates();
     stopStepUpdates();
 
@@ -339,7 +335,7 @@ export function useRouteRecorder({
     const avgSpeedMs =
       elapsedSeconds > 0 ? distanceMeters / elapsedSeconds : 0;
 
-    const finalData = {
+    const finalData: RouteFinal = {
       route,
       elapsedSeconds,
       steps,

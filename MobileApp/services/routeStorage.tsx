@@ -1,20 +1,14 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RoutePoint } from "../types/Event";
+import { RouteFinal } from "../types/Workout";
+
+export type { RouteFinal } from "../types/Workout";
 
 export type RouteDraft = {
   route: RoutePoint[];
   elapsedSeconds: number;
   steps: number;
   updatedAt: number;
-};
-
-export type RouteFinal = {
-  route: RoutePoint[];
-  elapsedSeconds: number;
-  steps: number;
-  distanceMeters: number;
-  avgSpeedMs: number;
-  finishedAt: number;
 };
 
 const DRAFT_KEY_PREFIX = "event_route_draft:";
@@ -70,8 +64,7 @@ export async function clearRouteFinal(eventId: string): Promise<void> {
 }
 
 /**
- * This is for TrainingStatistics
- * No index, filters by prefix.
+ * this part is for trainingStatistics.
  */
 export async function listRouteFinals(): Promise<
   { eventId: string; final: RouteFinal }[]

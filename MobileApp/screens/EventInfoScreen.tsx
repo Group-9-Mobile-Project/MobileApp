@@ -14,7 +14,6 @@ import AttendeeInfoModal from '../components/EventInfo/AttendeeInfoModal'
 import { UserInfo } from '../types/UserInfo'
 
 
-
 export default function EventInfoScreen() {
     const route = useRoute<RouteProp<RootTabParamList, "Tapahtuman tiedot">>();
     const { user } = useAuth()
@@ -60,7 +59,6 @@ export default function EventInfoScreen() {
 
         return () => { unsubscribe(); };
     }, [eventOwnerEmail])
-
 
     const handleDelete = () => {
         if (!event) return

@@ -1,6 +1,6 @@
 import { View, Text, Pressable, StyleSheet, Alert } from "react-native";
 import React, { useMemo, useRef, useEffect, useState } from "react";
-import { useRoute, RouteProp } from "@react-navigation/native";
+import { useRoute, RouteProp, useNavigation, NavigationProp } from "@react-navigation/native";
 import { RootTabParamList } from "../types/Navigation";
 import MapView, { Marker, Polyline, Region } from "react-native-maps";
 import * as Location from "expo-location";
@@ -46,6 +46,7 @@ function haversineMeters(
 export default function RecordEventScreen() {
   const route = useRoute<RouteProp<RootTabParamList, "Tallenna tapahtuma">>();
   const { eventId } = route.params;
+  const navigation = useNavigation<NavigationProp<RootTabParamList>>();
 
   const {
     route: recordedRoute,
@@ -166,6 +167,7 @@ export default function RecordEventScreen() {
           style: "destructive",
           onPress: async () => {
             await stopAndFinalize();
+            navigation.navigate("Harjoituksen tiedot", { eventId });
           },
         },
       ]
