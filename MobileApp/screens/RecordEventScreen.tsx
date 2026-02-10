@@ -1,10 +1,13 @@
-import { View, Text, Pressable, StyleSheet, Alert } from "react-native";
-import React, { useMemo, useRef, useEffect, useState } from "react";
+import { View, Text, StyleSheet, Alert } from "react-native";
+import React, { useMemo, useEffect, useState } from "react";
 import { useRoute, RouteProp, useNavigation, NavigationProp } from "@react-navigation/native";
 import { RootTabParamList } from "../types/Navigation";
-import MapView, { Marker, Polyline, Region } from "react-native-maps";
 import * as Location from "expo-location";
+import { Region } from "react-native-maps";
 import { useRouteRecorder } from "../hooks/useRouteRecorder";
+import WorkoutStatsHeader from "../components/Workout/WorkoutStatsHeader";
+import WorkoutMap from "../components/Workout/WorkoutMap";
+import WorkoutControls from "../components/Workout/WorkoutControls";
 
 const DEFAULT_REGION: Region = {
   latitude: 65.08,
@@ -12,13 +15,6 @@ const DEFAULT_REGION: Region = {
   latitudeDelta: 0.01,
   longitudeDelta: 0.01,
 };
-
-function formatTime(totalSeconds: number): string {
-  const h = Math.floor(totalSeconds / 3600);
-  const m = Math.floor((totalSeconds % 3600) / 60);
-  const s = totalSeconds % 60;
-  return `${h}.${String(m).padStart(2, "0")}.${String(s).padStart(2, "0")}`;
-}
 
 function haversineMeters(
   a: { latitude: number; longitude: number },
@@ -65,13 +61,7 @@ export default function RecordEventScreen() {
   const isPaused = status === "paused";
   const hasData = recordedRoute.length > 0 || elapsedSeconds > 0 || steps > 0;
 
-  const [hasCentered, setHasCentered] = useState(false);
-
-  useEffect(() => {
-    if (recordedRoute.length === 0 && elapsedSeconds === 0) {
-      setHasCentered(false);
-    }
-  }, [recordedRoute.length, elapsedSeconds]);
+  const [centerRegion, setCenterRegion] = useState<Region | null>(null);
 
   const polylinePoints = useMemo(
     () =>
@@ -97,13 +87,11 @@ export default function RecordEventScreen() {
   const displayedSteps =
     isPedometerAvailable === true ? steps : estimatedSteps;
 
-  const mapRef = useRef<MapView | null>(null);
-
   useEffect(() => {
     let isMounted = true;
 
     const centerToCurrentLocation = async () => {
-      if (hasCentered || polylinePoints.length > 0) return;
+      if (polylinePoints.length > 0) return;
 
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") return;
@@ -114,15 +102,12 @@ export default function RecordEventScreen() {
 
       if (!isMounted) return;
 
-      const region: Region = {
+      setCenterRegion({
         latitude: current.coords.latitude,
         longitude: current.coords.longitude,
         latitudeDelta: 0.01,
         longitudeDelta: 0.01,
-      };
-
-      mapRef.current?.animateToRegion(region, 600);
-      setHasCentered(true);
+      });
     };
 
     centerToCurrentLocation();
@@ -130,19 +115,7 @@ export default function RecordEventScreen() {
     return () => {
       isMounted = false;
     };
-  }, [hasCentered, polylinePoints.length]);
-
-  useEffect(() => {
-    if (polylinePoints.length > 1 && mapRef.current) {
-      mapRef.current.fitToCoordinates(polylinePoints, {
-        edgePadding: { top: 48, right: 48, bottom: 48, left: 48 },
-        animated: true,
-      });
-    }
-  }, [polylinePoints]);
-
-  const startPoint = polylinePoints[0];
-  const endPoint = polylinePoints[polylinePoints.length - 1];
+  }, [polylinePoints.length]);
 
   const handlePrimaryPress = async () => {
     if (status === "idle") {
@@ -182,67 +155,28 @@ export default function RecordEventScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.timeText}>{formatTime(elapsedSeconds)}</Text>
-      <Text style={styles.timeLabel}>Aika</Text>
+      <WorkoutStatsHeader
+        elapsedSeconds={elapsedSeconds}
+        steps={displayedSteps}
+        distanceKm={distanceKm}
+        isStepsEstimated={isPedometerAvailable !== true}
+      />
 
-      <View style={styles.metricsRow}>
-        <View style={styles.metricBlock}>
-          <Text style={styles.metricValue}>
-            {isPedometerAvailable === true ? displayedSteps : `~${displayedSteps}`}
-          </Text>
-          <Text style={styles.metricLabel}>Askeleet</Text>
-        </View>
-        <View style={styles.metricBlock}>
-          <Text style={styles.metricValue}>{distanceKm.toFixed(2)}km</Text>
-          <Text style={styles.metricLabel}>Matka</Text>
-        </View>
-      </View>
-
-      <MapView
-        ref={(ref) => {
-          mapRef.current = ref;
-        }}
-        style={styles.map}
+      <WorkoutMap
+        points={polylinePoints}
         initialRegion={DEFAULT_REGION}
-        showsUserLocation
-      >
-        {polylinePoints.length > 0 && (
-          <Polyline coordinates={polylinePoints} strokeWidth={4} />
-        )}
-        {startPoint && <Marker coordinate={startPoint} title="Start" />}
-        {endPoint && <Marker coordinate={endPoint} title="Loppu" />}
-      </MapView>
+        showUserLocation
+        centerRegion={centerRegion}
+      />
 
       {locationError && <Text style={styles.errorText}>{locationError}</Text>}
 
-      <Pressable
-        style={({ pressed }) => [
-          styles.primaryButton,
-          pressed && styles.primaryButtonPressed,
-        ]}
-        onPress={handlePrimaryPress}
-      >
-        <Text style={styles.primaryButtonText}>{primaryLabel}</Text>
-      </Pressable>
-
-      <Pressable
-        disabled={!hasData}
-        style={({ pressed }) => [
-          styles.secondaryButton,
-          pressed && styles.secondaryButtonPressed,
-          !hasData && styles.secondaryButtonDisabled,
-        ]}
-        onPress={handleStopPress}
-      >
-        <Text
-          style={[
-            styles.secondaryButtonText,
-            !hasData && styles.secondaryButtonTextDisabled,
-          ]}
-        >
-          Lopeta treeni
-        </Text>
-      </Pressable>
+      <WorkoutControls
+        primaryLabel={primaryLabel}
+        onPrimaryPress={handlePrimaryPress}
+        onStopPress={handleStopPress}
+        disableStop={!hasData}
+      />
     </View>
   );
 }
@@ -256,72 +190,8 @@ const styles = StyleSheet.create({
     gap: 12,
     backgroundColor: "white",
   },
-  timeText: {
-    fontSize: 56,
-    fontWeight: "700",
-    textAlign: "center",
-  },
-  timeLabel: {
-    fontSize: 20,
-    color: "#888",
-    textAlign: "center",
-    marginBottom: 12,
-  },
-  metricsRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 8,
-  },
-  metricBlock: {
-    flex: 1,
-    alignItems: "center",
-  },
-  metricValue: {
-    fontSize: 22,
-    fontWeight: "600",
-  },
-  metricLabel: {
-    fontSize: 16,
-    color: "#888",
-  },
-  map: {
-    height: 320,
-    borderRadius: 12,
-    overflow: "hidden",
-  },
   errorText: {
     color: "#c62828",
     textAlign: "center",
-  },
-  primaryButton: {
-    backgroundColor: "black",
-    paddingVertical: 16,
-    borderRadius: 12,
-    alignItems: "center",
-    marginTop: 12,
-  },
-  primaryButtonPressed: {
-    opacity: 0.85,
-  },
-  primaryButtonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  secondaryButton: {
-    alignItems: "center",
-    paddingVertical: 10,
-  },
-  secondaryButtonPressed: {
-    opacity: 0.7,
-  },
-  secondaryButtonDisabled: {
-    opacity: 0.5,
-  },
-  secondaryButtonText: {
-    color: "#444",
-  },
-  secondaryButtonTextDisabled: {
-    color: "#888",
   },
 });

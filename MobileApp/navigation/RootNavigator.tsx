@@ -9,6 +9,7 @@ import { RootTabParamList } from "../types/Navigation";
 import EventInfoScreen from "../screens/EventInfoScreen";
 import RecordEventScreen from "../screens/RecordEventScreen";
 import EventDetailScreen from "../screens/EventDetailScreen";
+import ExerciseDetailScreen from "../screens/ExerciseDetailScreen";
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
@@ -74,7 +75,7 @@ export default function RootNavigator() {
       />
       <Tab.Screen
         name="Harjoituksen tiedot"
-        component={EventDetailScreen}
+        component={ExerciseDetailScreen}
         options={{
           tabBarButton: () => null,
           tabBarItemStyle: { display: "none" },
