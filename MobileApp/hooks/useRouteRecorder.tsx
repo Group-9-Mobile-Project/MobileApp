@@ -346,7 +346,10 @@ export function useRouteRecorder({
 
     await saveRouteFinal(eventId, finalData);
     await clearRouteDraft(eventId);
-
+    
+    setRoute([]);
+    setElapsedSeconds(0);
+    setSteps(0);
     setStatus("idle");
 
     return finalData;
