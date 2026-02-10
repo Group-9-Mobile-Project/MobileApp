@@ -1,11 +1,20 @@
 import { View, Button, Text } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { RadioButton } from 'react-native-paper'
+import { RouteFinal } from '../../types/Workout'
 
+interface AllRecordedEventsProp {
+    RecordedEvents: {eventId: string, final: RouteFinal}[]
+}
 
-export default function GraphContainer() {
+export default function GraphContainer( {RecordedEvents} : AllRecordedEventsProp) {
     const [showYearly, setShowYearly] = useState<boolean>(true)
     const [chartType, setChartType] = useState('Matka')
+    const [allEvent, setAllEvents] = useState<{eventId: string, final: RouteFinal}[]>([])
+
+    useEffect(() => {
+        setAllEvents(RecordedEvents)
+    }, [])
 
     return (
         <View>
