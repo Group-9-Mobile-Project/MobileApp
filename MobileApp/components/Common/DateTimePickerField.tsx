@@ -110,6 +110,7 @@ export default function DateTimePickerField({
             onChange={handleChange}
             minimumDate={minimumDate}
             maximumDate={maximumDate}
+            themeVariant="light"
           />
           <View style={styles.inlineActions}>
             <Button title="Peruuta" onPress={close} />

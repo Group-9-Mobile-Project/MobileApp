@@ -5,6 +5,7 @@ import { auth, firestore, USERINFO } from '../../firebase/Config'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useAuth } from '../../context/AuthContext';
 import globalStyles from '../../themes/GlobalStyles';
+import DateTimePickerField from '../Common/DateTimePickerField';
 
 export default function EditUserInfo({ onClose }: { onClose: () => void }) {
 
@@ -12,7 +13,7 @@ export default function EditUserInfo({ onClose }: { onClose: () => void }) {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
-  const [birthdate, setBirthdate] = useState("")
+  const [birthdate, setBirthdate] = useState<Date | null>(null)
   const [city, setCity] = useState("")
   const [hobbies, setHobbies] = useState<string[]>([])
   const [hobbyInput, setHobbyInput] = useState("")
@@ -36,7 +37,17 @@ export default function EditUserInfo({ onClose }: { onClose: () => void }) {
         if ((docSnap).exists()) {
           setName(docSnap.data().name || "")
           setDescription(docSnap.data().description || "")
-          setBirthdate(docSnap.data().birthdate || "")
+          const bd = docSnap.data().birthdate
+          if (bd) {
+            if (bd.includes('.')) {
+              const [d, m, y] = bd.split('.').map(Number)
+              setBirthdate(new Date(y, m - 1, d))
+            } else {
+              setBirthdate(new Date(bd))
+            }
+          } else {
+            setBirthdate(null)
+          }
           setCity(docSnap.data().city || "")
           setHobbies(docSnap.data().hobbies || [])
           setInterests(docSnap.data().interests || "")
@@ -47,6 +58,13 @@ export default function EditUserInfo({ onClose }: { onClose: () => void }) {
       }
     })()
   }, [])
+
+  const formatDate = (date: Date) => {
+    const d = date.getDate()
+    const m = date.getMonth() + 1
+    const y = date.getFullYear()
+    return `${d}.${m}.${y}`
+  }
 
   const addHobby = () => {
     if (hobbyInput.trim()) {
@@ -69,7 +87,7 @@ export default function EditUserInfo({ onClose }: { onClose: () => void }) {
       await updateDoc(docRef, {
         name: name,
         description: description,
-        birthdate: birthdate,
+        birthdate: birthdate ? formatDate(birthdate) : "",
         city: city,
         hobbies: hobbies,
         interests: interests,
@@ -109,12 +127,14 @@ export default function EditUserInfo({ onClose }: { onClose: () => void }) {
             onChangeText={setDescription}
             editable={!loading}
           />
-          <Text style={globalStyles.label}>Syntymäpäivä:</Text>
-          <TextInput style={globalStyles.input}
-            placeholder='PP/KK/VVVV'
-            value={birthdate}
-            onChangeText={setBirthdate}
-            editable={!loading}
+          <DateTimePickerField
+            label="Syntymäpäivä:"
+            labelStyle={globalStyles.label}
+            value={birthdate ?? new Date()}
+            mode="date"
+            onChange={setBirthdate}
+            buttonLabel={birthdate ? formatDate(birthdate) : 'Valitse syntymäpäivä'}
+            maximumDate={new Date()}
           />
           <Text style={globalStyles.label}>Kaupunki:</Text>
           <TextInput style={globalStyles.input}
