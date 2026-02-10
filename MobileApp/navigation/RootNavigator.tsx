@@ -1,22 +1,26 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import HomeScreen from '../screens/HomeScreen';
-import ProfileScreen from '../screens/ProfileScreen';
-import CreateEventScreen from '../screens/CreateEventScreen';
-import UpdateEventScreen from '../screens/UpdateEventScreen';
-import BottomNavBar from './BottomNavBar';
-import { Ionicons } from '@expo/vector-icons';
-import { RootTabParamList } from '../types/Navigation';
-import EventInfoScreen from '../screens/EventInfoScreen';
-import RecordEventScreen from '../screens/RecordEventScreen';
-import StatisticsScreen from '../screens/StatisticsScreen';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import HomeScreen from "../screens/HomeScreen";
+import ProfileScreen from "../screens/ProfileScreen";
+import CreateEventScreen from "../screens/CreateEventScreen";
+import UpdateEventScreen from "../screens/UpdateEventScreen";
+import BottomNavBar from "./BottomNavBar";
+import { Ionicons } from "@expo/vector-icons";
+import { RootTabParamList } from "../types/Navigation";
+import EventInfoScreen from "../screens/EventInfoScreen";
+import RecordEventScreen from "../screens/RecordEventScreen";
+import ExerciseDetailScreen from "../screens/ExerciseDetailScreen";
+import StatisticsScreen from "../screens/StatisticsScreen";
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
 export default function RootNavigator() {
   return (
-    <Tab.Navigator tabBar={(props) => <BottomNavBar {...props} />} backBehavior='history'>
-      <Tab.Screen 
-        name="Koti" 
+    <Tab.Navigator
+      tabBar={(props) => <BottomNavBar {...props} />}
+      backBehavior="history"
+    >
+      <Tab.Screen
+        name="Koti"
         component={HomeScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
@@ -24,8 +28,8 @@ export default function RootNavigator() {
           ),
         }}
       />
-      <Tab.Screen 
-        name="Uusi lenkki" 
+      <Tab.Screen
+        name="Uusi lenkki"
         component={CreateEventScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
@@ -33,8 +37,8 @@ export default function RootNavigator() {
           ),
         }}
       />
-      <Tab.Screen 
-        name="Profiili" 
+      <Tab.Screen
+        name="Profiili"
         component={ProfileScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
@@ -72,6 +76,15 @@ export default function RootNavigator() {
       <Tab.Screen
         name="Tilastot"
         component={StatisticsScreen}
+        options={{
+          tabBarButton: () => null,
+          tabBarItemStyle: { display: "none" },
+          tabBarStyle: { display: "none" },
+        }}
+      />
+      <Tab.Screen
+        name="Harjoituksen tiedot"
+        component={ExerciseDetailScreen}
         options={{
           tabBarButton: () => null,
           tabBarItemStyle: { display: "none" },
