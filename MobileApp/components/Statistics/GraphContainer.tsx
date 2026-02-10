@@ -16,7 +16,7 @@ export default function GraphContainer() {
                 value={chartType}
             >
                 <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', margin: 5 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', margin: 5, paddingRight: 10, borderColor: (chartType == 'Matka') ? 'purple': 'grey', borderWidth: 1, borderRadius: 100, backgroundColor: (chartType == 'Matka') ? 'pink': 'white'} }>
                         <RadioButton value='Matka' />
                         <Text>Matka</Text>
                     </View>
