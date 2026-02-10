@@ -8,7 +8,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { RootTabParamList } from "../types/Navigation";
 import EventInfoScreen from "../screens/EventInfoScreen";
 import RecordEventScreen from "../screens/RecordEventScreen";
-import EventDetailScreen from "../screens/EventDetailScreen";
 import ExerciseDetailScreen from "../screens/ExerciseDetailScreen";
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
