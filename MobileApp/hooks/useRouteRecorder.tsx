@@ -20,6 +20,38 @@ type UseRouteRecorderOptions = {
   persistDebounceMs?: number;
 };
 
+function haversineMeters(
+  a: { latitude: number; longitude: number },
+  b: { latitude: number; longitude: number }
+): number {
+  const R = 6371000;
+  const dLat = ((b.latitude - a.latitude) * Math.PI) / 180;
+  const dLon = ((b.longitude - a.longitude) * Math.PI) / 180;
+  const lat1 = (a.latitude * Math.PI) / 180;
+  const lat2 = (b.latitude * Math.PI) / 180;
+
+  const sin1 = Math.sin(dLat / 2);
+  const sin2 = Math.sin(dLon / 2);
+
+  const c =
+    2 *
+    Math.atan2(
+      Math.sqrt(sin1 * sin1 + Math.cos(lat1) * Math.cos(lat2) * sin2 * sin2),
+      Math.sqrt(1 - (sin1 * sin1 + Math.cos(lat1) * Math.cos(lat2) * sin2 * sin2))
+    );
+
+  return R * c;
+}
+
+function computeDistanceMeters(route: RoutePoint[]): number {
+  if (route.length < 2) return 0;
+  let total = 0;
+  for (let i = 1; i < route.length; i += 1) {
+    total += haversineMeters(route[i - 1], route[i]);
+  }
+  return total;
+}
+
 export function useRouteRecorder({
   eventId,
   timeIntervalMs = 5000,
@@ -303,16 +335,25 @@ export function useRouteRecorder({
     stopLocationUpdates();
     stopStepUpdates();
 
-    await saveRouteFinal(eventId, {
+    const distanceMeters = computeDistanceMeters(route);
+    const avgSpeedMs =
+      elapsedSeconds > 0 ? distanceMeters / elapsedSeconds : 0;
+
+    const finalData = {
       route,
       elapsedSeconds,
       steps,
+      distanceMeters,
+      avgSpeedMs,
       finishedAt: Date.now(),
-    });
+    };
 
+    await saveRouteFinal(eventId, finalData);
     await clearRouteDraft(eventId);
 
     setStatus("idle");
+
+    return finalData;
   }, [elapsedSeconds, eventId, route, steps, stopLocationUpdates, stopStepUpdates]);
 
   useEffect(() => {

@@ -12,6 +12,8 @@ export type RouteFinal = {
   route: RoutePoint[];
   elapsedSeconds: number;
   steps: number;
+  distanceMeters: number;
+  avgSpeedMs: number;
   finishedAt: number;
 };
 
@@ -65,4 +67,33 @@ export async function loadRouteFinal(
 
 export async function clearRouteFinal(eventId: string): Promise<void> {
   await AsyncStorage.removeItem(getFinalKey(eventId));
+}
+
+/**
+ * This is for TrainingStatistics
+ * No index, filters by prefix.
+ */
+export async function listRouteFinals(): Promise<
+  { eventId: string; final: RouteFinal }[]
+> {
+  const keys = await AsyncStorage.getAllKeys();
+  const finalKeys = keys.filter((key) => key.startsWith(FINAL_KEY_PREFIX));
+  if (finalKeys.length === 0) return [];
+
+  const pairs = await AsyncStorage.multiGet(finalKeys);
+  const results: { eventId: string; final: RouteFinal }[] = [];
+
+  for (const [key, value] of pairs) {
+    if (!value) continue;
+    try {
+      const final = JSON.parse(value) as RouteFinal;
+      const eventId = key.replace(FINAL_KEY_PREFIX, "");
+      results.push({ eventId, final });
+    } catch {
+      // skip invalid
+    }
+  }
+
+  results.sort((a, b) => b.final.finishedAt - a.final.finishedAt);
+  return results;
 }

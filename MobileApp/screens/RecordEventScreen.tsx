@@ -1,4 +1,4 @@
-import { View, Text, Pressable, StyleSheet } from "react-native";
+import { View, Text, Pressable, StyleSheet, Alert } from "react-native";
 import React, { useMemo, useRef, useEffect, useState } from "react";
 import { useRoute, RouteProp } from "@react-navigation/native";
 import { RootTabParamList } from "../types/Navigation";
@@ -153,6 +153,25 @@ export default function RecordEventScreen() {
     }
   };
 
+  const handleStopPress = () => {
+    if (!hasData) return;
+
+    Alert.alert(
+      "Lopeta treeni",
+      "Haluatko tallentaa treenin ja lopettaa tallennuksen?",
+      [
+        { text: "Peruuta", style: "cancel" },
+        {
+          text: "Lopeta",
+          style: "destructive",
+          onPress: async () => {
+            await stopAndFinalize();
+          },
+        },
+      ]
+    );
+  };
+
   const primaryLabel = isRecording
     ? "Keskeytä"
     : isPaused
@@ -211,7 +230,7 @@ export default function RecordEventScreen() {
           pressed && styles.secondaryButtonPressed,
           !hasData && styles.secondaryButtonDisabled,
         ]}
-        onPress={stopAndFinalize}
+        onPress={handleStopPress}
       >
         <Text
           style={[
