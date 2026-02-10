@@ -116,7 +116,7 @@ export default function AllEventsMapView() {
 
   return (
     <>
-      <Text style={globalStyles.title}>Kaikki tapahtumat</Text>
+      <Text style={globalStyles.heading}>Kaikki tapahtumat</Text>
       <View style={globalStyles.filtersView}>
         <Card style={globalStyles.cardContainer}>
           <Card.Content style={globalStyles.expandableHeader} onTouchEnd={() => setIsExpanded(!isExpanded)}>

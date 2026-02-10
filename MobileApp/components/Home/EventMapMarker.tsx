@@ -1,7 +1,6 @@
 import { View, Text } from 'react-native'
 import React, { useState } from 'react'
 import { Marker } from 'react-native-maps';
-import EventInfoModal from '../Common/EventInfoModal';
 import { EventProps } from '../../types/Event';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { RootTabParamList } from '../../types/Navigation';

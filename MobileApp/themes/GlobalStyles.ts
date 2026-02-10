@@ -72,11 +72,7 @@ const globalStyles = StyleSheet.create({
         fontWeight: 'bold',
         padding: 5
     },
-    title: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginTop: 16
-    },
+
     basicInfoView: {
         margin: 2,
         alignItems: 'flex-start',

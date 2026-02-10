@@ -209,7 +209,7 @@ export default function EventForm({
       </Card>
 
       <Card style={globalStyles.cardContainer}>
-        <Card.Content style={globalStyles.basicInfoView}>
+        <Card.Content style={globalStyles.cardContent}>
           <Text style={globalStyles.heading}>Aika</Text>
           <DateTimePickerField
             label="Päivämäärä"
