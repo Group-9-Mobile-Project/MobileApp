@@ -8,14 +8,29 @@ export type RouteDraft = {
   route: RoutePoint[];
   elapsedSeconds: number;
   steps: number;
+  startedAt?: number;
   updatedAt: number;
 };
+
+type RouteFinalStored = Omit<RouteFinal, "startedAt"> & { startedAt?: number };
 
 const DRAFT_KEY_PREFIX = "event_route_draft:";
 const FINAL_KEY_PREFIX = "event_route_final:";
 
 const getDraftKey = (eventId: string) => `${DRAFT_KEY_PREFIX}${eventId}`;
 const getFinalKey = (eventId: string) => `${FINAL_KEY_PREFIX}${eventId}`;
+
+const normalizeRouteFinal = (finalData: RouteFinalStored): RouteFinal => {
+  const startedAt =
+    typeof finalData.startedAt === "number"
+      ? finalData.startedAt
+      : finalData.finishedAt - finalData.elapsedSeconds * 1000;
+
+  return {
+    ...finalData,
+    startedAt,
+  };
+};
 
 export async function loadRouteDraft(
   eventId: string
@@ -53,7 +68,8 @@ export async function loadRouteFinal(
   const json = await AsyncStorage.getItem(getFinalKey(eventId));
   if (!json) return null;
   try {
-    return JSON.parse(json) as RouteFinal;
+    const parsed = JSON.parse(json) as RouteFinalStored;
+    return normalizeRouteFinal(parsed);
   } catch {
     return null;
   }
@@ -79,7 +95,8 @@ export async function listRouteFinals(): Promise<
   for (const [key, value] of pairs) {
     if (!value) continue;
     try {
-      const final = JSON.parse(value) as RouteFinal;
+      const parsed = JSON.parse(value) as RouteFinalStored;
+      const final = normalizeRouteFinal(parsed);
       const eventId = key.replace(FINAL_KEY_PREFIX, "");
       results.push({ eventId, final });
     } catch {

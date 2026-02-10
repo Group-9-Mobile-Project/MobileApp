@@ -88,7 +88,7 @@ export default function ExerciseDetailScreen() {
 
   const avgSpeedKmh = data.avgSpeedMs * 3.6;
   const distanceKm = data.distanceMeters / 1000;
-  const startedAt = new Date(data.finishedAt);
+  const startedAt = new Date(data.startedAt);
 
   return (
     <View style={styles.container}>

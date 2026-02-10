@@ -6,5 +6,6 @@ export type RouteFinal = {
   steps: number;
   distanceMeters: number;
   avgSpeedMs: number;
+  startedAt: number;
   finishedAt: number;
 };
