@@ -9,7 +9,7 @@ import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-c
 import { onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "./firebase/Config";
 import { Provider as PaperProvider } from "react-native-paper";
-import { customLightTheme, customDarkTheme } from './themes/MyThemes';
+import { customLightTheme, customDarkTheme, navigationDarkTheme } from './themes/MyThemes';
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -53,7 +53,7 @@ export default function App() {
     <AuthProvider user={user} loading={loading}>
       <PaperProvider theme={customDarkTheme}>
         <SafeAreaProvider style={{ marginBottom: initialWindowMetrics?.insets.bottom }}>
-          <NavigationContainer>
+          <NavigationContainer theme={navigationDarkTheme}>
             <RootNavigator />
             <StatusBar style="auto" />
           </NavigationContainer>

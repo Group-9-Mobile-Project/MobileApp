@@ -42,6 +42,16 @@ export const Colors = {
         "backdrop": "rgba(44, 49, 55, 0.4)"
     },
 
+    // React Navigation colors using dark theme
+    "navigationDark": {
+        "primary": "rgb(255, 255, 255)",
+        "background": "rgb(26, 28, 30)",
+        "card": "rgb(32, 37, 41)", 
+        "text": "rgb(255, 255, 255)",
+        "border": "rgb(66, 71, 78)",
+        "notification": "rgb(152, 203, 255)"
+    },
+
     "light": {
         "primary": "rgb(0, 99, 156)",
         "onPrimary": "rgb(255, 255, 255)",

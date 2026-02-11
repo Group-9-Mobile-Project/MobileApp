@@ -2,15 +2,17 @@ import { StyleSheet } from 'react-native';
 import { Colors } from '../constants/colors';
 
 const globalStyles = StyleSheet.create({
+
     //AttendeeInfoModeal
     //ShowUserInfo
     //EventInfoScreen
     modalView: {
         flex: 1,
         justifyContent: "center",
-        margin: 8,
         alignItems: "center",
-        shadowColor: "#000",
+        backgroundColor: Colors.light.background,
+        shadowColor: Colors.light.shadow,
+        margin: 8,
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
@@ -23,6 +25,7 @@ const globalStyles = StyleSheet.create({
     //UpdateEventScreen
     container: {
         flex: 1,
+        backgroundColor: Colors.light.background
     },
     contentContainer: {
         alignItems: "center",
@@ -37,9 +40,9 @@ const globalStyles = StyleSheet.create({
     //EventInfoScreen
     cardContainer: {
         alignContent: 'flex-start',
-        marginBlockStart: 20,
         width: '100%',
-        backgroundColor: Colors.light.background,
+        backgroundColor: Colors.light.surface,
+        marginBlockStart: 20,
         marginBlockEnd: 10
     },
 
@@ -48,86 +51,27 @@ const globalStyles = StyleSheet.create({
         gap: 12,
     },
     multiline: {
-        minHeight: 80,
         textAlignVertical: "top",
+        minHeight: 80,
     },
 
     //EventFrom
     //EditUserInfo
     addButton: {
-        backgroundColor: "green",
         alignItems: "center",
+        backgroundColor: Colors.light.secondary,
         padding: 12,
         borderRadius: 5,
     },
     input: {
+        width: '100%',
+        backgroundColor: Colors.light.surface,
+        borderColor: Colors.light.outline,
         borderWidth: 1,
-        borderColor: "#ccc",
         borderRadius: 8,
         paddingHorizontal: 12,
         paddingVertical: 10,
-        backgroundColor: '#ddd',
-        width: '100%'
-    },
-
-    //EventFrom
-    //RecentEventsList
-    //ShowUsersEvents
-    EventFormContainer: {
-        padding: 16,
-        gap: 16,
-        width: "100%",
-    },
-
-    //ExpandableListCard
-    //EventForm
-    //AttendeeInfoModal
-    //EditUserInfo
-    //ShowUserInfo
-    //EventInfoScreen
-    heading: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 10,
-    },
-
-    //ExpandableListCard
-    //AllEventsMapView
-    expandableHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between'
-    },
-
-    //ExpandableListCard
-    //AttendeeInfoModal
-    //EventInfoScreen
-    basicInfoView: {
-        margin: 2,
-        alignItems: 'flex-start',
-        justifyContent: 'flex-start',
-        width: '100%',
-    },
-
-    //AttendeeInfoModal
-    //EventInfoScreen
-    descriptionView: {
-        width: "95%",
-        margin: 8,
-    },
-
-    //SigleEventRow
-    singleEventView: {
-        marginTop: 8,
-        width: '100%'
-    },
-
-    //SingleEventRow
-    //AttendeeInfoRow
-    //EditUserInfo
-    subHeading: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        padding: 5
+        color: Colors.light.onSurface,
     },
 
     //JoinEventButton
@@ -141,7 +85,70 @@ const globalStyles = StyleSheet.create({
         padding: 12,
         marginVertical: 10,
         borderRadius: 10,
-        fontSize: 16
+        fontSize: 16,
+        color: Colors.light.onSecondaryContainer,
+    },
+
+    //EventFrom
+    //RecentEventsList
+    //ShowUsersEvents
+    EventFormContainer: {
+        width: "100%",
+        padding: 16,
+        gap: 16,
+    },
+
+    //ExpandableListCard
+    //EventForm
+    //AttendeeInfoModal
+    //EditUserInfo
+    //ShowUserInfo
+    //EventInfoScreen
+    heading: {
+        fontWeight: 'bold',
+        fontSize: 20,
+        marginBottom: 10,
+        color: Colors.light.onSurface,
+    },
+
+    //ExpandableListCard
+    //AllEventsMapView
+    expandableHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+
+    //ExpandableListCard
+    //AttendeeInfoModal
+    //EventInfoScreen
+    basicInfoView: {
+        alignItems: 'flex-start',
+        justifyContent: 'flex-start',
+        width: '100%',
+        margin: 2,
+    },
+
+    //AttendeeInfoModal
+    //EventInfoScreen
+    descriptionView: {
+        width: "95%",
+        margin: 8,
+    },
+
+    //SigleEventRow
+    singleEventView: {
+        width: '100%',
+        marginTop: 8,
+    },
+
+    //SingleEventRow
+    //AttendeeInfoRow
+    //EditUserInfo
+    subHeading: {
+        fontWeight: 'bold',
+        fontSize: 16,
+        padding: 5,
+        color: Colors.light.onSurface,
     },
 
     //JoinEventButton
@@ -159,13 +166,14 @@ const globalStyles = StyleSheet.create({
     infoText: {
         fontSize: 16,
         padding: 5,
+        color: Colors.light.onSurface,
     },
 
     //EventForm
     //EventInfoScreen
     //UpdateEventScreen
     helperText: {
-        color: "#666",
+        color: Colors.light.error,
         fontSize: 12,
     },
 
@@ -174,13 +182,14 @@ const globalStyles = StyleSheet.create({
     //EditUserInfo
     label: {
         fontWeight: "600",
+        color: Colors.light.onSurface,
     },
 
     //EventInfoScreen
     organizerLink: {
         fontSize: 16,
         padding: 5,
-        color: "#1e88e5"
+        color: Colors.light.inversePrimary
     },
     pressableView: {
         flexDirection: "row",
@@ -199,30 +208,31 @@ const globalStyles = StyleSheet.create({
 
     //UpdateEventScreen
     linkText: {
-        color: "#1e88e5",
+        color: Colors.light.inversePrimary,
         marginTop: 8,
     },
 
     //ExpandableListCard
     noEventsText: {
         fontSize: 16,
-        fontStyle: 'italic'
+        fontStyle: 'italic',
+        color: Colors.light.onSurfaceVariant,
     },
 
     //AllEventsMapView
     filtersView: {
-        flex: 1,
         width: '95%',
         justifyContent: 'space-evenly',
+        flex: 1,
         margin: 8
     },
     mapContainer: {
-        margin: 8,
-        padding: 8,
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
-        maxHeight: 300
+        maxHeight: 300,
+        margin: 8,
+        padding: 8,
     },
 
     //MapAllEvents
@@ -240,9 +250,9 @@ const globalStyles = StyleSheet.create({
     //EditUserInfo
     editUserContainer: {
         flex: 1,
+        gap: 5,
         padding: 20,
         marginTop: 20,
-        gap: 5,
     },
     hobbyInputContainer: {
         flexDirection: 'row',
@@ -252,17 +262,18 @@ const globalStyles = StyleSheet.create({
     hobbyInput: {
         flex: 1,
         borderWidth: 1,
-        borderColor: '#ccc',
-        backgroundColor: '#ddd',
+        backgroundColor: Colors.light.surface,
+        borderColor: Colors.light.outline,
         padding: 10,
         borderRadius: 5,
         fontSize: 14,
+        color: Colors.light.onSurface,
     },
     hobbyItem: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        backgroundColor: '#f0f0f0',
+        backgroundColor: Colors.light.surfaceVariant,
         padding: 10,
         borderRadius: 5,
         marginBottom: 8,
@@ -272,21 +283,21 @@ const globalStyles = StyleSheet.create({
     },
     deleteButtonText: {
         fontSize: 24,
-        color: '#ff3b30',
+        color: Colors.light.error
     },
     buttonSave: {
-        backgroundColor: 'grey',
         alignItems: 'center',
         padding: 12,
         borderRadius: 5,
         margin: 10,
+        backgroundColor: Colors.light.secondary,
     },
     buttonCancel: {
-        backgroundColor: 'red',
         alignItems: 'center',
         padding: 12,
         borderRadius: 5,
         margin: 10,
+        backgroundColor: Colors.light.error,
     },
     buttonDisabled: {
         opacity: 0.6,
@@ -297,6 +308,7 @@ const globalStyles = StyleSheet.create({
     hobbyText: {
         fontSize: 14,
         flex: 1,
+        color: Colors.light.onSurfaceVariant,
     },
 
     //ShowUserInfo
@@ -307,26 +319,42 @@ const globalStyles = StyleSheet.create({
         paddingVertical: 8,
         paddingHorizontal: 8,
         borderBottomWidth: 1,
-        borderBottomColor: 'lightgrey',
-        backgroundColor: '#b5b5b5',
+        borderBottomColor: Colors.light.outline,
+        backgroundColor: Colors.light.surface,
     },
     showUserContainer: {
         flex: 1,
         paddingVertical: 10,
         marginTop: 20,
-        backgroundColor: 'lightgrey'
+        backgroundColor: Colors.light.surface,
     },
 
     //LogOutButton
     logOutButton: {
-        backgroundColor: 'grey',
         alignItems: 'center',
         padding: 12,
         borderRadius: 5,
         margin: 10,
+        backgroundColor: Colors.light.secondary,
     },
     logOutButtonText: {
+        fontWeight: 'bold',
         fontSize: 16,
+        color: Colors.light.onSecondaryContainer,
+    },
+
+    // Additional light theme specific styles
+    text: {
+        color: Colors.light.onSurface,
+    },
+    textSecondary: {
+        color: Colors.light.onSurfaceVariant,
+    },
+    surface: {
+        backgroundColor: Colors.light.surface,
+    },
+    surfaceVariant: {
+        backgroundColor: Colors.light.surfaceVariant,
     },
 })
 
