@@ -21,7 +21,7 @@ export default function WorkoutControls({
           styles.primaryButton,
           pressed && styles.primaryButtonPressed,
         ]}
-        onPress={onPrimaryPress}
+        onPress={() => onPrimaryPress()}
       >
         <Text style={styles.primaryButtonText}>{primaryLabel}</Text>
       </Pressable>
@@ -33,7 +33,7 @@ export default function WorkoutControls({
           pressed && styles.secondaryButtonPressed,
           disableStop && styles.secondaryButtonDisabled,
         ]}
-        onPress={onStopPress}
+        onPress={() => onStopPress()}
       >
         <Text
           style={[
@@ -54,10 +54,10 @@ const styles = StyleSheet.create({
   },
   primaryButton: {
     backgroundColor: "black",
-    paddingVertical: 16,
+    paddingVertical: 8,
     borderRadius: 12,
     alignItems: "center",
-    marginTop: 12,
+    marginTop: 4,
   },
   primaryButtonPressed: {
     opacity: 0.85,
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   },
   secondaryButton: {
     alignItems: "center",
-    paddingVertical: 10,
+    paddingVertical: 4,
   },
   secondaryButtonPressed: {
     opacity: 0.7,
