@@ -43,7 +43,7 @@ export default function WorkoutStatsHeader({
 }
 
 const styles = StyleSheet.create({
-  container: { gap: 12 },
+  container: { gap: 8 },
   timeText: {
     fontSize: 56,
     fontWeight: "700",
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "#888",
     textAlign: "center",
-    marginBottom: 12,
+    marginBottom: 8,
   },
   metricsRow: {
     flexDirection: "row",

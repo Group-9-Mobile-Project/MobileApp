@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import LogOutButton from '../components/Profile/LogOutButton';
 import ShowUserInfo from '../components/Profile/ShowUserInfo';
 import ShowUsersEvents from '../components/Profile/ShowUsersEvents';
+import StatisticsButton from '../components/Profile/StatisticsButton';
 
 export default function ProfileScreen() {
 
@@ -13,6 +14,7 @@ export default function ProfileScreen() {
     <ScrollView style={styles.contentContainer}>
       <ShowUsersEvents/>
       <ShowUserInfo/>
+      <StatisticsButton/>
       <LogOutButton/>
     </ScrollView>
   );

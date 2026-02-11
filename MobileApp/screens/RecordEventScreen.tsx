@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Alert } from "react-native";
+import { View, Text, StyleSheet, Alert, ScrollView } from "react-native";
 import React, { useMemo, useEffect, useState } from "react";
 import { useRoute, RouteProp, useNavigation, NavigationProp } from "@react-navigation/native";
 import { RootTabParamList } from "../types/Navigation";
@@ -169,33 +169,35 @@ export default function RecordEventScreen() {
   const primaryLabel = isRecording
     ? "Keskeytä"
     : isPaused
-    ? "Jatka"
-    : "Aloita treeni";
+      ? "Jatka"
+      : "Aloita treeni";
 
   return (
     <View style={styles.container}>
-      <WorkoutStatsHeader
-        elapsedSeconds={elapsedSeconds}
-        steps={displayedSteps}
-        distanceKm={distanceKm}
-        isStepsEstimated={isPedometerAvailable !== true}
-      />
+      
+        <WorkoutStatsHeader
+          elapsedSeconds={elapsedSeconds}
+          steps={displayedSteps}
+          distanceKm={distanceKm}
+          isStepsEstimated={isPedometerAvailable !== true}
+        />
 
-      <WorkoutMap
-        points={polylinePoints}
-        initialRegion={DEFAULT_REGION}
-        showUserLocation
-        centerRegion={centerRegion}
-      />
+        <WorkoutMap
+          points={polylinePoints}
+          initialRegion={DEFAULT_REGION}
+          showUserLocation
+          centerRegion={centerRegion}
+        />
 
-      {locationError && <Text style={styles.errorText}>{locationError}</Text>}
+        {locationError && <Text style={styles.errorText}>{locationError}</Text>}
 
-      <WorkoutControls
-        primaryLabel={primaryLabel}
-        onPrimaryPress={handlePrimaryPress}
-        onStopPress={handleStopPress}
-        disableStop={!hasData}
-      />
+        <WorkoutControls
+          primaryLabel={primaryLabel}
+          onPrimaryPress={handlePrimaryPress}
+          onStopPress={handleStopPress}
+          disableStop={!hasData}
+        />
+      
     </View>
   );
 }
@@ -204,9 +206,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 16,
-    paddingBottom: 24,
-    gap: 12,
+    paddingTop: 4,
+    paddingBottom: 4,
+    gap: 4,
     backgroundColor: "white",
   },
   errorText: {

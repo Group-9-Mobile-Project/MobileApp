@@ -1,8 +1,7 @@
 import { View, Text, Pressable, StyleSheet } from 'react-native'
-import React, { useState } from 'react'
-import { Event, EventProps } from '../../types/Event'
-import { Card, Divider } from 'react-native-paper'
-import EventInfoModal from './EventInfoModal'
+import React from 'react'
+import { EventProps } from '../../types/Event'
+import { Divider } from 'react-native-paper'
 import { NavigationProp, useNavigation } from '@react-navigation/native'
 import { RootTabParamList } from '../../types/Navigation'
 

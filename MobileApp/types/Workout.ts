@@ -9,3 +9,8 @@ export type RouteFinal = {
   startedAt: number;
   finishedAt: number;
 };
+
+export type ChartType = 'Matka' | 'Kesto' | 'Keskinopeus'
+
+export type RecordedEventsList = { eventId: string, final: RouteFinal}[]
+
