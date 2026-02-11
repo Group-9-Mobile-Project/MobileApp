@@ -119,13 +119,20 @@ export default function RecordEventScreen() {
 
   const handlePrimaryPress = async () => {
     if (status === "idle") {
-      await startNew();
+      const started = await startNew();
+      if (!started) {
+        Alert.alert(
+          "Treenin tallennus",
+          "Tälle tapahtumalle on jo tallennettu treeni. Poista se ennen uuden aloittamista."
+        );
+      }
     } else if (status === "recording") {
       pauseRecording();
     } else if (status === "paused") {
       await resumeRecording();
     }
   };
+
 
   const handleStopPress = () => {
     if (!hasData) return;
@@ -139,8 +146,20 @@ export default function RecordEventScreen() {
           text: "Lopeta",
           style: "destructive",
           onPress: async () => {
-            await stopAndFinalize();
-            navigation.navigate("Harjoituksen tiedot", { eventId });
+            try {
+              await stopAndFinalize();
+              navigation.navigate("Harjoituksen tiedot", { eventId });
+            } catch (error) {
+              const message = error instanceof Error ? error.message : "";
+              if (message === "FINAL_EXISTS_FOR_EVENT") {
+                Alert.alert(
+                  "Treenin tallennus",
+                  "Tälle tapahtumalle on jo tallennettu treeni. Poista se ennen uuden aloittamista."
+                );
+                return;
+              }
+              Alert.alert("Virhe", "Treenin tallennus epäonnistui.");
+            }
           },
         },
       ]

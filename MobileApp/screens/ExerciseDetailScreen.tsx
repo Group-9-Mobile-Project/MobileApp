@@ -1,9 +1,9 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { View, Text, StyleSheet, Pressable, ActivityIndicator, Alert } from "react-native";
 import { Region } from "react-native-maps";
 import { clearRouteDraft, clearRouteFinal, loadRouteFinal, RouteFinal } from "../services/routeStorage";
 import { getEventById } from "../services/eventService";
-import { useRoute, RouteProp, useNavigation, NavigationProp } from "@react-navigation/native";
+import { useRoute, RouteProp, useNavigation, NavigationProp, useFocusEffect } from "@react-navigation/native";
 import { RootTabParamList } from "../types/Navigation";
 import WorkoutMap from "../components/Workout/WorkoutMap";
 import WorkoutSummaryCard from "../components/Workout/WorkoutSummaryCard";
@@ -25,21 +25,24 @@ export default function ExerciseDetailScreen() {
   const [eventTitle, setEventTitle] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
 
-  useEffect(() => {
-    let mounted = true;
+  useFocusEffect(
+    useCallback(() => {
+      let mounted = true;
+      setLoading(true);
 
-    loadRouteFinal(eventId)
-      .then((finalData) => {
-        if (mounted) setData(finalData);
-      })
-      .finally(() => {
-        if (mounted) setLoading(false);
-      });
+      loadRouteFinal(eventId)
+        .then((finalData) => {
+          if (mounted) setData(finalData);
+        })
+        .finally(() => {
+          if (mounted) setLoading(false);
+        });
 
-    return () => {
-      mounted = false;
-    };
-  }, [eventId]);
+      return () => {
+        mounted = false;
+      };
+    }, [eventId])
+  );
 
   useEffect(() => {
     let mounted = true;
