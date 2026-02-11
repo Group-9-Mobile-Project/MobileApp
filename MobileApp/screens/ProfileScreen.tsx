@@ -12,12 +12,10 @@ export default function ProfileScreen() {
     <View style={globalStyles.container} >
       <ScrollView contentContainerStyle={globalStyles.contentContainer}>
 
-    <ScrollView style={globalStyles.contentContainer}>
       <ShowUsersEvents/>
       <ShowUserInfo/>
       <StatisticsButton/>
       <LogOutButton/>
-    </ScrollView>
     </ScrollView>
     </View>
   );
