@@ -1,7 +1,3 @@
-import { useState } from "react"
-
-
-
 const getMonthName = (month: number) => {
     const months = [
         "Tammikuu",
@@ -43,7 +39,12 @@ const navigateMonth = (
     setCurrentMonthName(getMonthName(newMonth))
 }
 
+function daysInMonth(month: number, year: number) { // Use 1 for January, 2 for February, etc.
+    return new Date(year, month, 0).getDate();
+}
+
 export {
     getMonthName,
-    navigateMonth
+    navigateMonth,
+    daysInMonth
 }

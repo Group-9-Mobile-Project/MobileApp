@@ -1,8 +1,8 @@
-import { View, Text, ColorValue, Pressable } from 'react-native'
+import { View, Text, Pressable } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { BarChart } from 'react-native-gifted-charts'
 import { ChartType, RecordedEventsList } from '../../types/Workout'
-import { getMonthName, navigateMonth } from '../../services/chartHelpers'
+import { daysInMonth, getMonthName, navigateMonth } from '../../services/chartHelpers'
 
 interface MonthlyBarChartProps {
     allEvents: RecordedEventsList,
@@ -38,32 +38,45 @@ export default function MonthlyBarChart({ allEvents, chartType }: MonthlyBarChar
     }
 
 
+
     useEffect(() => {
         const result: { date: string, value: number }[] = []
-        allEvents.forEach((item) => {
+
+        // result length by month, creates empty array
+        for (let index = 0; index < daysInMonth(currentMonth + 1, currentYear); index++) {
+            result.push({ date: (index + 1).toString(), value: 0 })
+        }
+
+
+        const monthAndYearFilteredEvents = allEvents.filter(event =>
+            (new Date(event.final.startedAt).getMonth() == currentMonth) && (new Date(event.final.startedAt).getFullYear() == currentYear))
+        monthAndYearFilteredEvents.forEach((item) => {
             switch (chartType) {
                 case 'Keskinopeus':
-                    result.push({ date: item.eventId, value: item.final.avgSpeedMs })
+                    // obviously average speed is not the sum of all averagespeeds, so last one is saved here...
+                    // do we really need to calculate averages weighted by elapsed time...
+                    result[new Date(item.final.startedAt).getDate() - 1].value = item.final.avgSpeedMs
                     break;
                 case 'Matka':
-                    result.push({ date: item.eventId, value: item.final.distanceMeters / 1000 })
+                    result[new Date(item.final.startedAt).getDate() - 1].value += item.final.distanceMeters / 1000
                     break;
                 case 'Kesto':
-                    result.push({ date: item.eventId, value: ((item.final.elapsedSeconds) / 60) })
+                    result[new Date(item.final.startedAt).getDate() - 1].value += ((item.final.elapsedSeconds) / 60)
                     break;
             }
 
         })
+
         setColors()
         setSelectedBarIndex(null)
         setData(result)
-        console.log(result)
-    }, [chartType, allEvents])
+        //console.log(result)
+    }, [chartType, allEvents, currentMonth, currentYear])
 
 
     return (
         <View>
-            
+
             <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', padding: 20, alignItems: 'center', }}>
                 <Pressable
                     style={{ padding: 20 }}
@@ -74,11 +87,11 @@ export default function MonthlyBarChart({ allEvents, chartType }: MonthlyBarChar
                         currentYear,
                         setCurrentYear,
                         setCurrentMonthName
-                    )}><Text style={{fontSize: 16, fontWeight: 'bold'}}>◄</Text></Pressable>
-                <Text style={{fontSize: 16, fontWeight: 'bold'}}>{currentMonthName} {currentYear}</Text>
+                    )}><Text style={{ fontSize: 16, fontWeight: 'bold' }}>◄</Text></Pressable>
+                <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{currentMonthName} {currentYear}</Text>
                 <Pressable
-                style={{ padding: 20 }}
-                onPress={() => navigateMonth(
+                    style={{ padding: 20 }}
+                    onPress={() => navigateMonth(
                         1,
                         currentMonth,
                         setCurrentMonth,
@@ -86,12 +99,12 @@ export default function MonthlyBarChart({ allEvents, chartType }: MonthlyBarChar
                         setCurrentYear,
                         setCurrentMonthName
                     )}
-                ><Text style={{fontSize: 16, fontWeight: 'bold'}}>►</Text></Pressable>
+                ><Text style={{ fontSize: 16, fontWeight: 'bold' }}>►</Text></Pressable>
             </View>
 
             <BarChart
                 data={data.map((item, index) => ({
-                    ...item, label: item.date,
+                    ...item, label: item.date + '.',
                     topLabelComponent: () =>
                         selectedBarIndex === index ? (
                             <Text>{item.value.toFixed(1)}</Text>
@@ -100,9 +113,14 @@ export default function MonthlyBarChart({ allEvents, chartType }: MonthlyBarChar
                 onPress={(_item: BarData, index: any) => { setSelectedBarIndex(selectedBarIndex === index ? null : index) }}
                 showGradient
                 frontColor={frontColor}
-            >
+                barBorderColor={frontColor}
+                barBorderWidth={2}
+                barWidth={30}
+                color={'yellow'}
+                gradientColor={'cyan'}
+                noOfSections={4}
+            />
 
-            </BarChart>
         </View>
     )
 }
