@@ -5,9 +5,11 @@ import TextStatistics from '../components/Statistics/TextStatistics'
 import RecordedEventsList from '../components/Statistics/RecordedEventsList'
 import { RouteFinal } from '../types/Workout'
 import { listRouteFinals } from '../services/routeStorage'
+import { useIsFocused } from '@react-navigation/native'
 
 export default function StatisticsScreen() {
   const [allRecordedEvents, setAllRecordedEvents] = useState<{eventId: string, final: RouteFinal}[]>([])
+  const isFocused = useIsFocused()
 
   useEffect(() => {
     const load = async () => {
@@ -16,7 +18,7 @@ export default function StatisticsScreen() {
     };
 
     load();
-  },[])
+  },[isFocused])
 
   return (
     <ScrollView>
