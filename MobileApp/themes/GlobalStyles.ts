@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { Colors } from '../constants/colors';
 
 const globalStyles = StyleSheet.create({
     modalView: {
@@ -36,7 +37,7 @@ const globalStyles = StyleSheet.create({
         alignContent: 'flex-start',
         marginBlockStart: 20,
         width: '100%',
-        backgroundColor: 'lightgrey',
+        backgroundColor: Colors.light.background,
         marginBlockEnd: 10
     },
     EventFormContainer: {

@@ -110,6 +110,7 @@ export default function DateTimePickerField({
             onChange={handleChange}
             minimumDate={minimumDate}
             maximumDate={maximumDate}
+            //Ota pois kun tehdään tumma teema!
             themeVariant="light"
           />
           <View style={styles.inlineActions}>
