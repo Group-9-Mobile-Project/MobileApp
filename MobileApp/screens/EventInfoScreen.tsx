@@ -60,7 +60,6 @@ export default function EventInfoScreen() {
         return () => { unsubscribe(); };
     }, [eventOwnerEmail])
 
-
     const handleDelete = () => {
         if (!event) return
         if (!isOwner) {
