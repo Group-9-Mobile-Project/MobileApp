@@ -155,7 +155,7 @@ export default function ExerciseDetailScreen() {
         )}
       </Pressable>
 
-      <Pressable style={styles.backButton} onPress={() => navigation.navigate("Koti")}>
+      <Pressable style={styles.backButton} onPress={() => navigation.navigate("Tilastot")}>
         <Text style={styles.backButtonText}>Sulje</Text>
       </Pressable>
     </View>
