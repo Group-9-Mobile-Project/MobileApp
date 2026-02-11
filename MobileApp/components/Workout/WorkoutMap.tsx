@@ -55,8 +55,10 @@ export default function WorkoutMap({
 
 const styles = StyleSheet.create({
   map: {
-    height: 320,
+    flex: 1,
+    minHeight: 180,
+    maxHeight: 320,
     borderRadius: 12,
-    overflow: "hidden"
+    overflow: "hidden",
   },
 });

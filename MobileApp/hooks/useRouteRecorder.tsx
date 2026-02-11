@@ -75,6 +75,7 @@ export function useRouteRecorder({
   const elapsedRef = useRef(0);
   const stepsRef = useRef(0);
   const startTimeRef = useRef<number | null>(null);
+  const startedAtRef = useRef<number | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
@@ -122,6 +123,13 @@ export function useRouteRecorder({
         setElapsedSeconds(draft.elapsedSeconds ?? 0);
         setSteps(draft.steps ?? 0);
 
+        startedAtRef.current =
+          typeof draft.startedAt === "number"
+            ? draft.startedAt
+            : draft.elapsedSeconds > 0
+            ? Date.now() - draft.elapsedSeconds * 1000
+            : null;
+
         if ((draft.route?.length ?? 0) > 0 || draft.elapsedSeconds > 0) {
           setStatus("paused");
         }
@@ -141,10 +149,15 @@ export function useRouteRecorder({
         clearTimeout(persistTimerRef.current);
       }
       persistTimerRef.current = setTimeout(() => {
+        const startedAt =
+          startedAtRef.current ??
+          (nextElapsed > 0 ? Date.now() - nextElapsed * 1000 : Date.now());
+
         saveRouteDraft(eventId, {
           route: nextRoute,
           elapsedSeconds: nextElapsed,
           steps: nextSteps,
+          startedAt,
           updatedAt: Date.now(),
         }).catch((error) => {
           console.warn("Failed to save draft route", error);
@@ -293,6 +306,7 @@ export function useRouteRecorder({
     elapsedRef.current = 0;
     stepsRef.current = 0;
     startTimeRef.current = null;
+    startedAtRef.current = Date.now();
 
     const ok = await startLocationUpdates();
     if (ok) {
@@ -307,10 +321,15 @@ export function useRouteRecorder({
     stopStepUpdates();
     setStatus("paused");
 
+    if (!startedAtRef.current && elapsedSeconds > 0) {
+      startedAtRef.current = Date.now() - elapsedSeconds * 1000;
+    }
+
     saveRouteDraft(eventId, {
       route,
       elapsedSeconds,
       steps,
+      startedAt: startedAtRef.current ?? Date.now(),
       updatedAt: Date.now(),
     }).catch((error) => {
       console.warn("Failed to save draft route", error);
@@ -335,19 +354,29 @@ export function useRouteRecorder({
     const avgSpeedMs =
       elapsedSeconds > 0 ? distanceMeters / elapsedSeconds : 0;
 
+    const finishedAt = Date.now();
+    const startedAt =
+      startedAtRef.current ??
+      (elapsedSeconds > 0 ? finishedAt - elapsedSeconds * 1000 : finishedAt);
+
     const finalData: RouteFinal = {
       route,
       elapsedSeconds,
       steps,
       distanceMeters,
       avgSpeedMs,
-      finishedAt: Date.now(),
+      startedAt,
+      finishedAt,
     };
 
     await saveRouteFinal(eventId, finalData);
     await clearRouteDraft(eventId);
-
+    
+    setRoute([]);
+    setElapsedSeconds(0);
+    setSteps(0);
     setStatus("idle");
+    startedAtRef.current = null;
 
     return finalData;
   }, [elapsedSeconds, eventId, route, steps, stopLocationUpdates, stopStepUpdates]);
