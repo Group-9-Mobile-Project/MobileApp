@@ -4,6 +4,7 @@ import LogOutButton from '../components/Profile/LogOutButton';
 import ShowUserInfo from '../components/Profile/ShowUserInfo';
 import ShowUsersEvents from '../components/Profile/ShowUsersEvents';
 import globalStyles from '../themes/GlobalStyles';
+import StatisticsButton from '../components/Profile/StatisticsButton';
 
 export default function ProfileScreen() {
 
@@ -11,13 +12,13 @@ export default function ProfileScreen() {
     <View style={globalStyles.container} >
       <ScrollView contentContainerStyle={globalStyles.contentContainer}>
 
-        <ShowUsersEvents />
-
-        <ShowUserInfo />
-
-        <LogOutButton />
-        
-      </ScrollView>
+    <ScrollView style={globalStyles.contentContainer}>
+      <ShowUsersEvents/>
+      <ShowUserInfo/>
+      <StatisticsButton/>
+      <LogOutButton/>
+    </ScrollView>
+    </ScrollView>
     </View>
   );
 }
