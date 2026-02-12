@@ -8,6 +8,7 @@ import { useRouteRecorder } from "../hooks/useRouteRecorder";
 import WorkoutStatsHeader from "../components/Workout/WorkoutStatsHeader";
 import WorkoutMap from "../components/Workout/WorkoutMap";
 import WorkoutControls from "../components/Workout/WorkoutControls";
+import { useRecordingContext } from "../context/RecordingContext";
 
 const DEFAULT_REGION: Region = {
   latitude: 65.08,
@@ -44,6 +45,8 @@ export default function RecordEventScreen() {
   const { eventId } = route.params;
   const navigation = useNavigation<NavigationProp<RootTabParamList>>();
 
+  const { setActiveRecording, clearActiveRecording } = useRecordingContext();
+  
   const {
     route: recordedRoute,
     elapsedSeconds,
@@ -71,6 +74,13 @@ export default function RecordEventScreen() {
       })),
     [recordedRoute]
   );
+  useEffect(() => {
+    if (status === "recording" || status === "paused") {
+      setActiveRecording(eventId, status);
+    } else {
+      clearActiveRecording();
+    }
+  }, [status, eventId, setActiveRecording, clearActiveRecording]);
 
   const totalDistanceMeters = useMemo(() => {
     if (polylinePoints.length < 2) return 0;
@@ -148,6 +158,7 @@ export default function RecordEventScreen() {
           onPress: async () => {
             try {
               await stopAndFinalize();
+              clearActiveRecording();
               navigation.navigate("Harjoituksen tiedot", { eventId });
             } catch (error) {
               const message = error instanceof Error ? error.message : "";
