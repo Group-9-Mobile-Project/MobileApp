@@ -55,7 +55,7 @@ export default function App() {
         <SafeAreaProvider style={{ marginBottom: initialWindowMetrics?.insets.bottom }}>
           <NavigationContainer theme={navigationDarkTheme}>
             <RootNavigator />
-            <StatusBar style="auto" />
+            <StatusBar style='light' />
           </NavigationContainer>
         </SafeAreaProvider>
       </PaperProvider>
