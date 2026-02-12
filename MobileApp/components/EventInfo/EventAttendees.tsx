@@ -1,7 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { Card, Divider } from 'react-native-paper'
-import AttendeeInfoRow from './AttendeeInfoRow'
+import React, { useState } from 'react'
 import ExpandableListCard from '../Common/ExpandableListCard'
 
 interface AttendeesProps {
@@ -41,28 +38,3 @@ export default function EventAttendees({ attendees }: AttendeesProps) {
         />
     )
 }
-
-const styles = StyleSheet.create({
-    cardContainer: {
-        alignContent: 'flex-start',
-        marginBlockStart: 20,
-        width: '100%',
-        backgroundColor: 'lightgrey',
-        marginBlockEnd: 10
-    },
-    expandableHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between'
-    },
-    heading: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 10,
-    },
-    basicInfoView: {
-        margin: 0,
-        alignItems: 'flex-start',
-        justifyContent: 'flex-start',
-        width: '95%',
-    },
-})

@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, Pressable, Modal, ScrollView } from 'react-native';
+import { View, Text, Pressable, Modal, ScrollView } from 'react-native';
 import { auth, firestore, USERINFO } from '../../firebase/Config';
 import React, { useEffect, useState } from 'react';
 import EditUserInfo from './EditUserInfo';
@@ -6,6 +6,7 @@ import { UserInfo } from '../../types/UserInfo';
 import { doc, getDoc } from "firebase/firestore";
 import { Card } from 'react-native-paper';
 import { useAuth } from '../../context/AuthContext';
+import globalStyles from '../../themes/GlobalStyles';
 
 export default function ShowUserInfo() {
 
@@ -40,45 +41,44 @@ export default function ShowUserInfo() {
 
 
   return (
-    <View style={styles.container}>
-      <Card style={styles.cardContainer}>
-        <ScrollView nestedScrollEnabled={true}>
-          <Card.Content>
-            <Text style={styles.heading} >Omat tiedot</Text>
-          </Card.Content>
-          <Card.Content>
-            {userInfo ? <View>
-              <Text style={styles.infoText}>Nimi: {userInfo.name}</Text>
-              <Text style={styles.infoText}>Sähköposti: {userInfo.email}</Text>
-              <Text style={styles.infoText}>Kuvaus: {userInfo.description}</Text>
-              <Text style={styles.infoText}>Syntymäpäivä: {userInfo.birthdate}</Text>
-              <Text style={styles.infoText}>Kaupunki: {userInfo.city}</Text>
-              <Text style={styles.infoText}>Harrastukset:</Text>
-              <View style={styles.hobbiesTable}>
-                {userInfo.hobbies && userInfo.hobbies.length > 0 ? (
-                  userInfo.hobbies.map((hobby, index) => (
-                    <View key={index} style={styles.hobbyRow}>
-                      <Text style={styles.hobbyText}>{hobby}</Text>
-                    </View>
-                  ))
-                ) : (
-                  <Text style={styles.infoText}>Ei harrastuksia lisätty</Text>
-                )}
-              </View>
-              <Text style={styles.infoText}>Kiinnostusten kohteet: {userInfo.interests}</Text>
-              <Text style={styles.infoText}>Pronominit: {userInfo.pronouns}</Text>
-            </View> : null}
-          </Card.Content>
-        </ScrollView>
-      </Card>
+    <View style={globalStyles.showUserContainer}>
+      <ScrollView nestedScrollEnabled={true}>
+        <Card.Content>
+          <Text style={globalStyles.heading} >Omat tiedot</Text>
+        </Card.Content>
+        <Card.Content>
+          {userInfo ? <View>
+            <Text style={globalStyles.infoText}>Nimi: {userInfo.name}</Text>
+            <Text style={globalStyles.infoText}>Sähköposti: {userInfo.email}</Text>
+            <Text style={globalStyles.infoText}>Kuvaus: {userInfo.description}</Text>
+            <Text style={globalStyles.infoText}>Syntymäpäivä: {userInfo.birthdate}</Text>
+            <Text style={globalStyles.infoText}>Kaupunki: {userInfo.city}</Text>
+            <Text style={globalStyles.infoText}>Harrastukset:</Text>
+            <View style={globalStyles.hobbiesTable}>
+              {userInfo.hobbies && userInfo.hobbies.length > 0 ? (
+                userInfo.hobbies.map((hobby, index) => (
+                  <View key={index} style={globalStyles.hobbyRow}>
+                    <Text style={globalStyles.hobbyText}>{hobby}</Text>
+                  </View>
+                ))
+              ) : (
+                <Text style={globalStyles.infoText}>Ei harrastuksia lisätty</Text>
+              )}
+            </View>
+            <Text style={globalStyles.infoText}>Kiinnostusten kohteet: {userInfo.interests}</Text>
+            <Text style={globalStyles.infoText}>Pronominit: {userInfo.pronouns}</Text>
+          </View> : null}
+        </Card.Content>
+      </ScrollView>
+
 
       <Pressable
         onPress={() => setModalVisible(true)}
-        style={({ pressed }) => pressed && styles.textPressed}
+        style={({ pressed }) => pressed && globalStyles.textPressed}
         accessibilityRole="button"
         accessibilityLabel="Show user info"
       >
-        <Text style={styles.EditButtonText}>Muokkaa omia tietojasi</Text>
+        <Text style={globalStyles.buttonText}>Muokkaa omia tietojasi</Text>
       </Pressable>
 
       <Modal
@@ -96,59 +96,3 @@ export default function ShowUserInfo() {
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-
-  container: {
-    flex: 1,
-    width: '100%',
-    paddingHorizontal: 10,
-  },
-  cardContainer: {
-    alignContent: 'flex-start',
-    marginBlockStart: 10,
-    width: '100%',
-    backgroundColor: 'lightgrey',
-  },
-  heading: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    margin: 10,
-  },
-  buttonText: {
-    backgroundColor: 'lightgrey',
-    fontWeight: 'bold',
-    alignItems: 'center',
-    padding: 12,
-    marginVertical: 10,
-    borderRadius: 10,
-  },
-  EditButtonText: {
-    backgroundColor: 'lightgrey',
-    padding: 12,
-    marginVertical: 10,
-    borderRadius: 10,
-    textAlign: 'center'
-  },
-  textPressed: {
-    opacity: 0.6
-  },
-  infoText: {
-    fontSize: 12,
-    padding: 5,
-  },
-    hobbiesTable: {
-    marginVertical: 5,
-  },
-  hobbyRow: {
-    paddingVertical: 8,
-    paddingHorizontal: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: 'lightgrey',
-    backgroundColor: '#b5b5b5',
-  },
-  hobbyText: {
-    fontSize: 13,
-    color: '#333',
-  },
-});

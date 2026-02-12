@@ -1,11 +1,11 @@
-import { View, Text, StyleSheet, Touchable, Pressable } from 'react-native'
+import { View, Text, Pressable } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { Event } from '../../types/Event'
 import { UserInfo } from '../../types/UserInfo'
 import { doc, onSnapshot } from 'firebase/firestore'
 import { firestore, USERINFO } from '../../firebase/Config'
 import { Divider } from 'react-native-paper'
 import AttendeeInfoModal from './AttendeeInfoModal'
+import globalStyles from '../../themes/GlobalStyles'
 
 interface AttendeeInfoProps {
 
@@ -34,7 +34,7 @@ export default function AttendeeInfoRow({ email }: AttendeeInfoProps) {
         return (
             <View style={{width: '100%'}}>
                 <Pressable onPress={() => setShowModal(true)} >
-                    <Text style={styles.subHeading}>{attendee.name}</Text>
+                    <Text style={globalStyles.subHeading}>{attendee.name}</Text>
                     <Divider bold={true} />
                     <AttendeeInfoModal showModal={showModal} setShowModal={setShowModal} attendee={attendee} />
                 </Pressable>
@@ -43,12 +43,3 @@ export default function AttendeeInfoRow({ email }: AttendeeInfoProps) {
     }
 
 }
-
-const styles = StyleSheet.create({
-    subHeading: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        padding: 5
-    },
-
-})

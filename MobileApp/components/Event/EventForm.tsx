@@ -1,6 +1,7 @@
-import { View, Text, TextInput, StyleSheet, Alert, Pressable } from "react-native";
+import { View, Text, TextInput, Alert, Pressable } from "react-native";
 import React, { useCallback, useState } from "react";
 import { Event, EventType, Location } from "../../types/Event";
+import { Colors } from "../../constants/colors";
 import { LocationFields } from "./LocationFields";
 import StartLocationPicker from "./StartLocationPicker";
 import { Region } from "react-native-maps";
@@ -8,6 +9,7 @@ import DateTimePickerField from "../Common/DateTimePickerField";
 import { Card, Button as PaperButton, Dialog, Portal, RadioButton } from "react-native-paper";
 import { useEventForm } from "../../hooks/useEventForm";
 import { useEventLocation } from "../../hooks/useEventLocation";
+import globalStyles from "../../themes/GlobalStyles";
 
 const DEFAULT_COORDINATE = { latitude: 65.08, longitude: 25.48 };
 
@@ -80,16 +82,16 @@ export default function EventForm({
     defaultCoordinate: initialCoordinate,
     initialValues: initialEvent
       ? {
-          title: initialEvent.title,
-          description: initialEvent.description,
-          date: initialEvent.date,
-          startTime: initialEvent.startTime,
-          type: initialEvent.type,
-          locationName: initialEvent.location.name,
-          locationAddress: initialEvent.location.address,
-          latitude: initialEvent.location.coordinates.latitude,
-          longitude: initialEvent.location.coordinates.longitude,
-        }
+        title: initialEvent.title,
+        description: initialEvent.description,
+        date: initialEvent.date,
+        startTime: initialEvent.startTime,
+        type: initialEvent.type,
+        locationName: initialEvent.location.name,
+        locationAddress: initialEvent.location.address,
+        latitude: initialEvent.location.coordinates.latitude,
+        longitude: initialEvent.location.coordinates.longitude,
+      }
       : undefined,
   });
 
@@ -117,7 +119,7 @@ export default function EventForm({
     onResolvedAddress: setLocationAddress,
     onCoordinateChange: handleCoordinateChange,
   });
-  
+
   const shouldResetOnSuccess = resetOnSuccess ?? !initialEvent;
   const resolvedSubmitLabel =
     submitLabel ?? (initialEvent ? "Tallenna muutokset" : "Lisää tapahtuma");
@@ -163,148 +165,102 @@ export default function EventForm({
   }
 
   return (
-     <View style={styles.container}>
-       <Card style={styles.card}>
-         <Card.Content style={styles.cardContent}>
-           <Text style={styles.cardTitle}>Perustiedot</Text>
- 
-           <TextInput
-             style={styles.input}
-             placeholder="Tapahtuman nimi"
-             value={title}
-             onChangeText={setTitle}
-           />
-           <TextInput
-             style={[styles.input, styles.multiline]}
-             placeholder="Kuvaus (valinnainen)"
-             value={description}
-             onChangeText={setDescription}
-             multiline
-           />
- 
-           <Text style={styles.label}>Tyyppi</Text>
-           <PaperButton mode="outlined" onPress={openTypeDialog}>
-             {type}
-           </PaperButton>
-           
-           <Portal>
-             <Dialog visible={typeDialogVisible} onDismiss={closeTypeDialog}>
-               <Dialog.Title>Valitse tyyppi</Dialog.Title>
-               <Dialog.Content>
-                 <RadioButton.Group
-                   value={type}
-                   onValueChange={(value) => {
-                     setType(value as EventType);
-                     closeTypeDialog();
-                   }}
-                 >
-                   <RadioButton.Item label="Kävely" value="Kävely" />
-                   <RadioButton.Item label="Juoksu" value="Juoksu" />
-                 </RadioButton.Group>
-               </Dialog.Content>
-             </Dialog>
-          </Portal>
-         </Card.Content> 
-       </Card>
- 
-       <Card style={styles.card}>
-         <Card.Content style={styles.cardContent}>
-           <Text style={styles.cardTitle}>Aika</Text>
-           <DateTimePickerField
-             label="Päivämäärä"
-             labelStyle={styles.label}
-             value={dateValue}
-             mode="date"
-             buttonLabel={formattedDate}
-             onChange={handleDateSelected}
-           />
-           <DateTimePickerField
-             label="Aloitusaika"
-             labelStyle={styles.label}
-             value={startTimeValue}
-             mode="time"
-             buttonLabel={startTime || "Valitse aloitusaika"}
-             onChange={handleStartTimeSelected}
-           />
-         </Card.Content>
-       </Card>
- 
-       <Card style={styles.card}>
-         <Card.Content style={styles.cardContent}>
-           <Text style={styles.cardTitle}>Sijainti</Text>
-           <StartLocationPicker
-             region={location}
-             selectedCoordinate={selectedCoordinate}
-             onSelect={handleSelectCoordinate}
-             onRegionChangeComplete={setLocation}
-           />
-           {locationError ? (
-             <Text style={styles.helperText}>{locationError}</Text>
-           ) : null}
- 
-           <LocationFields
-             inputStyle={styles.input}
-             locationName={locationName}
-             setLocationName={setLocationName}
-             locationAddress={locationAddress}
-             setLocationAddress={setLocationAddress}
-             addressReadOnly
-           />
-         </Card.Content>
-       </Card>
- 
-      <Pressable style={styles.addButton} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>{resolvedSubmitLabel}</Text>
-      </Pressable>
-     </View>
-   );
- }
+    <View style={globalStyles.EventFormContainer}>
+      <Card style={globalStyles.cardContainer}>
+        <Card.Content style={globalStyles.cardContent}>
+          <Text style={globalStyles.heading}>Perustiedot</Text>
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-    gap: 16,
-    width: "100%",
-  },
-  card: {
-    width: "100%",
-    backgroundColor: "white",
-  },
-  cardContent: {
-    gap: 12,
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 4,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    backgroundColor: "white",
-  },
-  multiline: {
-    minHeight: 80,
-    textAlignVertical: "top",
-  },
-  label: {
-    fontWeight: "600",
-  },
-  helperText: {
-    color: "#666",
-    fontSize: 12,
-  },
-  addButton: {
-    backgroundColor: "green",
-    alignItems: "center",
-    padding: 12,
-    borderRadius: 5,
-    margin: 10,
-  },
-  buttonText: {
-    fontSize: 16,
-  },
-});
+          <TextInput
+            style={globalStyles.input}
+            placeholder="Tapahtuman nimi"
+            placeholderTextColor={Colors.dark.inversePrimary}
+            value={title}
+            onChangeText={setTitle}
+          />
+          <TextInput
+            style={[globalStyles.input, globalStyles.multiline]}
+            placeholder="Kuvaus (valinnainen)"
+            placeholderTextColor={Colors.dark.inversePrimary}
+            value={description}
+            onChangeText={setDescription}
+            multiline
+          />
+
+          <Text style={globalStyles.label}>Tyyppi</Text>
+          <PaperButton mode="outlined" onPress={openTypeDialog} textColor='white'>
+            {type}
+          </PaperButton>
+
+          <Portal>
+            <Dialog visible={typeDialogVisible} onDismiss={closeTypeDialog}>
+              <Dialog.Title>Valitse tyyppi</Dialog.Title>
+              <Dialog.Content>
+                <RadioButton.Group
+                  value={type}
+                  onValueChange={(value) => {
+                    setType(value as EventType);
+                    closeTypeDialog();
+                  }}
+                >
+                  <RadioButton.Item label="Kävely" value="Kävely" />
+                  <RadioButton.Item label="Juoksu" value="Juoksu" />
+                </RadioButton.Group>
+              </Dialog.Content>
+            </Dialog>
+          </Portal>
+        </Card.Content>
+      </Card>
+
+      <Card style={globalStyles.cardContainer}>
+        <Card.Content style={globalStyles.cardContent}>
+          <Text style={globalStyles.heading}>Aika</Text>
+          <DateTimePickerField
+            label="Päivämäärä"
+            labelStyle={globalStyles.label}
+            value={dateValue}
+            mode="date"
+            buttonLabel={formattedDate}
+            onChange={handleDateSelected}
+          />
+          <DateTimePickerField
+            label="Aloitusaika"
+            labelStyle={globalStyles.label}
+            value={startTimeValue}
+            mode="time"
+            buttonLabel={startTime || "Valitse aloitusaika"}
+            onChange={handleStartTimeSelected}
+          />
+        </Card.Content>
+      </Card>
+
+      <Card style={globalStyles.cardContainer}>
+        <Card.Content style={globalStyles.cardContent}>
+          <Text style={globalStyles.heading}>Sijainti</Text>
+          <StartLocationPicker
+            region={location}
+            selectedCoordinate={selectedCoordinate}
+            onSelect={handleSelectCoordinate}
+            onRegionChangeComplete={setLocation}
+          />
+          {locationError ? (
+            <Text style={globalStyles.helperText}>{locationError}</Text>
+          ) : null}
+        </Card.Content>
+        <Card.Content>
+          <LocationFields
+            inputStyle={globalStyles.input}
+            locationName={locationName}
+            setLocationName={setLocationName}
+            locationAddress={locationAddress}
+            setLocationAddress={setLocationAddress}
+            addressReadOnly
+          />
+        </Card.Content>
+      </Card>
+
+      <Pressable style={globalStyles.addButton} onPress={handleSubmit}>
+        <Text style={globalStyles.addEventButtonText}>{resolvedSubmitLabel}</Text>
+      </Pressable>
+    </View>
+  );
+}

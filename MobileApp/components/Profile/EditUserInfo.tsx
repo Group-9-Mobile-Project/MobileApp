@@ -1,9 +1,12 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, FlatList, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { doc, updateDoc, getDoc } from 'firebase/firestore'
 import { auth, firestore, USERINFO } from '../../firebase/Config'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { Colors } from '../../constants/colors';
 import { useAuth } from '../../context/AuthContext';
+import globalStyles from '../../themes/GlobalStyles';
+import DateTimePickerField from '../Common/DateTimePickerField';
 
 export default function EditUserInfo({ onClose }: { onClose: () => void }) {
 
@@ -11,7 +14,7 @@ export default function EditUserInfo({ onClose }: { onClose: () => void }) {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
-  const [birthdate, setBirthdate] = useState("")
+  const [birthdate, setBirthdate] = useState<Date | null>(null)
   const [city, setCity] = useState("")
   const [hobbies, setHobbies] = useState<string[]>([])
   const [hobbyInput, setHobbyInput] = useState("")
@@ -35,7 +38,17 @@ export default function EditUserInfo({ onClose }: { onClose: () => void }) {
         if ((docSnap).exists()) {
           setName(docSnap.data().name || "")
           setDescription(docSnap.data().description || "")
-          setBirthdate(docSnap.data().birthdate || "")
+          const bd = docSnap.data().birthdate
+          if (bd) {
+            if (bd.includes('.')) {
+              const [d, m, y] = bd.split('.').map(Number)
+              setBirthdate(new Date(y, m - 1, d))
+            } else {
+              setBirthdate(new Date(bd))
+            }
+          } else {
+            setBirthdate(null)
+          }
           setCity(docSnap.data().city || "")
           setHobbies(docSnap.data().hobbies || [])
           setInterests(docSnap.data().interests || "")
@@ -46,6 +59,13 @@ export default function EditUserInfo({ onClose }: { onClose: () => void }) {
       }
     })()
   }, [])
+
+  const formatDate = (date: Date) => {
+    const d = date.getDate()
+    const m = date.getMonth() + 1
+    const y = date.getFullYear()
+    return `${d}.${m}.${y}`
+  }
 
   const addHobby = () => {
     if (hobbyInput.trim()) {
@@ -68,7 +88,7 @@ export default function EditUserInfo({ onClose }: { onClose: () => void }) {
       await updateDoc(docRef, {
         name: name,
         description: description,
-        birthdate: birthdate,
+        birthdate: birthdate ? formatDate(birthdate) : "",
         city: city,
         hobbies: hobbies,
         interests: interests,
@@ -88,50 +108,58 @@ export default function EditUserInfo({ onClose }: { onClose: () => void }) {
 
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <KeyboardAwareScrollView
+        style={{ backgroundColor: 'rgb(26, 28, 30)' }}
         keyboardShouldPersistTaps="handled"
         //  enableOnAndroid 
         extraScrollHeight={24}
       >
-        <Text style={styles.heading} >Muokkaa omia tietoja</Text>
-        <View style={styles.container}>
-          <Text style={styles.label}>Nimi:</Text>
-          <TextInput style={styles.input}
+        <View style={{ backgroundColor: 'rgb(26, 28, 30)', height: 30 }} />
+        <View style={globalStyles.editUserContainer}>
+          <Text style={globalStyles.heading} >Muokkaa omia tietoja</Text>
+          <Text style={globalStyles.label}>Nimi:</Text>
+          <TextInput style={globalStyles.input}
             placeholder='Syötä nimesi'
+            placeholderTextColor={Colors.dark.inversePrimary}
             value={name}
             onChangeText={setName}
             editable={!loading}
           />
-          <Text style={styles.label}>Kuvaus:</Text>
-          <TextInput style={styles.input}
+          <Text style={globalStyles.label}>Kuvaus:</Text>
+          <TextInput style={globalStyles.input}
             placeholder='Syötä Kuvaus'
+            placeholderTextColor={Colors.dark.inversePrimary}
             value={description}
             onChangeText={setDescription}
             editable={!loading}
           />
-          <Text style={styles.label}>Syntymäpäivä:</Text>
-          <TextInput style={styles.input}
-            placeholder='PP/KK/VVVV'
-            value={birthdate}
-            onChangeText={setBirthdate}
-            editable={!loading}
+          <DateTimePickerField
+            label="Syntymäpäivä:"
+            labelStyle={globalStyles.label}
+            value={birthdate ?? new Date()}
+            mode="date"
+            onChange={setBirthdate}
+            buttonLabel={birthdate ? formatDate(birthdate) : 'Valitse syntymäpäivä'}
+            maximumDate={new Date()}
           />
-          <Text style={styles.label}>Kaupunki:</Text>
-          <TextInput style={styles.input}
+          <Text style={globalStyles.label}>Kaupunki:</Text>
+          <TextInput style={globalStyles.input}
             placeholder='Syötä kaupunkisi'
+            placeholderTextColor={Colors.dark.inversePrimary}
             value={city}
             onChangeText={setCity}
             editable={!loading}
           />
-          <Text style={styles.label}>Harrastukset:</Text>
-          <View style={styles.hobbyInputContainer}>
-            <TextInput style={styles.hobbyInput}
+          <Text style={globalStyles.label}>Harrastukset:</Text>
+          <View style={globalStyles.hobbyInputContainer}>
+            <TextInput style={globalStyles.hobbyInput}
               placeholder='Lisää harrastus'
+              placeholderTextColor={Colors.dark.inversePrimary}
               value={hobbyInput}
               onChangeText={setHobbyInput}
               editable={!loading}
             />
-            <TouchableOpacity style={styles.addButton} onPress={addHobby}>
-              <Text style={styles.addButtonText}>+</Text>
+            <TouchableOpacity style={globalStyles.addButton} onPress={addHobby}>
+              <Text style={globalStyles.subHeading}>+</Text>
             </TouchableOpacity>
           </View>
           <FlatList
@@ -139,27 +167,29 @@ export default function EditUserInfo({ onClose }: { onClose: () => void }) {
             data={hobbies}
             keyExtractor={(_, index) => index.toString()}
             renderItem={({ item, index }) => (
-              <View style={styles.hobbyItem}>
-                <Text style={styles.hobbyText}>{item}</Text>
+              <View style={globalStyles.hobbyItem}>
+                <Text style={globalStyles.hobbyText}>{item}</Text>
                 <TouchableOpacity
-                  style={styles.deleteButton}
+                  style={globalStyles.deleteButton}
                   onPress={() => removeHobby(index)}
                 >
-                  <Text style={styles.deleteButtonText}>x</Text>
+                  <Text style={globalStyles.deleteButtonText}>x</Text>
                 </TouchableOpacity>
               </View>
             )}
           />
-          <Text style={styles.label}>Kiinnostusten kohteet:</Text>
-          <TextInput style={styles.input}
+          <Text style={globalStyles.label}>Kiinnostusten kohteet:</Text>
+          <TextInput style={globalStyles.input}
             placeholder='Syötä kiinnostusten kohteet'
+            placeholderTextColor={Colors.dark.inversePrimary}
             value={interests}
             onChangeText={setInterests}
             editable={!loading}
           />
-          <Text style={styles.label}>Pronominit:</Text>
-          <TextInput style={styles.input}
+          <Text style={globalStyles.label}>Pronominit:</Text>
+          <TextInput style={globalStyles.input}
             placeholder='Syötä pronominit'
+            placeholderTextColor={Colors.dark.inversePrimary}
             value={pronouns}
             onChangeText={setPronouns}
             editable={!loading}
@@ -167,118 +197,22 @@ export default function EditUserInfo({ onClose }: { onClose: () => void }) {
         </View>
 
 
-        <TouchableOpacity style={[styles.buttonSave, loading && styles.buttonDisabled]}
+        <TouchableOpacity style={[globalStyles.buttonSave, loading && globalStyles.buttonDisabled]}
           onPress={handleSave}
           disabled={loading}
         >
-          <Text style={styles.buttonText}>
+          <Text style={globalStyles.buttonSaveText}>
             {loading ? "Tallennetaan..." : "Tallenna muutokset"}
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.buttonCancel}
+        <TouchableOpacity style={globalStyles.buttonCancel}
           onPress={onClose}
         >
-          <Text style={styles.buttonText}>Peruuta</Text>
+          <Text style={globalStyles.logOutButtonText}>Peruuta</Text>
         </TouchableOpacity>
+        <View style={{ backgroundColor: 'rgb(26, 28, 30)', height: 30 }} />
       </KeyboardAwareScrollView>
     </TouchableWithoutFeedback>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 10,
-  },
-  fieldContainer: {
-    margin: 20,
-  },
-  contentContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 16,
-  },
-  heading: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginTop: 50,
-    padding: 10,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    marginTop: 5,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    padding: 10,
-    fontSize: 14,
-    marginTop: 5,
-  },
-  hobbyInputContainer: {
-    flexDirection: 'row',
-    gap: 10,
-    marginBottom: 10,
-  },
-  hobbyInput: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    padding: 10,
-    borderRadius: 5,
-    fontSize: 14,
-  },
-  addButton: {
-    backgroundColor: 'grey',
-    padding: 10,
-    borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 50,
-  },
-  addButtonText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  hobbyItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#f0f0f0',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 8,
-  },
-  hobbyText: {
-    fontSize: 14,
-    flex: 1,
-  },
-  deleteButton: {
-    padding: 5,
-  },
-  deleteButtonText: {
-    fontSize: 24,
-    color: '#ff3b30',
-  },
-  buttonSave: {
-    backgroundColor: 'grey',
-    alignItems: 'center',
-    padding: 12,
-    borderRadius: 5,
-    margin: 10,
-  },
-  buttonCancel: {
-    backgroundColor: 'red',
-    alignItems: 'center',
-    padding: 12,
-    borderRadius: 5,
-    margin: 10,
-  },
-  buttonDisabled: {
-    opacity: 0.6,
-  },
-  buttonText: {
-
-  },
-})

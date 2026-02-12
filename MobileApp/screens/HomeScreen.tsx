@@ -1,33 +1,23 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import RecentEventsList from '../components/Home/RecentEventsList';
 import AllEventsMapView from '../components/Home/AllEventsMapView';
-import EventSearchModal from '../components/Home/EventSearchModal';
 import EventStartingBanner from '../components/Home/EventStartingBanner';
+import globalStyles from '../themes/GlobalStyles';
 
 export default function HomeScreen() {
   return (
-
-    <ScrollView contentContainerStyle={styles.scrollview}>
-      <View style={styles.container}>
-        <EventStartingBanner />
-        
-        <RecentEventsList />
-        
-        <AllEventsMapView />
-      </View>
-    </ScrollView>
-
-  );
-}
-const styles = StyleSheet.create({
-  scrollview: {
     
-  },
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 16
-  },
-})
+    <View style={globalStyles.container}>
+      <ScrollView contentContainerStyle={globalStyles.contentContainer}>
+
+        <EventStartingBanner />
+
+        <RecentEventsList />
+
+        <AllEventsMapView />
+
+      </ScrollView>
+    </View>
+  )
+}

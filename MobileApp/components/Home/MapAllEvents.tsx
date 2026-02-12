@@ -1,9 +1,8 @@
-import { Text, StyleSheet } from 'react-native'
 import React, { useState } from 'react'
 import MapView, { Marker, Region } from 'react-native-maps';
 import { Event } from '../../types/Event';
-import EventInfoModal from '../Common/EventInfoModal';
 import EventMapMarker from './EventMapMarker';
+import globalStyles from '../../themes/GlobalStyles';
 
 interface EventList {
     currentRegion: Region,
@@ -16,7 +15,7 @@ export default function MapAllEvents({ currentRegion, eventList }: EventList) {
 
     return (
         <>
-            <MapView style={styles.map} region={currentRegion} showsUserLocation>
+            <MapView style={globalStyles.mapAllEvents} region={currentRegion} showsUserLocation>
                 
                 {eventList.map((event) => (
                     
@@ -30,21 +29,3 @@ export default function MapAllEvents({ currentRegion, eventList }: EventList) {
         </>
     )
 }
-
-const styles = StyleSheet.create({
-    map: {
-        width: '100%',
-        height: '100%',
-        margin: 8
-    },
-    callout: {
-        backgroundColor: 'white',
-        borderStyle: 'solid',
-        borderColor: 'black',
-        borderWidth: 1,
-        padding: 10,
-        width: '100%',
-        height: '100%',
-        position: 'relative'
-    }
-});
