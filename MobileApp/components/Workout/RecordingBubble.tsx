@@ -26,7 +26,19 @@ export default function RecordingBubble() {
 }
 
 const styles = StyleSheet.create({
-  wrapper: { position: "absolute", right: 16, zIndex: 1000, elevation: 12 },
-  button: { flexDirection: "row", alignItems: "center", gap: 8, backgroundColor: "#d32f2f", paddingHorizontal: 14, paddingVertical: 12, borderRadius: 999 },
-  text: { color: "white", fontWeight: "700" },
+  wrapper: {
+    position: "absolute",
+    right: 16,
+    zIndex: 1000,
+    elevation: 12
+  },
+  button: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    backgroundColor: "#d32f2f",
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    borderRadius: 999
+  },
 });
