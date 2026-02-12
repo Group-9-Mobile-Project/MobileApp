@@ -5,13 +5,14 @@ import { useAuth } from '../../context/AuthContext'
 import { collection, query, orderBy, where, onSnapshot, or, and } from 'firebase/firestore'
 import { firestore, EVENT } from '../../firebase/Config'
 import { Card } from 'react-native-paper'
-import { NavigationProp, useNavigation } from '@react-navigation/native'
+import { NavigationProp, useIsFocused, useNavigation } from '@react-navigation/native'
 import { RootTabParamList } from '../../types/Navigation'
 
 export default function EventStartingBanner() {
     const { user } = useAuth()
     const [events, setEvents] = useState<Event[] | null>(null)
     const navigation = useNavigation<NavigationProp<RootTabParamList>>();
+    const isFocused = useIsFocused()
 
     useEffect(() => {
         let today = new Date()
@@ -48,7 +49,7 @@ export default function EventStartingBanner() {
         })
 
         return () => { unsubscribe(); };
-    }, [])
+    }, [isFocused])
 
 
     if (events == null) return

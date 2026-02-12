@@ -3,11 +3,11 @@ import React, { useEffect, useState } from 'react'
 import { Event, EventProps } from '../types/Event'
 import { ActivityIndicator, Card } from 'react-native-paper'
 import JoinEventButton from '../components/Common/JoinEventButton'
-import { useNavigation, NavigationProp, useRoute, RouteProp } from '@react-navigation/native'
+import { useNavigation, NavigationProp, useRoute, RouteProp, useIsFocused } from '@react-navigation/native'
 import { RootTabParamList } from '../types/Navigation'
 import { deleteEvent } from '../services/eventService'
 import { useAuth } from '../context/AuthContext'
-import { collection, query, orderBy, where, limit, onSnapshot, doc } from 'firebase/firestore'
+import { onSnapshot, doc } from 'firebase/firestore'
 import { firestore, EVENT, USERINFO } from '../firebase/Config'
 import EventAttendees from '../components/EventInfo/EventAttendees'
 import AttendeeInfoModal from '../components/EventInfo/AttendeeInfoModal'
@@ -29,6 +29,9 @@ export default function EventInfoScreen() {
 
     const [organizer, setOrganizer] = useState<UserInfo | null>(null)
     const [showOrganizerModal, setShowOrganizerModal] = useState<boolean>(false)
+
+    const [allowRecording, setAllowRecording] = useState<boolean>(false)
+    const isFocused = useIsFocused()
 
     let today = new Date()
     let todayISO = today.toISOString().slice(0, 10)
@@ -59,6 +62,23 @@ export default function EventInfoScreen() {
 
         return () => { unsubscribe(); };
     }, [eventOwnerEmail])
+
+
+    useEffect(() => {
+        if (!event) {
+            setAllowRecording(false)
+            return
+        }
+        if ((event.date == todayISO)
+            &&
+            ((event.startTime.split(/\.|\:/)[0] as unknown as number >= hours - 1) && (event.startTime.split(/\.|\:/)[0] as unknown as number <= hours + 1))
+            &&
+            (((currentEmail) && (event.attendees.includes(currentEmail))) || isOwner)) {
+            setAllowRecording(true)
+        } else {
+            setAllowRecording(false)
+        }
+    }, [isFocused, eventId, event])
 
     const handleDelete = () => {
         if (!event) return
@@ -173,11 +193,7 @@ export default function EventInfoScreen() {
                                 <Text style={styles.buttonText}>Sulje</Text>
                             </Pressable>
 
-                            {((event.date == todayISO)
-                                &&
-                                ((event.startTime.split(/\.|\:/)[0] as unknown as number >= hours - 1) && (event.startTime.split(/\.|\:/)[0] as unknown as number <= hours + 1))
-                                &&
-                                (((currentEmail) && (event.attendees.includes(currentEmail))) || isOwner)) && (
+                            {(allowRecording) && (
                                     <Pressable
                                         style={({ pressed }) => pressed && styles.textPressed}
                                         onPress={() => navigation.navigate('Tallenna tapahtuma', { eventId: event.id })}
