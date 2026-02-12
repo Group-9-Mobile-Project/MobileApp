@@ -41,37 +41,36 @@ export default function ShowUserInfo() {
 
 
   return (
-    <View style={globalStyles.modalView}>
-      <Card style={globalStyles.showUserContainer}>
-        <ScrollView nestedScrollEnabled={true}>
-          <Card.Content>
-            <Text style={globalStyles.heading} >Omat tiedot</Text>
-          </Card.Content>
-          <Card.Content>
-            {userInfo ? <View>
-              <Text style={globalStyles.infoText}>Nimi: {userInfo.name}</Text>
-              <Text style={globalStyles.infoText}>Sähköposti: {userInfo.email}</Text>
-              <Text style={globalStyles.infoText}>Kuvaus: {userInfo.description}</Text>
-              <Text style={globalStyles.infoText}>Syntymäpäivä: {userInfo.birthdate}</Text>
-              <Text style={globalStyles.infoText}>Kaupunki: {userInfo.city}</Text>
-              <Text style={globalStyles.infoText}>Harrastukset:</Text>
-              <View style={globalStyles.hobbiesTable}>
-                {userInfo.hobbies && userInfo.hobbies.length > 0 ? (
-                  userInfo.hobbies.map((hobby, index) => (
-                    <View key={index} style={globalStyles.hobbyRow}>
-                      <Text style={globalStyles.hobbyText}>{hobby}</Text>
-                    </View>
-                  ))
-                ) : (
-                  <Text style={globalStyles.infoText}>Ei harrastuksia lisätty</Text>
-                )}
-              </View>
-              <Text style={globalStyles.infoText}>Kiinnostusten kohteet: {userInfo.interests}</Text>
-              <Text style={globalStyles.infoText}>Pronominit: {userInfo.pronouns}</Text>
-            </View> : null}
-          </Card.Content>
-        </ScrollView>
-      </Card>
+    <View style={globalStyles.showUserContainer}>
+      <ScrollView nestedScrollEnabled={true}>
+        <Card.Content>
+          <Text style={globalStyles.heading} >Omat tiedot</Text>
+        </Card.Content>
+        <Card.Content>
+          {userInfo ? <View>
+            <Text style={globalStyles.infoText}>Nimi: {userInfo.name}</Text>
+            <Text style={globalStyles.infoText}>Sähköposti: {userInfo.email}</Text>
+            <Text style={globalStyles.infoText}>Kuvaus: {userInfo.description}</Text>
+            <Text style={globalStyles.infoText}>Syntymäpäivä: {userInfo.birthdate}</Text>
+            <Text style={globalStyles.infoText}>Kaupunki: {userInfo.city}</Text>
+            <Text style={globalStyles.infoText}>Harrastukset:</Text>
+            <View style={globalStyles.hobbiesTable}>
+              {userInfo.hobbies && userInfo.hobbies.length > 0 ? (
+                userInfo.hobbies.map((hobby, index) => (
+                  <View key={index} style={globalStyles.hobbyRow}>
+                    <Text style={globalStyles.hobbyText}>{hobby}</Text>
+                  </View>
+                ))
+              ) : (
+                <Text style={globalStyles.infoText}>Ei harrastuksia lisätty</Text>
+              )}
+            </View>
+            <Text style={globalStyles.infoText}>Kiinnostusten kohteet: {userInfo.interests}</Text>
+            <Text style={globalStyles.infoText}>Pronominit: {userInfo.pronouns}</Text>
+          </View> : null}
+        </Card.Content>
+      </ScrollView>
+
 
       <Pressable
         onPress={() => setModalVisible(true)}

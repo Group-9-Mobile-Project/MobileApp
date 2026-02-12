@@ -126,7 +126,7 @@ export default function AllEventsMapView() {
           {isExpanded && (
             <View style={{ padding: 16, gap: 16 }}>
               <Text style={globalStyles.label}>Tyyppi:</Text>
-              <PaperButton mode="outlined" onPress={openTypeDialog} textColor='black'>
+              <PaperButton mode="outlined" onPress={openTypeDialog} textColor='white'>
                 {eventType}
               </PaperButton>
 
@@ -163,7 +163,7 @@ export default function AllEventsMapView() {
 
 
 
-              <PaperButton mode="outlined" onPress={resetFilters} textColor='black'>
+              <PaperButton mode="outlined" onPress={resetFilters} textColor='white'>
                 Tyhjennä suodattimet
               </PaperButton>
             </View>

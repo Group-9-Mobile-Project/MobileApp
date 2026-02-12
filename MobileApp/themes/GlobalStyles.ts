@@ -10,8 +10,8 @@ const globalStyles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: Colors.light.background,
-        shadowColor: Colors.light.shadow,
+        backgroundColor: Colors.dark.background,
+        shadowColor: Colors.dark.shadow,
         margin: 8,
         shadowOpacity: 0.25,
         shadowRadius: 4,
@@ -25,7 +25,7 @@ const globalStyles = StyleSheet.create({
     //UpdateEventScreen
     container: {
         flex: 1,
-        backgroundColor: Colors.light.background
+        backgroundColor: Colors.dark.background
     },
     contentContainer: {
         alignItems: "center",
@@ -41,7 +41,7 @@ const globalStyles = StyleSheet.create({
     cardContainer: {
         alignContent: 'flex-start',
         width: '100%',
-        backgroundColor: Colors.light.surface,
+        backgroundColor: Colors.dark.elevation.level1,
         marginBlockStart: 20,
         marginBlockEnd: 10
     },
@@ -55,27 +55,7 @@ const globalStyles = StyleSheet.create({
         minHeight: 80,
     },
 
-    //EventFrom
-    //EditUserInfo
-    addButton: {
-        alignItems: "center",
-        backgroundColor: Colors.light.secondary,
-        padding: 12,
-        borderRadius: 5,
-    },
-    input: {
-        width: '100%',
-        backgroundColor: Colors.light.surface,
-        borderColor: Colors.light.outline,
-        borderWidth: 1,
-        borderRadius: 8,
-        paddingHorizontal: 12,
-        paddingVertical: 10,
-        color: Colors.light.onSurface,
-    },
-
     //JoinEventButton
-    //EventFrom
     //AttendeeInfoModal
     //ShowUserInfo
     //EventInfoScreen
@@ -86,7 +66,35 @@ const globalStyles = StyleSheet.create({
         marginVertical: 10,
         borderRadius: 10,
         fontSize: 16,
-        color: Colors.light.onSecondaryContainer,
+        color: Colors.dark.primary,
+    },
+
+    //EventFrom
+    //EditUserInfo
+    addButton: {
+        alignItems: "center",
+        padding: 12,
+        borderRadius: 5,
+        backgroundColor: Colors.dark.secondaryContainer,
+    },
+        addEventButtonText: {
+        fontWeight: "bold",
+        alignItems: "center",
+        padding: 12,
+        marginVertical: 10,
+        borderRadius: 10,
+        fontSize: 16,
+        color: Colors.dark.secondary,
+    },
+    input: {
+        width: '100%',
+        backgroundColor: Colors.dark.primary,
+        borderColor: Colors.dark.primaryContainer,
+        borderWidth: 1,
+        borderRadius: 8,
+        paddingHorizontal: 12,
+        paddingVertical: 10,
+        color: Colors.dark.surface,
     },
 
     //EventFrom
@@ -108,7 +116,7 @@ const globalStyles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 20,
         marginBottom: 10,
-        color: Colors.light.onSurface,
+        color: Colors.dark.onSurface,
     },
 
     //ExpandableListCard
@@ -148,7 +156,7 @@ const globalStyles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 16,
         padding: 5,
-        color: Colors.light.onSurface,
+        color: Colors.dark.onSurface,
     },
 
     //JoinEventButton
@@ -166,14 +174,14 @@ const globalStyles = StyleSheet.create({
     infoText: {
         fontSize: 16,
         padding: 5,
-        color: Colors.light.onSurface,
+        color: Colors.dark.onSurface,
     },
 
     //EventForm
     //EventInfoScreen
     //UpdateEventScreen
     helperText: {
-        color: Colors.light.error,
+        color: Colors.dark.error,
         fontSize: 12,
     },
 
@@ -182,14 +190,14 @@ const globalStyles = StyleSheet.create({
     //EditUserInfo
     label: {
         fontWeight: "600",
-        color: Colors.light.onSurface,
+        color: Colors.dark.onSurface,
     },
 
     //EventInfoScreen
     organizerLink: {
         fontSize: 16,
         padding: 5,
-        color: Colors.light.inversePrimary
+        color: Colors.dark.inversePrimary
     },
     pressableView: {
         flexDirection: "row",
@@ -208,7 +216,7 @@ const globalStyles = StyleSheet.create({
 
     //UpdateEventScreen
     linkText: {
-        color: Colors.light.inversePrimary,
+        color: Colors.dark.inversePrimary,
         marginTop: 8,
     },
 
@@ -216,7 +224,7 @@ const globalStyles = StyleSheet.create({
     noEventsText: {
         fontSize: 16,
         fontStyle: 'italic',
-        color: Colors.light.onSurfaceVariant,
+        color: Colors.dark.onSurfaceVariant,
     },
 
     //AllEventsMapView
@@ -253,6 +261,7 @@ const globalStyles = StyleSheet.create({
         gap: 5,
         padding: 20,
         marginTop: 20,
+        backgroundColor: Colors.dark.background
     },
     hobbyInputContainer: {
         flexDirection: 'row',
@@ -262,18 +271,18 @@ const globalStyles = StyleSheet.create({
     hobbyInput: {
         flex: 1,
         borderWidth: 1,
-        backgroundColor: Colors.light.surface,
-        borderColor: Colors.light.outline,
+        backgroundColor: Colors.dark.primary,
+        borderColor: Colors.dark.primaryContainer,
         padding: 10,
         borderRadius: 5,
         fontSize: 14,
-        color: Colors.light.onSurface,
+        color: Colors.dark.onSecondaryContainer,
     },
     hobbyItem: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        backgroundColor: Colors.light.surfaceVariant,
+        backgroundColor: Colors.dark.surfaceVariant,
         padding: 10,
         borderRadius: 5,
         marginBottom: 8,
@@ -283,21 +292,27 @@ const globalStyles = StyleSheet.create({
     },
     deleteButtonText: {
         fontSize: 24,
-        color: Colors.light.error
+        color: Colors.dark.errorContainer
     },
     buttonSave: {
         alignItems: 'center',
         padding: 12,
         borderRadius: 5,
         margin: 10,
-        backgroundColor: Colors.light.secondary,
+        backgroundColor: Colors.dark.secondaryContainer,
     },
+    buttonSaveText: {
+        fontWeight: 'bold',
+        fontSize: 16,
+        color: Colors.dark.secondary,
+    },
+
     buttonCancel: {
         alignItems: 'center',
         padding: 12,
         borderRadius: 5,
         margin: 10,
-        backgroundColor: Colors.light.error,
+        backgroundColor: Colors.dark.onError,
     },
     buttonDisabled: {
         opacity: 0.6,
@@ -308,7 +323,7 @@ const globalStyles = StyleSheet.create({
     hobbyText: {
         fontSize: 14,
         flex: 1,
-        color: Colors.light.onSurfaceVariant,
+        color: Colors.dark.onSurfaceVariant,
     },
 
     //ShowUserInfo
@@ -319,14 +334,15 @@ const globalStyles = StyleSheet.create({
         paddingVertical: 8,
         paddingHorizontal: 8,
         borderBottomWidth: 1,
-        borderBottomColor: Colors.light.outline,
-        backgroundColor: Colors.light.surface,
+        borderBottomColor: Colors.dark.outline,
+        backgroundColor: Colors.dark.elevation.level5,
     },
     showUserContainer: {
         flex: 1,
         paddingVertical: 10,
         marginTop: 20,
-        backgroundColor: Colors.light.surface,
+        margin: 16,
+        backgroundColor: Colors.dark.elevation.level1,
     },
 
     //LogOutButton
@@ -335,26 +351,26 @@ const globalStyles = StyleSheet.create({
         padding: 12,
         borderRadius: 5,
         margin: 10,
-        backgroundColor: Colors.light.secondary,
+        backgroundColor: Colors.dark.onError,
     },
     logOutButtonText: {
         fontWeight: 'bold',
         fontSize: 16,
-        color: Colors.light.onSecondaryContainer,
+        color: Colors.dark.onErrorContainer,
     },
 
-    // Additional light theme specific styles
+    // Additional dark theme specific styles
     text: {
-        color: Colors.light.onSurface,
+        color: Colors.dark.onSurface,
     },
     textSecondary: {
-        color: Colors.light.onSurfaceVariant,
+        color: Colors.dark.onSurfaceVariant,
     },
     surface: {
-        backgroundColor: Colors.light.surface,
+        backgroundColor: Colors.dark.surface,
     },
     surfaceVariant: {
-        backgroundColor: Colors.light.surfaceVariant,
+        backgroundColor: Colors.dark.surfaceVariant,
     },
 })
 

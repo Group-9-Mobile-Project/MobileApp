@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { doc, updateDoc, getDoc } from 'firebase/firestore'
 import { auth, firestore, USERINFO } from '../../firebase/Config'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { Colors } from '../../constants/colors';
 import { useAuth } from '../../context/AuthContext';
 import globalStyles from '../../themes/GlobalStyles';
 import DateTimePickerField from '../Common/DateTimePickerField';
@@ -107,15 +108,18 @@ export default function EditUserInfo({ onClose }: { onClose: () => void }) {
 
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <KeyboardAwareScrollView
+        style={{ backgroundColor: 'rgb(26, 28, 30)' }}
         keyboardShouldPersistTaps="handled"
         //  enableOnAndroid 
         extraScrollHeight={24}
       >
+        <View style={{ backgroundColor: 'rgb(26, 28, 30)', height: 30 }} />
         <View style={globalStyles.editUserContainer}>
           <Text style={globalStyles.heading} >Muokkaa omia tietoja</Text>
           <Text style={globalStyles.label}>Nimi:</Text>
           <TextInput style={globalStyles.input}
             placeholder='Syötä nimesi'
+            placeholderTextColor={Colors.dark.inversePrimary}
             value={name}
             onChangeText={setName}
             editable={!loading}
@@ -123,6 +127,7 @@ export default function EditUserInfo({ onClose }: { onClose: () => void }) {
           <Text style={globalStyles.label}>Kuvaus:</Text>
           <TextInput style={globalStyles.input}
             placeholder='Syötä Kuvaus'
+            placeholderTextColor={Colors.dark.inversePrimary}
             value={description}
             onChangeText={setDescription}
             editable={!loading}
@@ -139,6 +144,7 @@ export default function EditUserInfo({ onClose }: { onClose: () => void }) {
           <Text style={globalStyles.label}>Kaupunki:</Text>
           <TextInput style={globalStyles.input}
             placeholder='Syötä kaupunkisi'
+            placeholderTextColor={Colors.dark.inversePrimary}
             value={city}
             onChangeText={setCity}
             editable={!loading}
@@ -147,6 +153,7 @@ export default function EditUserInfo({ onClose }: { onClose: () => void }) {
           <View style={globalStyles.hobbyInputContainer}>
             <TextInput style={globalStyles.hobbyInput}
               placeholder='Lisää harrastus'
+              placeholderTextColor={Colors.dark.inversePrimary}
               value={hobbyInput}
               onChangeText={setHobbyInput}
               editable={!loading}
@@ -174,6 +181,7 @@ export default function EditUserInfo({ onClose }: { onClose: () => void }) {
           <Text style={globalStyles.label}>Kiinnostusten kohteet:</Text>
           <TextInput style={globalStyles.input}
             placeholder='Syötä kiinnostusten kohteet'
+            placeholderTextColor={Colors.dark.inversePrimary}
             value={interests}
             onChangeText={setInterests}
             editable={!loading}
@@ -181,6 +189,7 @@ export default function EditUserInfo({ onClose }: { onClose: () => void }) {
           <Text style={globalStyles.label}>Pronominit:</Text>
           <TextInput style={globalStyles.input}
             placeholder='Syötä pronominit'
+            placeholderTextColor={Colors.dark.inversePrimary}
             value={pronouns}
             onChangeText={setPronouns}
             editable={!loading}
@@ -192,7 +201,7 @@ export default function EditUserInfo({ onClose }: { onClose: () => void }) {
           onPress={handleSave}
           disabled={loading}
         >
-          <Text>
+          <Text style={globalStyles.buttonSaveText}>
             {loading ? "Tallennetaan..." : "Tallenna muutokset"}
           </Text>
         </TouchableOpacity>
@@ -200,8 +209,9 @@ export default function EditUserInfo({ onClose }: { onClose: () => void }) {
         <TouchableOpacity style={globalStyles.buttonCancel}
           onPress={onClose}
         >
-          <Text>Peruuta</Text>
+          <Text style={globalStyles.logOutButtonText}>Peruuta</Text>
         </TouchableOpacity>
+        <View style={{ backgroundColor: 'rgb(26, 28, 30)', height: 30 }} />
       </KeyboardAwareScrollView>
     </TouchableWithoutFeedback>
   )

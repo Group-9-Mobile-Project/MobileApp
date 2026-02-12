@@ -1,6 +1,7 @@
 import { View, Text, TextInput, Alert, Pressable } from "react-native";
 import React, { useCallback, useState } from "react";
 import { Event, EventType, Location } from "../../types/Event";
+import { Colors } from "../../constants/colors";
 import { LocationFields } from "./LocationFields";
 import StartLocationPicker from "./StartLocationPicker";
 import { Region } from "react-native-maps";
@@ -172,19 +173,21 @@ export default function EventForm({
           <TextInput
             style={globalStyles.input}
             placeholder="Tapahtuman nimi"
+            placeholderTextColor={Colors.dark.inversePrimary}
             value={title}
             onChangeText={setTitle}
           />
           <TextInput
             style={[globalStyles.input, globalStyles.multiline]}
             placeholder="Kuvaus (valinnainen)"
+            placeholderTextColor={Colors.dark.inversePrimary}
             value={description}
             onChangeText={setDescription}
             multiline
           />
 
           <Text style={globalStyles.label}>Tyyppi</Text>
-          <PaperButton mode="outlined" onPress={openTypeDialog} textColor='black'>
+          <PaperButton mode="outlined" onPress={openTypeDialog} textColor='white'>
             {type}
           </PaperButton>
 
@@ -256,7 +259,7 @@ export default function EventForm({
       </Card>
 
       <Pressable style={globalStyles.addButton} onPress={handleSubmit}>
-        <Text style={globalStyles.buttonText}>{resolvedSubmitLabel}</Text>
+        <Text style={globalStyles.addEventButtonText}>{resolvedSubmitLabel}</Text>
       </Pressable>
     </View>
   );

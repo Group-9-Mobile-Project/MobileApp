@@ -11,7 +11,6 @@ export default function ProfileScreen() {
   return (
     <View style={globalStyles.container} >
       <ScrollView contentContainerStyle={globalStyles.contentContainer}>
-
       <ShowUsersEvents/>
       <ShowUserInfo/>
       <StatisticsButton/>
