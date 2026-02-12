@@ -62,10 +62,10 @@ export default function BottomNavBar({ state, descriptors, navigation }: BottomT
             {options.tabBarIcon &&
               options.tabBarIcon({
                 focused: isFocused,
-                color: isFocused ? colors.primary : colors.text,
+                color: isFocused ? colors.primary : colors.notification,
                 size: 24,
               })}
-            <Text style={{ color: isFocused ? colors.primary : colors.text, fontSize: 12, marginTop: 4 }}>
+            <Text style={{ color: isFocused ? colors.primary : colors.notification, fontSize: 12, marginTop: 4 }}>
               {label}
             </Text>
           </PlatformPressable>

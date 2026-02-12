@@ -27,7 +27,7 @@ export default function AttendeeInfoModal({
       animationType="fade"
       visible={showModal}
       onRequestClose={() => setShowModal(!showModal)}
-      backdropColor={"#ffffff83"}
+      
     >
       <View style={globalStyles.modalView}>
         <Card style={globalStyles.cardContainer}>

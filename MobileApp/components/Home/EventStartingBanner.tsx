@@ -7,6 +7,7 @@ import { firestore, EVENT } from '../../firebase/Config'
 import { Card } from 'react-native-paper'
 import { NavigationProp, useIsFocused, useNavigation } from '@react-navigation/native'
 import { RootTabParamList } from '../../types/Navigation'
+import globalStyles from '../../themes/GlobalStyles'
 
 export default function EventStartingBanner() {
     const { user } = useAuth()
@@ -55,9 +56,9 @@ export default function EventStartingBanner() {
     if (events == null) return
 
     if (events[0]) return (
-        <Card style={{ width: '100%' }}>
+        <Card style={globalStyles.startingSoonCard}>
             <Card.Content>
-                <Text>Tapahtuma alkaa pian</Text>
+                <Text style={globalStyles.startingSoonTitle}>Tapahtuma alkaa pian</Text>
             </Card.Content>
             {(events[1]) ?
 
@@ -65,7 +66,7 @@ export default function EventStartingBanner() {
                     {events && <View>
                         {events.map((item) => (
                             <Pressable onTouchEnd={() => navigation.navigate('Tapahtuman tiedot', { eventId: item.id })} key={item.title}>
-                                <Text key={item.id}>{item.title}    {item.date} - {item.startTime}</Text>
+                                <Text style={globalStyles.startingSoonText} key={item.id}>{item.title}    {item.date} - {item.startTime}</Text>
                             </Pressable>
 
                         ))}
@@ -75,13 +76,13 @@ export default function EventStartingBanner() {
 
                 :
                 <Card.Content>
-                    <Text>{events[0].title}     {events[0].date} - {events[0].startTime}</Text>
+                    <Text style={globalStyles.startingSoonText}>{events[0].title}     {events[0].date} - {events[0].startTime}</Text>
                     <Card.Actions>
                         <Pressable onTouchEnd={() => navigation.navigate('Tapahtuman tiedot', { eventId: events[0].id })}>
-                            <Text>Tapahtuman sivu</Text>
+                            <Text style={globalStyles.startingSoonText}>Tapahtuman sivu</Text>
                         </Pressable>
                         <Pressable onTouchEnd={() => navigation.navigate('Tallenna tapahtuma', { eventId: events[0].id })}>
-                            <Text>Tallenna suoritus</Text>
+                            <Text style={globalStyles.startingSoonText}>Tallenna suoritus</Text>
                         </Pressable>
                     </Card.Actions>
                 </Card.Content>

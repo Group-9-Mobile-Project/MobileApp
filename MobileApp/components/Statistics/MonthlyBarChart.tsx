@@ -3,6 +3,10 @@ import React, { useEffect, useState } from 'react'
 import { BarChart } from 'react-native-gifted-charts'
 import { ChartType, RecordedEventsList } from '../../types/Workout'
 import { daysInMonth, getMonthName, navigateMonth } from '../../services/chartHelpers'
+import TextStatistics from './TextStatistics'
+import globalStyles from '../../themes/GlobalStyles'
+import { Colors } from '../../constants/colors'
+import { Spacing } from '../../themes/spacing'
 
 interface MonthlyBarChartProps {
     allEvents: RecordedEventsList,
@@ -17,8 +21,9 @@ interface BarData {
 
 export default function MonthlyBarChart({ allEvents, chartType }: MonthlyBarChartProps) {
     const [data, setData] = useState<{ date: string, value: number }[]>([])
+    const [monthAndYearFilteredEvents, setMonthAndYearFilteredEvents] = useState<RecordedEventsList>([])
     const [selectedBarIndex, setSelectedBarIndex] = useState(null)
-    const [frontColor, setFrontColor] = useState('green')
+    const [frontColor, setFrontColor] = useState(Colors.dark.secondary)
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth())
     const [currentYear, setCurrentYear] = useState(new Date().getFullYear())
     const [currentMonthName, setCurrentMonthName] = useState(getMonthName(currentMonth))
@@ -26,13 +31,13 @@ export default function MonthlyBarChart({ allEvents, chartType }: MonthlyBarChar
     const setColors = () => {
         switch (chartType) {
             case 'Keskinopeus':
-                setFrontColor('orange')
+                setFrontColor(Colors.dark.tertiary)
                 break;
             case 'Matka':
-                setFrontColor('green')
+                setFrontColor(Colors.dark.secondary)
                 break;
             case 'Kesto':
-                setFrontColor('red')
+                setFrontColor(Colors.dark.error)
                 break;
         }
     }
@@ -48,9 +53,10 @@ export default function MonthlyBarChart({ allEvents, chartType }: MonthlyBarChar
         }
 
 
-        const monthAndYearFilteredEvents = allEvents.filter(event =>
+        const allMonthAndYearFilteredEvents = allEvents.filter(event =>
             (new Date(event.final.startedAt).getMonth() == currentMonth) && (new Date(event.final.startedAt).getFullYear() == currentYear))
-        monthAndYearFilteredEvents.forEach((item) => {
+        setMonthAndYearFilteredEvents(allMonthAndYearFilteredEvents)
+        allMonthAndYearFilteredEvents.forEach((item) => {
             switch (chartType) {
                 case 'Keskinopeus':
                     // obviously average speed is not the sum of all averagespeeds, so last one is saved here...
@@ -77,9 +83,9 @@ export default function MonthlyBarChart({ allEvents, chartType }: MonthlyBarChar
     return (
         <View>
 
-            <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', padding: 20, alignItems: 'center', }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', }}>
                 <Pressable
-                    style={{ padding: 20 }}
+                    style={({ pressed }) => pressed ? globalStyles.navigateMonthButtonPressed : globalStyles.navigateMonthButton}
                     onPress={() => navigateMonth(
                         -1,
                         currentMonth,
@@ -87,10 +93,10 @@ export default function MonthlyBarChart({ allEvents, chartType }: MonthlyBarChar
                         currentYear,
                         setCurrentYear,
                         setCurrentMonthName
-                    )}><Text style={{ fontSize: 16, fontWeight: 'bold' }}>◄</Text></Pressable>
-                <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{currentMonthName} {currentYear}</Text>
+                    )}><Text style={globalStyles.navigateMonthButtonText}>◄</Text></Pressable>
+                <Text style={globalStyles.navigateMonthButtonText}>{currentMonthName} {currentYear}</Text>
                 <Pressable
-                    style={{ padding: 20 }}
+                    style={({ pressed }) => pressed ? globalStyles.navigateMonthButtonPressed : globalStyles.navigateMonthButton}
                     onPress={() => navigateMonth(
                         1,
                         currentMonth,
@@ -99,28 +105,34 @@ export default function MonthlyBarChart({ allEvents, chartType }: MonthlyBarChar
                         setCurrentYear,
                         setCurrentMonthName
                     )}
-                ><Text style={{ fontSize: 16, fontWeight: 'bold' }}>►</Text></Pressable>
+                ><Text style={globalStyles.navigateMonthButtonText}>►</Text></Pressable>
             </View>
 
-            <BarChart
-                data={data.map((item, index) => ({
-                    ...item, label: item.date + '.',
-                    topLabelComponent: () =>
-                        selectedBarIndex === index ? (
-                            <Text>{item.value.toFixed(1)}</Text>
-                        ) : null
-                }))}
-                onPress={(_item: BarData, index: any) => { setSelectedBarIndex(selectedBarIndex === index ? null : index) }}
-                showGradient
-                frontColor={frontColor}
-                barBorderColor={frontColor}
-                barBorderWidth={2}
-                barWidth={30}
-                color={'yellow'}
-                gradientColor={'cyan'}
-                noOfSections={4}
-            />
-
+            <View style={{margin: Spacing.m }}>
+                <BarChart
+                    data={data.map((item, index) => ({
+                        ...item, label: item.date + '.',
+                        topLabelComponent: () =>
+                            selectedBarIndex === index ? (
+                                <Text style={globalStyles.infoText}>{item.value.toFixed(1)}</Text>
+                            ) : null
+                    }))}
+                    onPress={(_item: BarData, index: any) => { setSelectedBarIndex(selectedBarIndex === index ? null : index) }}
+                    showGradient
+                    frontColor={frontColor}
+                    barBorderColor={frontColor}
+                    barBorderWidth={2}
+                    barWidth={30}
+                    gradientColor={Colors.dark.onPrimary}
+                    noOfSections={4}
+                    xAxisLabelTextStyle={globalStyles.text}
+                    yAxisTextStyle={globalStyles.text}
+                    yAxisColor={Colors.dark.primary}
+                    xAxisColor={Colors.dark.primary}
+                    scrollToIndex={(currentMonth == new Date().getMonth()) ? Math.abs(new Date().getDate() - 3) : undefined}
+                />
+            </View>
+            {data && <TextStatistics events={monthAndYearFilteredEvents} />}
         </View>
     )
 }
