@@ -22,7 +22,7 @@ export default function TextStatistics({ events }: TextStatisticsProps) {
         }
         setDistance(0)
 
-        console.log(events)
+        //console.log(events)
         var eventsDistance = 0
         var eventsTime = 0
         events.forEach(event => {
