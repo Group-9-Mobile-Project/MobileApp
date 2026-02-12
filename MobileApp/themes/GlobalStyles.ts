@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { Colors } from '../constants/colors';
+import { Spacing, BorderRadius, FontSizes } from './spacing';
 
 const globalStyles = StyleSheet.create({
 
@@ -12,11 +13,11 @@ const globalStyles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: Colors.dark.background,
         shadowColor: Colors.dark.shadow,
-        margin: 8,
+        margin: Spacing.s,
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
-        gap: 24,
+        gap: Spacing.xl,
     },
 
     //CreateEvemtScreen
@@ -30,7 +31,7 @@ const globalStyles = StyleSheet.create({
     contentContainer: {
         alignItems: "center",
         justifyContent: "center",
-        paddingVertical: 16,
+        paddingVertical: Spacing.md,
     },
 
     //ExpandableListCard
@@ -42,13 +43,13 @@ const globalStyles = StyleSheet.create({
         alignContent: 'flex-start',
         width: '100%',
         backgroundColor: Colors.dark.elevation.level1,
-        marginBlockStart: 20,
-        marginBlockEnd: 10
+        marginBlockStart: Spacing.l,
+        marginBlockEnd: Spacing.sm
     },
 
     //EventFrom
     cardContent: {
-        gap: 12,
+        gap: Spacing.m,
     },
     multiline: {
         textAlignVertical: "top",
@@ -62,10 +63,10 @@ const globalStyles = StyleSheet.create({
     buttonText: {
         fontWeight: "bold",
         alignItems: "center",
-        padding: 12,
-        marginVertical: 10,
-        borderRadius: 10,
-        fontSize: 16,
+        padding: Spacing.m,
+        marginVertical: Spacing.sm,
+        borderRadius: BorderRadius.l,
+        fontSize: FontSizes.m,
         color: Colors.dark.primary,
     },
 
@@ -73,17 +74,17 @@ const globalStyles = StyleSheet.create({
     //EditUserInfo
     addButton: {
         alignItems: "center",
-        padding: 12,
-        borderRadius: 5,
+        padding: Spacing.m,
+        borderRadius: BorderRadius.s,
         backgroundColor: Colors.dark.secondaryContainer,
     },
-        addEventButtonText: {
+    addEventButtonText: {
         fontWeight: "bold",
         alignItems: "center",
-        padding: 12,
-        marginVertical: 10,
-        borderRadius: 10,
-        fontSize: 16,
+        padding: Spacing.m,
+        marginVertical: Spacing.sm,
+        borderRadius: BorderRadius.l,
+        fontSize: FontSizes.m,
         color: Colors.dark.secondary,
     },
     input: {
@@ -91,9 +92,9 @@ const globalStyles = StyleSheet.create({
         backgroundColor: Colors.dark.primary,
         borderColor: Colors.dark.primaryContainer,
         borderWidth: 1,
-        borderRadius: 8,
-        paddingHorizontal: 12,
-        paddingVertical: 10,
+        borderRadius: BorderRadius.m,
+        paddingHorizontal: Spacing.m,
+        paddingVertical: Spacing.sm,
         color: Colors.dark.surface,
     },
 
@@ -114,8 +115,8 @@ const globalStyles = StyleSheet.create({
     //EventInfoScreen
     heading: {
         fontWeight: 'bold',
-        fontSize: 20,
-        marginBottom: 10,
+        fontSize: FontSizes.l,
+        marginBottom: Spacing.sm,
         color: Colors.dark.onSurface,
     },
 
@@ -133,20 +134,20 @@ const globalStyles = StyleSheet.create({
         alignItems: 'flex-start',
         justifyContent: 'flex-start',
         width: '100%',
-        margin: 2,
+        margin: Spacing.xs,
     },
 
     //AttendeeInfoModal
     //EventInfoScreen
     descriptionView: {
         width: "95%",
-        margin: 8,
+        margin: Spacing.s,
     },
 
     //SigleEventRow
     singleEventView: {
         width: '100%',
-        marginTop: 8,
+        marginTop: Spacing.s,
     },
 
     //SingleEventRow
@@ -154,8 +155,8 @@ const globalStyles = StyleSheet.create({
     //EditUserInfo
     subHeading: {
         fontWeight: 'bold',
-        fontSize: 16,
-        padding: 5,
+        fontSize: FontSizes.m,
+        padding: Spacing.xs,
         color: Colors.dark.onSurface,
     },
 
@@ -172,8 +173,8 @@ const globalStyles = StyleSheet.create({
     //ShowUserInfo
     //EventInfoScreen
     infoText: {
-        fontSize: 16,
-        padding: 5,
+        fontSize: FontSizes.m,
+        padding: Spacing.xs,
         color: Colors.dark.onSurface,
     },
 
@@ -182,7 +183,7 @@ const globalStyles = StyleSheet.create({
     //UpdateEventScreen
     helperText: {
         color: Colors.dark.error,
-        fontSize: 12,
+        fontSize: FontSizes.s,
     },
 
     //EventForm
@@ -195,8 +196,8 @@ const globalStyles = StyleSheet.create({
 
     //EventInfoScreen
     organizerLink: {
-        fontSize: 16,
-        padding: 5,
+        fontSize: FontSizes.m,
+        padding: Spacing.xs,
         color: Colors.dark.inversePrimary
     },
     pressableView: {
@@ -288,30 +289,30 @@ const globalStyles = StyleSheet.create({
         marginBottom: 8,
     },
     deleteButton: {
-        padding: 5,
+        padding: Spacing.xs,
     },
     deleteButtonText: {
-        fontSize: 24,
+        fontSize: FontSizes.xl,
         color: Colors.dark.errorContainer
     },
     buttonSave: {
         alignItems: 'center',
-        padding: 12,
-        borderRadius: 5,
-        margin: 10,
+        padding: Spacing.m,
+        borderRadius: BorderRadius.s,
+        margin: Spacing.sm,
         backgroundColor: Colors.dark.secondaryContainer,
     },
     buttonSaveText: {
         fontWeight: 'bold',
-        fontSize: 16,
+        fontSize: FontSizes.m,
         color: Colors.dark.secondary,
     },
 
     buttonCancel: {
         alignItems: 'center',
-        padding: 12,
-        borderRadius: 5,
-        margin: 10,
+        padding: Spacing.m,
+        borderRadius: BorderRadius.s,
+        margin: Spacing.sm,
         backgroundColor: Colors.dark.onError,
     },
     buttonDisabled: {
@@ -339,23 +340,23 @@ const globalStyles = StyleSheet.create({
     },
     showUserContainer: {
         flex: 1,
-        paddingVertical: 10,
-        marginTop: 20,
-        margin: 16,
+        paddingVertical: Spacing.sm,
+        marginTop: Spacing.l,
+        margin: Spacing.md,
         backgroundColor: Colors.dark.elevation.level1,
     },
 
     //LogOutButton
     logOutButton: {
         alignItems: 'center',
-        padding: 12,
-        borderRadius: 5,
-        margin: 10,
+        padding: Spacing.m,
+        borderRadius: BorderRadius.s,
+        margin: Spacing.sm,
         backgroundColor: Colors.dark.onError,
     },
     logOutButtonText: {
         fontWeight: 'bold',
-        fontSize: 16,
+        fontSize: FontSizes.m,
         color: Colors.dark.onErrorContainer,
     },
 
