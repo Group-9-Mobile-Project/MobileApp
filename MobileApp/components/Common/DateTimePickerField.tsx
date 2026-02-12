@@ -98,7 +98,7 @@ export default function DateTimePickerField({
   return (
     <View style={styles.container}>
       <Text style={labelStyle}>{label}</Text>
-      <Button title={buttonLabel} onPress={open} />
+      <Button title={buttonLabel} onPress={open} color={(Platform.OS === "ios" ? "white" : "")} />
 
       {Platform.OS === "ios" && show && (
         <View style={styles.inlinePickerContainer}>
@@ -110,6 +110,8 @@ export default function DateTimePickerField({
             onChange={handleChange}
             minimumDate={minimumDate}
             maximumDate={maximumDate}
+            //Ota pois kun tehdään tumma teema!
+            themeVariant="light"
           />
           <View style={styles.inlineActions}>
             <Button title="Peruuta" onPress={close} />

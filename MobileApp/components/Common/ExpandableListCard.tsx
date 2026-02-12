@@ -1,9 +1,10 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Card, Divider } from 'react-native-paper'
 import AttendeeInfoRow from '../EventInfo/AttendeeInfoRow'
 import { Event } from '../../types/Event'
 import SingleEventRow from './SingleEventRow'
+import globalStyles from '../../themes/GlobalStyles'
 
 interface ExpandableListCardProps {
   listType: "events" | "attendees",
@@ -20,10 +21,10 @@ export default function ExpandableListCard({ listType, list, title }: Expandable
   }, [list])
 
   return (
-    <Card style={styles.cardContainer}>
-      <Card.Content style={styles.expandableHeader} onTouchEnd={() => setIsExpanded(!isExpanded)}>
-        <Text style={styles.heading}>{title}</Text>
-        {isExpanded ? <Text style={styles.heading}>▲</Text> : <Text style={styles.heading}>▼</Text>}
+    <Card style={globalStyles.cardContainer}>
+      <Card.Content style={globalStyles.expandableHeader} onTouchEnd={() => setIsExpanded(!isExpanded)}>
+        <Text style={globalStyles.heading}>{title}</Text>
+        {isExpanded ? <Text style={globalStyles.heading}>▲</Text> : <Text style={globalStyles.heading}>▼</Text>}
       </Card.Content>
       {isExpanded && (
         <View>
@@ -31,7 +32,7 @@ export default function ExpandableListCard({ listType, list, title }: Expandable
 
           {(listType == 'attendees') && (
 
-            <Card.Content style={styles.basicInfoView}>
+            <Card.Content style={globalStyles.basicInfoView}>
               {
                 itemList.map((attendee) => (
                   <AttendeeInfoRow email={attendee.toString()} key={attendee.toString()} />
@@ -45,7 +46,7 @@ export default function ExpandableListCard({ listType, list, title }: Expandable
             <View>
               {(itemList[0]) ?
 
-                <Card.Content style={styles.basicInfoView}>
+                <Card.Content style={globalStyles.basicInfoView}>
                   {
                     itemList.map((event, index) => (
                       <SingleEventRow event={event as Event} key={index} />
@@ -54,8 +55,8 @@ export default function ExpandableListCard({ listType, list, title }: Expandable
                 </Card.Content>
 
                 :
-                <Card.Content style={styles.basicInfoView}>
-                  <Text style={styles.noEventsText}>Ei tapahtumia</Text>
+                <Card.Content style={globalStyles.basicInfoView}>
+                  <Text style={globalStyles.noEventsText}>Ei tapahtumia</Text>
                 </Card.Content>
               }
 
@@ -70,32 +71,3 @@ export default function ExpandableListCard({ listType, list, title }: Expandable
     </Card>
   )
 }
-
-const styles = StyleSheet.create({
-  cardContainer: {
-    alignContent: 'flex-start',
-    marginBlockStart: 20,
-    width: '100%',
-    backgroundColor: 'lightgrey',
-    marginBlockEnd: 10
-  },
-  expandableHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
-  heading: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  basicInfoView: {
-    margin: 2,
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    width: '100%',
-  },
-  noEventsText: {
-    fontSize: 16,
-    fontStyle: 'italic'
-  }
-})

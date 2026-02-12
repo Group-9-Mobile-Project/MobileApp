@@ -3,7 +3,6 @@ import {
   Alert,
   Keyboard,
   Pressable,
-  StyleSheet,
   Text,
   TouchableWithoutFeedback,
   View,
@@ -16,6 +15,7 @@ import { Event } from "../types/Event";
 import { getEventById, updateEvent } from "../services/eventService";
 import { RootTabParamList } from "../types/Navigation";
 import { useAuth } from "../context/AuthContext";
+import globalStyles from "../themes/GlobalStyles";
 
 type RouteParams = {
   eventId: string;
@@ -85,29 +85,29 @@ export default function UpdateEventScreen() {
 
   if (loading) {
     return (
-      <View style={styles.centered}>
+      <View style={globalStyles.centered}>
         <ActivityIndicator size="large" />
-        <Text style={styles.helperText}>Haetaan tapahtumaa...</Text>
+        <Text style={globalStyles.helperText}>Haetaan tapahtumaa...</Text>
       </View>
     );
   }
 
   if (!event) {
     return (
-      <View style={styles.centered}>
-        <Text style={styles.helperText}>Tapahtumaa ei löytynyt.</Text>
+      <View style={globalStyles.centered}>
+        <Text style={globalStyles.helperText}>Tapahtumaa ei löytynyt.</Text>
       </View>
     );
   }
 
   if (!isOwner) {
     return (
-      <View style={styles.centered}>
-        <Text style={styles.helperText}>
+      <View style={globalStyles.centered}>
+        <Text style={globalStyles.helperText}>
           Sinulla ei ole oikeutta muokata tätä tapahtumaa.
         </Text>
         <Pressable onPress={() => navigation.goBack()}>
-          <Text style={styles.linkText}>Palaa takaisin</Text>
+          <Text style={globalStyles.linkText}>Palaa takaisin</Text>
         </Pressable>
       </View>
     );
@@ -116,8 +116,8 @@ export default function UpdateEventScreen() {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <KeyboardAwareScrollView
-        style={styles.container}
-        contentContainerStyle={styles.contentContainer}
+        style={globalStyles.container}
+        contentContainerStyle={globalStyles.contentContainer}
         keyboardShouldPersistTaps="handled"
         extraScrollHeight={24}
       >
@@ -132,29 +132,3 @@ export default function UpdateEventScreen() {
     </TouchableWithoutFeedback>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  contentContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 16,
-  },
-  centered: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 12,
-    padding: 24,
-  },
-  helperText: {
-    color: "#666",
-    textAlign: "center",
-  },
-  linkText: {
-    color: "#1e88e5",
-    marginTop: 8,
-  },
-});

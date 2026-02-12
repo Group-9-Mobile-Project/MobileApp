@@ -1,6 +1,7 @@
-import { Button, Alert, StyleSheet, Pressable, Text } from "react-native";
+import { Button, Alert, Pressable, Text } from "react-native";
 import React from "react";
 import { useAuth } from "../../context/AuthContext";
+import globalStyles from "../../themes/GlobalStyles";
 
 export default function LogOutButton() {
   const { signOutUser } = useAuth();
@@ -13,21 +14,8 @@ export default function LogOutButton() {
   };
 
   return (
-    <Pressable style={styles.button} onPress={handleLogOut}>
-      <Text style={styles.buttonText}>Kirjaudu ulos</Text>
+    <Pressable style={globalStyles.logOutButton} onPress={handleLogOut}>
+      <Text style={globalStyles.logOutButtonText}>Kirjaudu ulos</Text>
     </Pressable>
   );
 }
-
-const styles = StyleSheet.create({
-  button: {
-    backgroundColor: 'grey',
-    alignItems: 'center',
-    padding: 12,
-    borderRadius: 5,
-    margin: 10,
-  },
-  buttonText: {
-    fontSize: 16,
-  }
-})

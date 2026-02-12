@@ -1,9 +1,10 @@
-import { View, Text, Pressable, StyleSheet } from 'react-native'
+import { View, Text, Pressable } from 'react-native'
 import React, { useState } from 'react'
 import { arrayRemove, arrayUnion, doc, updateDoc } from 'firebase/firestore'
 import { auth, firestore, EVENT } from '../../firebase/Config'
 import { EventProps } from '../../types/Event'
 import { ActivityIndicator } from 'react-native-paper'
+import globalStyles from '../../themes/GlobalStyles'
 
 export default function JoinEventButton({ event }: EventProps) {
     const currentUser = auth.currentUser
@@ -47,8 +48,8 @@ export default function JoinEventButton({ event }: EventProps) {
             {(loading) ? (
                 <>
                     <Pressable
-                        style={({ pressed }) => pressed && styles.textPressed}>
-                        <ActivityIndicator style={styles.buttonText} />
+                        style={({ pressed }) => pressed && globalStyles.textPressed}>
+                        <ActivityIndicator style={globalStyles.buttonText} />
                     </Pressable>
 
                 </>
@@ -57,18 +58,18 @@ export default function JoinEventButton({ event }: EventProps) {
                     {(currentUser?.email && event.attendees.includes(currentUser.email)) ? (
                         <>
                             <Pressable
-                                style={({ pressed }) => pressed && styles.textPressed}
+                                style={({ pressed }) => pressed && globalStyles.textPressed}
                                 onPress={() => handleCancelJoinEvent()}>
-                                <Text style={styles.buttonText}>Peru Ilmoittautuminen</Text>
+                                <Text style={globalStyles.buttonText}>Peru Ilmoittautuminen</Text>
                             </Pressable>
                         </>
                     ) : (
                         <>
                             <Pressable
-                                style={({ pressed }) => pressed && styles.textPressed}
+                                style={({ pressed }) => pressed && globalStyles.textPressed}
                                 onPress={() => handleJoinEvent()}
                             >
-                                <Text style={styles.buttonText}>Ilmoittaudu</Text>
+                                <Text style={globalStyles.buttonText}>Ilmoittaudu</Text>
                             </Pressable>
                         </>)}
                 </>)}
@@ -77,30 +78,3 @@ export default function JoinEventButton({ event }: EventProps) {
         </>
     )
 }
-
-const styles = StyleSheet.create({
-    pressableView: {
-        flexDirection: 'row',
-        gap: 32
-    },
-    button: {
-        alignContent: 'center',
-        justifyContent: 'center',
-        borderRadius: 10,
-        margin: 10,
-        backgroundColor: 'lightblue',
-        width: 'auto',
-        padding: 10,
-    },
-    buttonText: {
-        backgroundColor: 'lightgrey',
-        fontWeight: 'bold',
-        alignItems: 'center',
-        padding: 12,
-        marginVertical: 10,
-        borderRadius: 10,
-    },
-    textPressed: {
-        opacity: 0.6
-    },
-})

@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleProp, TextInput, TextStyle, View, StyleSheet } from "react-native";
+import globalStyles from "../../themes/GlobalStyles";
 
 type LocationFieldsProps = {
   inputStyle: StyleProp<TextStyle>;
@@ -19,7 +20,7 @@ export function LocationFields({
   addressReadOnly = false,
 }: LocationFieldsProps) {
   return (
-    <View style={styles.fieldGroup}>
+    <View style={globalStyles.fieldGroup}>
       <TextInput
         style={inputStyle}
         placeholder="Sijainnin nimi"
@@ -37,9 +38,3 @@ export function LocationFields({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  fieldGroup: {
-    gap: 12, 
-  },
-});

@@ -1,18 +1,18 @@
-import { View, Text, StyleSheet, Pressable, Alert, ScrollView } from 'react-native'
+import { View, Text, Pressable, Alert, ScrollView } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { Event, EventProps } from '../types/Event'
+import { Event } from '../types/Event'
 import { ActivityIndicator, Card } from 'react-native-paper'
 import JoinEventButton from '../components/Common/JoinEventButton'
 import { useNavigation, NavigationProp, useRoute, RouteProp } from '@react-navigation/native'
 import { RootTabParamList } from '../types/Navigation'
 import { deleteEvent } from '../services/eventService'
 import { useAuth } from '../context/AuthContext'
-import { collection, query, orderBy, where, limit, onSnapshot, doc } from 'firebase/firestore'
+import { onSnapshot, doc } from 'firebase/firestore'
 import { firestore, EVENT, USERINFO } from '../firebase/Config'
 import EventAttendees from '../components/EventInfo/EventAttendees'
 import AttendeeInfoModal from '../components/EventInfo/AttendeeInfoModal'
 import { UserInfo } from '../types/UserInfo'
-
+import globalStyles from '../themes/GlobalStyles'
 
 export default function EventInfoScreen() {
     const route = useRoute<RouteProp<RootTabParamList, "Tapahtuman tiedot">>();
@@ -92,17 +92,17 @@ export default function EventInfoScreen() {
 
     if (loading) {
         return (
-            <View style={styles.centered}>
+            <View style={globalStyles.centered}>
                 <ActivityIndicator size="large" />
-                <Text style={styles.helperText}>Haetaan tapahtumaa...</Text>
+                <Text style={globalStyles.helperText}>Haetaan tapahtumaa...</Text>
             </View>
         );
     }
 
     if (!event) {
         return (
-            <View style={styles.centered}>
-                <Text style={styles.helperText}>Tapahtumaa ei löytynyt.</Text>
+            <View style={globalStyles.centered}>
+                <Text style={globalStyles.helperText}>Tapahtumaa ei löytynyt.</Text>
             </View>
         );
     }
@@ -110,67 +110,67 @@ export default function EventInfoScreen() {
     return (
         <ScrollView>
 
-            <View style={styles.modalView}>
-                <Card style={styles.cardContainer}>
+            <View style={globalStyles.modalView}>
+                <Card style={globalStyles.cardContainer}>
                     <Card.Content>
-                        <Text style={styles.heading}>{event.title}</Text>
+                        <Text style={globalStyles.heading}>{event.title}</Text>
                     </Card.Content>
                     <Card.Content>
-                        <View style={styles.basicInfoView}>
-                            <Text style={styles.infoText}>Aika: {event.startTime}</Text>
-                            <Text style={styles.infoText}>Paikka: {event.location.address}</Text>
-                            <Text style={styles.infoText}>Tyyppi: {event.type}</Text>
+                        <View style={globalStyles.basicInfoView}>
+                            <Text style={globalStyles.infoText}>Aika: {event.startTime}</Text>
+                            <Text style={globalStyles.infoText}>Paikka: {event.location.address}</Text>
+                            <Text style={globalStyles.infoText}>Tyyppi: {event.type}</Text>
                             <View style={{ flexDirection: 'row' }}>
-                                <Text style={styles.infoText}>Tapahtuman lisääjä: </Text>
+                                <Text style={globalStyles.infoText}>Tapahtuman lisääjä: </Text>
                                 <Pressable onPress={() => { setShowOrganizerModal(true) }}>
-                                    <Text style={styles.organizerLink}>{event.organizer}</Text>
+                                    <Text style={globalStyles.organizerLink}>{event.organizer}</Text>
                                 </Pressable>
 
                             </View>
 
-                            <Text style={styles.infoText}>Ilmoittautuneita: {event.attendees.length}</Text>
+                            <Text style={globalStyles.infoText}>Ilmoittautuneita: {event.attendees.length}</Text>
                         </View>
                     </Card.Content>
                     <Card.Content>
-                        <View style={styles.descriptionView}>
-                            <Text style={styles.infoText}>Kuvaus:</Text>
-                            <Text style={styles.infoText}>{event.description}</Text>
+                        <View style={globalStyles.descriptionView}>
+                            <Text style={globalStyles.infoText}>Kuvaus:</Text>
+                            <Text style={globalStyles.infoText}>{event.description}</Text>
                         </View>
                     </Card.Content>
                     <Card.Content>
                         <View>
                             {isOwner ? (
 
-                                <View style={styles.pressableView}>
+                                <View style={globalStyles.pressableView}>
                                     <Pressable
-                                        style={({ pressed }) => pressed && styles.textPressed}
+                                        style={({ pressed }) => pressed && globalStyles.textPressed}
                                         onPress={() => {
 
                                             navigation.navigate("Muokkaa tapahtumaa", { eventId: event.id })
                                         }}
                                     >
-                                        <Text style={styles.buttonText}>Muokkaa</Text>
+                                        <Text style={globalStyles.buttonText}>Muokkaa</Text>
                                     </Pressable>
 
                                     <Pressable
-                                        style={({ pressed }) => pressed && styles.textPressed}
+                                        style={({ pressed }) => pressed && globalStyles.textPressed}
                                         onPress={handleDelete}
                                     >
-                                        <Text style={styles.buttonText}>Poista tapahtuma</Text>
+                                        <Text style={globalStyles.buttonText}>Poista tapahtuma</Text>
                                     </Pressable>
                                 </View>
 
                             ) : (
 
-                                <View style={styles.pressableView}>
+                                <View style={globalStyles.pressableView}>
                                     <JoinEventButton event={event} />
                                 </View>
                             )}
 
                             <Pressable
-                                style={({ pressed }) => pressed && styles.textPressed}
+                                style={({ pressed }) => pressed && globalStyles.textPressed}
                                 onPress={() => navigation.goBack()}>
-                                <Text style={styles.buttonText}>Sulje</Text>
+                                <Text style={globalStyles.buttonText}>Sulje</Text>
                             </Pressable>
 
                             {((event.date == todayISO)
@@ -179,10 +179,10 @@ export default function EventInfoScreen() {
                                 &&
                                 (((currentEmail) && (event.attendees.includes(currentEmail))) || isOwner)) && (
                                     <Pressable
-                                        style={({ pressed }) => pressed && styles.textPressed}
+                                        style={({ pressed }) => pressed && globalStyles.textPressed}
                                         onPress={() => navigation.navigate('Tallenna tapahtuma', { eventId: event.id })}
                                     >
-                                        <Text style={styles.buttonText}>Tallenna suoritus</Text>
+                                        <Text style={globalStyles.buttonText}>Tallenna suoritus</Text>
                                     </Pressable>
                                 )}
 
@@ -203,83 +203,3 @@ export default function EventInfoScreen() {
 
     )
 }
-
-const styles = StyleSheet.create({
-    modalView: {
-        margin: 8,
-        alignItems: 'center',
-        shadowColor: '#000',
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5,
-        gap: 24,
-    },
-    cardContainer: {
-        alignContent: 'flex-start',
-        marginBlockStart: 20,
-        width: '100%',
-        backgroundColor: 'lightgrey',
-    },
-    heading: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 10,
-    },
-    basicInfoView: {
-        margin: 0,
-        alignItems: 'flex-start',
-        justifyContent: 'flex-start',
-        width: '95%',
-    },
-    descriptionView: {
-        width: '95%',
-    },
-    pressableView: {
-        flexDirection: 'row',
-        gap: 32
-    },
-    button: {
-        alignContent: 'center',
-        justifyContent: 'center',
-        borderRadius: 10,
-        margin: 10,
-        backgroundColor: 'lightblue',
-        width: 'auto',
-        padding: 10,
-    },
-    buttonText: {
-        backgroundColor: 'lightgrey',
-        fontWeight: 'bold',
-        alignItems: 'center',
-        padding: 12,
-        marginVertical: 10,
-        borderRadius: 10,
-    },
-    textPressed: {
-        opacity: 0.6
-    },
-    infoText: {
-        fontSize: 12,
-        padding: 5,
-    },
-    organizerLink: {
-        fontSize: 12,
-        padding: 5,
-        color: "#1e88e5"
-    },
-    centered: {
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 12,
-        padding: 24,
-    },
-    helperText: {
-        color: "#666",
-        textAlign: "center",
-    },
-    linkText: {
-        color: "#1e88e5",
-        marginTop: 8,
-    },
-})
