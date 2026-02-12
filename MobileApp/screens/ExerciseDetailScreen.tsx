@@ -1,13 +1,12 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { View, Text, StyleSheet, Pressable, ActivityIndicator } from "react-native";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { View, Text, StyleSheet, Pressable, ActivityIndicator, Alert } from "react-native";
 import { Region } from "react-native-maps";
-import { loadRouteFinal } from "../services/routeStorage";
+import { clearRouteDraft, clearRouteFinal, loadRouteFinal, RouteFinal } from "../services/routeStorage";
 import { getEventById } from "../services/eventService";
-import { useRoute, RouteProp, useNavigation, NavigationProp } from "@react-navigation/native";
+import { useRoute, RouteProp, useNavigation, NavigationProp, useFocusEffect } from "@react-navigation/native";
 import { RootTabParamList } from "../types/Navigation";
 import WorkoutMap from "../components/Workout/WorkoutMap";
 import WorkoutSummaryCard from "../components/Workout/WorkoutSummaryCard";
-import { RouteFinal } from "../services/routeStorage";
 
 const DEFAULT_REGION: Region = {
   latitude: 65.08,
@@ -24,22 +23,26 @@ export default function ExerciseDetailScreen() {
   const [data, setData] = useState<RouteFinal | null>(null);
   const [loading, setLoading] = useState(true);
   const [eventTitle, setEventTitle] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
-  useEffect(() => {
-    let mounted = true;
+  useFocusEffect(
+    useCallback(() => {
+      let mounted = true;
+      setLoading(true);
 
-    loadRouteFinal(eventId)
-      .then((finalData) => {
-        if (mounted) setData(finalData);
-      })
-      .finally(() => {
-        if (mounted) setLoading(false);
-      });
+      loadRouteFinal(eventId)
+        .then((finalData) => {
+          if (mounted) setData(finalData);
+        })
+        .finally(() => {
+          if (mounted) setLoading(false);
+        });
 
-    return () => {
-      mounted = false;
-    };
-  }, [eventId]);
+      return () => {
+        mounted = false;
+      };
+    }, [eventId])
+  );
 
   useEffect(() => {
     let mounted = true;
@@ -56,6 +59,30 @@ export default function ExerciseDetailScreen() {
       mounted = false;
     };
   }, [eventId]);
+  
+  const handleDelete = () => {
+    Alert.alert(
+      "Poista harjoitus",
+      "Haluatko poistaa tämän harjoituksen laitteelta?",
+      [
+        { text: "Peruuta", style: "cancel" },
+        {
+          text: "Poista",
+          style: "destructive",
+          onPress: async () => {
+            setDeleting(true);
+            try {
+              await Promise.all([clearRouteFinal(eventId), clearRouteDraft(eventId)]);
+              setData(null);
+              navigation.navigate("Koti");
+            } finally {
+              setDeleting(false);
+            }
+          },
+        },
+      ]
+    );
+  };
 
   const points = useMemo(
     () =>
@@ -107,22 +134,33 @@ export default function ExerciseDetailScreen() {
         initialRegion={
           points.length
             ? {
-                latitude: points[0].latitude,
-                longitude: points[0].longitude,
-                latitudeDelta: 0.01,
-                longitudeDelta: 0.01,
-              }
+              latitude: points[0].latitude,
+              longitude: points[0].longitude,
+              latitudeDelta: 0.01,
+              longitudeDelta: 0.01,
+            }
             : DEFAULT_REGION
         }
       />
 
-      <Pressable style={styles.backButton} onPress={() => navigation.navigate("Koti")}>
+      <Pressable
+        style={[styles.deleteButton, deleting && styles.deleteButtonDisabled]}
+        onPress={handleDelete}
+        disabled={deleting}
+      >
+        {deleting ? (
+          <ActivityIndicator color="white" />
+        ) : (
+          <Text style={styles.deleteButtonText}>Poista harjoitus</Text>
+        )}
+      </Pressable>
+
+      <Pressable style={styles.backButton} onPress={() => navigation.navigate("Tilastot")}>
         <Text style={styles.backButtonText}>Sulje</Text>
       </Pressable>
     </View>
-  );
-}
-
+  )
+} 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -157,4 +195,19 @@ const styles = StyleSheet.create({
   link: {
     color: "#1e88e5"
   },
+  deleteButton: {
+    marginTop: 8,
+    backgroundColor: "#d32f2f",
+    paddingVertical: 12,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  deleteButtonDisabled: {
+    opacity: 0.7,
+  },
+  deleteButtonText: {
+    color: "white",
+    fontWeight: "600",
+  },
+
 });

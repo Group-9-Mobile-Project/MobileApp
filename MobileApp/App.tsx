@@ -10,6 +10,9 @@ import { onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "./firebase/Config";
 import { Provider as PaperProvider } from "react-native-paper";
 import { customLightTheme, customDarkTheme, navigationDarkTheme } from './themes/MyThemes';
+import { RecordingProvider } from "./context/RecordingContext";
+import RecordingBubble from "./components/Workout/RecordingBubble";
+
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -53,10 +56,13 @@ export default function App() {
     <AuthProvider user={user} loading={loading}>
       <PaperProvider theme={customDarkTheme}>
         <SafeAreaProvider style={{ marginBottom: initialWindowMetrics?.insets.bottom }}>
-          <NavigationContainer theme={navigationDarkTheme}>
-            <RootNavigator />
-            <StatusBar style='light' />
-          </NavigationContainer>
+          <RecordingProvider>
+            <NavigationContainer theme={navigationDarkTheme}>
+              <RootNavigator />
+              <RecordingBubble />
+              <StatusBar style="light" />
+            </NavigationContainer>
+          </RecordingProvider>
         </SafeAreaProvider>
       </PaperProvider>
     </AuthProvider>
