@@ -9,6 +9,7 @@ import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-c
 import { onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "./firebase/Config";
 import { Provider as PaperProvider } from "react-native-paper";
+import { customLightTheme, customDarkTheme, navigationDarkTheme } from './themes/MyThemes';
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -25,11 +26,11 @@ export default function App() {
 
   if (loading) {
     return (
-      <PaperProvider>
-      <SafeAreaProvider style={isAndroid15 ? { marginBottom: initialWindowMetrics?.insets.bottom } : {}}>
-        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-          <ActivityIndicator size="large" />
-        </View>
+      <PaperProvider theme={customDarkTheme}>
+        <SafeAreaProvider style={isAndroid15 ? { marginBottom: initialWindowMetrics?.insets.bottom } : {}}>
+          <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+            <ActivityIndicator size="large" />
+          </View>
         </SafeAreaProvider>
       </PaperProvider>
     );
@@ -38,10 +39,10 @@ export default function App() {
   if (!user) {
     return (
       <AuthProvider user={user} loading={loading}>
-        <PaperProvider>
-        <SafeAreaProvider style={isAndroid15 ? { marginBottom: initialWindowMetrics?.insets.bottom } : {}}>
-          <RegisterScreen />
-          <StatusBar style="auto" />
+        <PaperProvider theme={customDarkTheme}>
+          <SafeAreaProvider style={isAndroid15 ? { marginBottom: initialWindowMetrics?.insets.bottom } : {}}>
+            <RegisterScreen />
+            <StatusBar style="auto" />
           </SafeAreaProvider>
         </PaperProvider>
       </AuthProvider>
@@ -50,12 +51,12 @@ export default function App() {
 
   return (
     <AuthProvider user={user} loading={loading}>
-      <PaperProvider>
-      <SafeAreaProvider style={{ marginBottom: initialWindowMetrics?.insets.bottom }}>
-        <NavigationContainer>
-          <RootNavigator />
-          <StatusBar style="auto" />
-        </NavigationContainer>
+      <PaperProvider theme={customDarkTheme}>
+        <SafeAreaProvider style={{ marginBottom: initialWindowMetrics?.insets.bottom }}>
+          <NavigationContainer theme={navigationDarkTheme}>
+            <RootNavigator />
+            <StatusBar style='light' />
+          </NavigationContainer>
         </SafeAreaProvider>
       </PaperProvider>
     </AuthProvider>
