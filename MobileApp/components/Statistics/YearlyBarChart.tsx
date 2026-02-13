@@ -6,6 +6,7 @@ import { getMonthName } from '../../services/chartHelpers'
 import globalStyles from '../../themes/GlobalStyles'
 import { Colors } from '../../constants/colors'
 import { FontSizes, Spacing } from '../../themes/spacing'
+import TextStatistics from './TextStatistics'
 
 interface YearlyBarChartProps {
     allEvents: RecordedEventsList
@@ -20,6 +21,7 @@ interface BarData {
 
 export default function YearlyBarChart({ allEvents, chartType }: YearlyBarChartProps) {
     const [data, setData] = useState<{ date: string, value: number }[]>([])
+    const [monthAndYearFilteredEvents, setMonthAndYearFilteredEvents] = useState<RecordedEventsList>([])
     const [selectedBarIndex, setSelectedBarIndex] = useState<number | null>(null)
     const [frontColor, setFrontColor] = useState(Colors.dark.secondary)
     const [currentYear, setCurrentYear] = useState(new Date().getFullYear())
@@ -59,14 +61,17 @@ export default function YearlyBarChart({ allEvents, chartType }: YearlyBarChartP
             new Date(event.final.startedAt).getFullYear() === currentYear
         )
 
-        // Calculate values by month
-        yearFilteredEvents.forEach((item) => {
-            const eventMonth = new Date(item.final.startedAt).getMonth()
+        // Use year-filtered events both for chart data and text statistics
+        setMonthAndYearFilteredEvents(yearFilteredEvents)
+
+        // Calculate values by month within the selected year
+        yearFilteredEvents.forEach(item => {
+            const eventDate = new Date(item.final.startedAt)
+            const eventMonth = eventDate.getMonth()
 
             switch (chartType) {
                 case 'Keskinopeus':
-                    // obviously average speed is not the sum of all averagespeeds, so last one is saved here...
-                    // do we really need to calculate averages weighted by elapsed time...
+                    // Save last average speed for the month
                     result[eventMonth].value = item.final.avgSpeedMs
                     break;
                 case 'Matka':
@@ -107,6 +112,7 @@ export default function YearlyBarChart({ allEvents, chartType }: YearlyBarChartP
                 </Pressable>
             </View>
 
+            <View style={{margin: Spacing.m }}>
             <BarChart
                 data={data.map((item, index) => ({
                     ...item,
@@ -131,6 +137,8 @@ export default function YearlyBarChart({ allEvents, chartType }: YearlyBarChartP
                 yAxisColor={Colors.dark.primary}
                 xAxisColor={Colors.dark.primary}
             />
+            </View>
+            {data && <TextStatistics events={monthAndYearFilteredEvents} />}
         </View>
     )
 }
