@@ -3,6 +3,7 @@ import * as Location from "expo-location";
 import { Pedometer } from "expo-sensors";
 import { RoutePoint } from "../types/Event";
 import { RouteFinal, clearRouteDraft, loadRouteDraft, loadRouteFinal, saveRouteDraft, saveRouteFinal} from "../services/routeStorage";
+import { getEventById } from "../services/eventService";
 
 type RouteRecorderStatus = "idle" | "recording" | "paused";
 type PermissionState = "granted" | "denied" | "undetermined";
@@ -377,6 +378,14 @@ export function useRouteRecorder({
       startedAtRef.current ??
       (elapsedSeconds > 0 ? finishedAt - elapsedSeconds * 1000 : finishedAt);
 
+    let workoutType;
+    try {
+      const event = await getEventById(eventId);
+      workoutType = event?.type;
+    } catch {
+      workoutType = undefined;
+    }
+
     const finalData: RouteFinal = {
       route,
       elapsedSeconds,
@@ -385,6 +394,7 @@ export function useRouteRecorder({
       avgSpeedMs,
       startedAt,
       finishedAt,
+      workoutType,
     };
 
     await saveRouteFinal(eventId, finalData);
