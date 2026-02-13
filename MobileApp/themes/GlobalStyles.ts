@@ -13,7 +13,7 @@ const globalStyles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: Colors.dark.background,
         shadowColor: Colors.dark.shadow,
-        margin: Spacing.s,
+        padding: Spacing.s,
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
@@ -43,8 +43,8 @@ const globalStyles = StyleSheet.create({
         alignContent: 'flex-start',
         width: '100%',
         backgroundColor: Colors.dark.elevation.level1,
-        marginBlockStart: Spacing.l,
-        marginBlockEnd: Spacing.sm
+        marginBlockStart: Spacing.s,
+        marginBlockEnd: Spacing.s
     },
 
     //EventFrom
@@ -103,7 +103,7 @@ const globalStyles = StyleSheet.create({
     //ShowUsersEvents
     EventFormContainer: {
         width: "100%",
-        padding: 16,
+        padding: Spacing.m,
         gap: 16,
     },
 
@@ -230,17 +230,17 @@ const globalStyles = StyleSheet.create({
 
     //AllEventsMapView
     filtersView: {
-        width: '95%',
+        width: '100%',
         justifyContent: 'space-evenly',
         flex: 1,
-        margin: 8
+        margin: 8,
+        padding: Spacing.m
     },
     mapContainer: {
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
         maxHeight: 300,
-        margin: 8,
         padding: 8,
     },
 
@@ -373,6 +373,86 @@ const globalStyles = StyleSheet.create({
     surfaceVariant: {
         backgroundColor: Colors.dark.surfaceVariant,
     },
+
+    // statistics
+    gradientBackground: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        height: '100%',
+    },
+    navigateMonthButton: {
+        borderRadius: BorderRadius.l,
+        borderWidth: 1,
+        padding: Spacing.m,
+        backgroundColor: Colors.dark.primaryContainer, 
+    },
+    navigateMonthButtonPressed: {
+        borderRadius: BorderRadius.l,
+        borderWidth: 1,
+        padding: Spacing.m,
+        backgroundColor: Colors.dark.primary,
+    },
+    navigateMonthButtonText: {
+        fontSize: FontSizes.l,
+        fontWeight: 'bold',
+        color: Colors.dark.onBackground
+    },
+    statsHeading: {
+        fontWeight: 'bold',
+        fontSize: FontSizes.l,
+        marginBottom: Spacing.sm,
+        color: Colors.dark.onSurface,
+        alignSelf: 'center'
+    },
+    chartTypeSelected: { 
+        flexDirection: 'row',
+        alignItems: 'center',
+        margin: 5, paddingRight: 10,
+        borderColor: Colors.dark.onSecondary,
+        borderWidth: 1,
+        borderRadius: 100,
+        backgroundColor: Colors.dark.secondary
+    },
+    chartTypeNotSelected: { 
+        flexDirection: 'row',
+        alignItems: 'center',
+        margin: 5,
+        paddingRight: 10,
+        borderColor: Colors.dark.primary,
+        borderWidth: 1,
+        borderRadius: 100,
+        backgroundColor: Colors.dark.onPrimary
+    },
+    chartTypeSelectedText: {
+        color: Colors.dark.onSecondary,
+        fontSize: FontSizes.m,
+        fontWeight: 'bold'
+    },
+    chartTypeNotSelectedText: {
+        color: Colors.dark.primary,
+        fontSize: FontSizes.m,
+        fontWeight: 'bold'
+    },
+
+    // Starting soon banner
+    startingSoonCard: {
+        width: '99%',
+        backgroundColor: Colors.dark.tertiary,
+        borderColor: Colors.dark.tertiaryContainer,
+        borderWidth: 2,
+    },
+    startingSoonTitle: {
+        color: Colors.dark.onTertiary,
+        fontSize: FontSizes.l,
+        fontWeight: 'bold',
+        padding: Spacing.xs
+    },
+    startingSoonText: {
+        color: Colors.dark.onTertiary,
+        padding: Spacing.xs
+    }
 })
 
 export default globalStyles
