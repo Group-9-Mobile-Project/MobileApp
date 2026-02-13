@@ -55,7 +55,7 @@ export default function App() {
   return (
     <AuthProvider user={user} loading={loading}>
       <PaperProvider theme={customDarkTheme}>
-        <SafeAreaProvider style={{ marginBottom: initialWindowMetrics?.insets.bottom }}>
+        <SafeAreaProvider style={isAndroid15 ? { marginBottom: initialWindowMetrics?.insets.bottom } : {}}>
           <RecordingProvider>
             <NavigationContainer theme={navigationDarkTheme}>
               <RootNavigator />

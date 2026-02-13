@@ -3,6 +3,9 @@ import React, { useEffect, useState } from 'react'
 import { BarChart } from 'react-native-gifted-charts'
 import { ChartType, RecordedEventsList } from '../../types/Workout'
 import { getMonthName } from '../../services/chartHelpers'
+import globalStyles from '../../themes/GlobalStyles'
+import { Colors } from '../../constants/colors'
+import { FontSizes, Spacing } from '../../themes/spacing'
 
 interface YearlyBarChartProps {
     allEvents: RecordedEventsList
@@ -18,19 +21,19 @@ interface BarData {
 export default function YearlyBarChart({ allEvents, chartType }: YearlyBarChartProps) {
     const [data, setData] = useState<{ date: string, value: number }[]>([])
     const [selectedBarIndex, setSelectedBarIndex] = useState<number | null>(null)
-    const [frontColor, setFrontColor] = useState('green')
+    const [frontColor, setFrontColor] = useState(Colors.dark.secondary)
     const [currentYear, setCurrentYear] = useState(new Date().getFullYear())
 
     const setColors = () => {
         switch (chartType) {
             case 'Keskinopeus':
-                setFrontColor('orange')
+                setFrontColor(Colors.dark.tertiary)
                 break;
             case 'Matka':
-                setFrontColor('green')
+                setFrontColor(Colors.dark.secondary)
                 break;
             case 'Kesto':
-                setFrontColor('red')
+                setFrontColor(Colors.dark.error)
                 break;
         }
     }
@@ -59,7 +62,7 @@ export default function YearlyBarChart({ allEvents, chartType }: YearlyBarChartP
         // Calculate values by month
         yearFilteredEvents.forEach((item) => {
             const eventMonth = new Date(item.final.startedAt).getMonth()
-            
+
             switch (chartType) {
                 case 'Keskinopeus':
                     // obviously average speed is not the sum of all averagespeeds, so last one is saved here...
@@ -82,26 +85,25 @@ export default function YearlyBarChart({ allEvents, chartType }: YearlyBarChartP
 
     return (
         <View>
-            <View style={{ 
-                flexDirection: 'row', 
-                justifyContent: 'space-evenly', 
-                padding: 20, 
-                alignItems: 'center' 
+            <View style={{
+                flexDirection: 'row',
+                justifyContent: 'space-evenly',
+                alignItems: 'center'
             }}>
                 <Pressable
-                    style={{ padding: 20 }}
+                    style={{ padding: Spacing.md }}
                     onPress={() => navigateYear(-1)}
                 >
-                    <Text style={{ fontSize: 16, fontWeight: 'bold' }}>◄</Text>
+                    <Text style={globalStyles.navigateMonthButtonText}>◄</Text>
                 </Pressable>
-                
-                <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{currentYear}</Text>
-                
+
+                <Text style={{ fontSize: FontSizes.m, fontWeight: 'bold' }}>{currentYear}</Text>
+
                 <Pressable
-                    style={{ padding: 20 }}
+                    style={{ padding: Spacing.l }}
                     onPress={() => navigateYear(1)}
                 >
-                    <Text style={{ fontSize: 16, fontWeight: 'bold' }}>►</Text>
+                    <Text style={globalStyles.navigateMonthButtonText}>►</Text>
                 </Pressable>
             </View>
 
@@ -114,17 +116,20 @@ export default function YearlyBarChart({ allEvents, chartType }: YearlyBarChartP
                             <Text>{item.value.toFixed(1)}</Text>
                         ) : null
                 }))}
-                onPress={(_item: BarData, index: any) => { 
-                    setSelectedBarIndex(selectedBarIndex === index ? null : index) 
+                onPress={(_item: BarData, index: any) => {
+                    setSelectedBarIndex(selectedBarIndex === index ? null : index)
                 }}
                 showGradient
                 frontColor={frontColor}
                 barBorderColor={frontColor}
                 barBorderWidth={2}
                 barWidth={22}
-                color={'yellow'}
-                gradientColor={'cyan'}
+                gradientColor={Colors.dark.onPrimary}
                 noOfSections={4}
+                xAxisLabelTextStyle={globalStyles.text}
+                yAxisTextStyle={globalStyles.text}
+                yAxisColor={Colors.dark.primary}
+                xAxisColor={Colors.dark.primary}
             />
         </View>
     )
