@@ -2,11 +2,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import * as Location from "expo-location";
 import { Pedometer } from "expo-sensors";
 import { RoutePoint } from "../types/Event";
-import { RouteFinal } from "../services/routeStorage";
-import { clearRouteDraft, loadRouteDraft, saveRouteDraft, saveRouteFinal} from "../services/routeStorage";
+import { RouteFinal, clearRouteDraft, loadRouteDraft, loadRouteFinal, saveRouteDraft, saveRouteFinal} from "../services/routeStorage";
 
 type RouteRecorderStatus = "idle" | "recording" | "paused";
 type PermissionState = "granted" | "denied" | "undetermined";
+
+const FINAL_EXISTS_ERROR = "FINAL_EXISTS_FOR_EVENT";
 
 type UseRouteRecorderOptions = {
   eventId: string;
@@ -297,8 +298,18 @@ export function useRouteRecorder({
       }
     };
   }, [status]);
+  
+  const ensureNoFinal = useCallback(async (): Promise<boolean> => {
+    const final = await loadRouteFinal(eventId);
+    return !final;
+  }, [eventId]);
 
   const startNew = useCallback(async () => {
+    const okToStart = await ensureNoFinal();
+    if (!okToStart) {
+      return false;
+    }
+
     await clearRouteDraft(eventId);
     setRoute([]);
     setElapsedSeconds(0);
@@ -312,8 +323,11 @@ export function useRouteRecorder({
     if (ok) {
       await startStepUpdates();
       setStatus("recording");
+      return true;
     }
-  }, [eventId, startLocationUpdates, startStepUpdates]);
+
+    return false;
+  }, [eventId, ensureNoFinal, startLocationUpdates, startStepUpdates]);
 
   const pauseRecording = useCallback(() => {
     if (status !== "recording") return;
@@ -347,6 +361,10 @@ export function useRouteRecorder({
   }, [status, startLocationUpdates, startStepUpdates]);
 
   const stopAndFinalize = useCallback(async (): Promise<RouteFinal> => {
+    const okToFinalize = await ensureNoFinal();
+    if (!okToFinalize) {
+      throw new Error(FINAL_EXISTS_ERROR);
+    }
     stopLocationUpdates();
     stopStepUpdates();
 

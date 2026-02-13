@@ -4,12 +4,15 @@ import { RadioButton } from 'react-native-paper'
 import { ChartType, RecordedEventsList, RouteFinal } from '../../types/Workout'
 import MonthlyBarChart from './MonthlyBarChart'
 import YearlyBarChart from './YearlyBarChart'
+import globalStyles from '../../themes/GlobalStyles'
+import { Colors } from '../../constants/colors'
+import { Spacing } from '../../themes/spacing'
 
 interface AllRecordedEventsProp {
     RecordedEvents: RecordedEventsList
 }
 
-export default function GraphContainer( {RecordedEvents} : AllRecordedEventsProp) {
+export default function GraphContainer({ RecordedEvents }: AllRecordedEventsProp) {
     const [showYearly, setShowYearly] = useState<boolean>(true)
     const [chartType, setChartType] = useState<ChartType>('Matka')
     const [allEvents, setAllEvents] = useState<RecordedEventsList>([])
@@ -26,36 +29,39 @@ export default function GraphContainer( {RecordedEvents} : AllRecordedEventsProp
                 onValueChange={(value) => setChartType(value as ChartType)}
                 value={chartType}
             >
-                <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', margin: 5, paddingRight: 10, borderColor: (chartType == 'Matka') ? 'purple': 'grey', borderWidth: 1, borderRadius: 100, backgroundColor: (chartType == 'Matka') ? 'pink': 'white'} }
-                    onTouchEnd={() => setChartType('Matka')}>
-                        <RadioButton value='Matka' />
-                        <Text>Matka</Text>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', paddingBottom: Spacing.l }}>
+                    <View style={(chartType == 'Matka') ? globalStyles.chartTypeSelected : globalStyles.chartTypeNotSelected }
+                        onTouchEnd={() => setChartType('Matka')}>
+                        <RadioButton value='Matka' color={Colors.dark.onSecondaryContainer} uncheckedColor={Colors.dark.onPrimaryContainer}/>
+                        <Text style={(chartType == 'Matka') ? globalStyles.chartTypeSelectedText : globalStyles.chartTypeNotSelectedText}>Matka</Text>
                     </View>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', margin: 5, paddingRight: 10, borderColor: (chartType == 'Kesto') ? 'purple': 'grey', borderWidth: 1, borderRadius: 100, backgroundColor: (chartType == 'Kesto') ? 'pink': 'white'} }
-                    onTouchEnd={() => setChartType('Kesto')}>
-                        <RadioButton value='Kesto' />
-                        <Text>Kesto</Text>
+                    <View style={(chartType == 'Kesto') ? globalStyles.chartTypeSelected : globalStyles.chartTypeNotSelected }
+                        onTouchEnd={() => setChartType('Kesto')}>
+                        <RadioButton value='Kesto' color={Colors.dark.onSecondaryContainer} uncheckedColor={Colors.dark.onPrimaryContainer}/>
+                        <Text style={(chartType == 'Kesto') ? globalStyles.chartTypeSelectedText : globalStyles.chartTypeNotSelectedText}>Kesto</Text>
                     </View>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', margin: 5, paddingRight: 10, borderColor: (chartType == 'Keskinopeus') ? 'purple': 'grey', borderWidth: 1, borderRadius: 100, backgroundColor: (chartType == 'Keskinopeus') ? 'pink': 'white'} }
-                    onTouchEnd={() => setChartType('Keskinopeus')}>
-                        <RadioButton value='Keskinopeus' />
-                        <Text>Keskinopeus</Text>
+                    <View style={(chartType == 'Keskinopeus') ? globalStyles.chartTypeSelected : globalStyles.chartTypeNotSelected }
+                        onTouchEnd={() => setChartType('Keskinopeus')}>
+                        <RadioButton value='Keskinopeus' color={Colors.dark.onSecondaryContainer} uncheckedColor={Colors.dark.onPrimaryContainer}/>
+                        <Text style={(chartType == 'Keskinopeus') ? globalStyles.chartTypeSelectedText : globalStyles.chartTypeNotSelectedText}>Keskinopeus</Text>
                     </View>
                 </View>
             </RadioButton.Group>
 
-            <Text>Suoritusten {chartType}</Text>
-            {showYearly ?
-            <>
-            <Text>Vuosittain</Text>
-            <YearlyBarChart allEvents={allEvents} chartType={chartType} />
-            </>
-            :
-            <>
-             <Text>Kuukausittain</Text>
-             <MonthlyBarChart allEvents={allEvents} chartType={chartType} />
-            </>}
+            <View style={{alignSelf: 'center', width: '100%'}}>
+                <Text style={globalStyles.statsHeading}>Suoritusten {chartType}</Text>
+                {showYearly ?
+                    <>
+                        <Text style={globalStyles.statsHeading}>Vuosittain</Text>
+                        <YearlyBarChart allEvents={allEvents} chartType={chartType} />
+                    </>
+                    :
+                    <View>
+                        <Text style={globalStyles.statsHeading}>Kuukausittain</Text>
+
+                        <MonthlyBarChart allEvents={allEvents} chartType={chartType} />
+                    </View>}
+            </View>
         </View>
     )
 }

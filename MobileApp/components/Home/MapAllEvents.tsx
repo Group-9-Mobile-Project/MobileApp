@@ -10,9 +10,7 @@ interface EventList {
 }
 
 export default function MapAllEvents({ currentRegion, eventList }: EventList) {
-    // const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
-    const [showModal, setShowModal] = useState<boolean>(false)
-
+    
     return (
         <>
             <MapView style={globalStyles.mapAllEvents} region={currentRegion} showsUserLocation>
