@@ -6,9 +6,12 @@ import { useAuth } from "../context/AuthContext";
 import { createEvent } from "../services/eventService";
 import { Event } from "../types/Event";
 import globalStyles from "../themes/GlobalStyles";
+import { useNavigation, NavigationProp } from "@react-navigation/native";
+import { RootTabParamList } from "../types/Navigation";
 
 export default function CreateEventScreen() {
   const { user } = useAuth();
+  const navigation = useNavigation<NavigationProp<RootTabParamList>>();
 
   const handleSubmit = useCallback(
     async (payload: EventFormSubmitPayload): Promise<boolean> => {
@@ -30,8 +33,9 @@ export default function CreateEventScreen() {
 
         await createEvent(eventPayload);
 
-        Alert.alert("Onnistui", "Tapahtuma luotu");
+        navigation.navigate("Koti");
         return true;
+        
       } catch (err) {
         console.error("Failed to save new event", err);
         Alert.alert("Virhe", "Tapahtuman tallennus epäonnistui");

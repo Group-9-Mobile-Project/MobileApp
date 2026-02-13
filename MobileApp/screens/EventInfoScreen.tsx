@@ -98,7 +98,6 @@ export default function EventInfoScreen() {
                     onPress: async () => {
                         try {
                             await deleteEvent(event.id)
-                            Alert.alert("Poistettu", "Tapahtuma poistettu")
                             navigation.goBack()
                         } catch (err) {
                             console.error("Failed to delete event", err)

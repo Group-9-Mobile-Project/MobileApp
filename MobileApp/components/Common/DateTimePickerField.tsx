@@ -111,7 +111,7 @@ export default function DateTimePickerField({
             minimumDate={minimumDate}
             maximumDate={maximumDate}
             //Ota pois kun tehdään tumma teema!
-            themeVariant="light"
+            themeVariant="dark"
           />
           <View style={styles.inlineActions}>
             <Button title="Peruuta" onPress={close} />
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   inlinePickerContainer: {
-    backgroundColor: "white",
+  //  backgroundColor: "white",
     borderRadius: 12,
     padding: 12,
     marginTop: 8,

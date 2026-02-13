@@ -7,6 +7,7 @@ import { useRoute, RouteProp, useNavigation, NavigationProp, useFocusEffect } fr
 import { RootTabParamList } from "../types/Navigation";
 import WorkoutMap from "../components/Workout/WorkoutMap";
 import WorkoutSummaryCard from "../components/Workout/WorkoutSummaryCard";
+import { EventType } from "../types/Event"
 
 const DEFAULT_REGION: Region = {
   latitude: 65.08,
@@ -23,6 +24,7 @@ export default function ExerciseDetailScreen() {
   const [data, setData] = useState<RouteFinal | null>(null);
   const [loading, setLoading] = useState(true);
   const [eventTitle, setEventTitle] = useState<string | null>(null);
+  const [eventType, setEventType] = useState<EventType | null>(null);
   const [deleting, setDeleting] = useState(false);
 
   useFocusEffect(
@@ -49,10 +51,16 @@ export default function ExerciseDetailScreen() {
 
     getEventById(eventId)
       .then((event) => {
-        if (mounted) setEventTitle(event?.title ?? null);
+        if (mounted) {
+          setEventTitle(event?.title ?? null);
+          setEventType(event?.type ?? null);
+        }
       })
       .catch(() => {
-        if (mounted) setEventTitle(null);
+        if (mounted) {
+          setEventTitle(null);
+          setEventType(null);
+        }
       });
 
     return () => {
@@ -74,7 +82,7 @@ export default function ExerciseDetailScreen() {
             try {
               await Promise.all([clearRouteFinal(eventId), clearRouteDraft(eventId)]);
               setData(null);
-              navigation.navigate("Koti");
+              navigation.navigate("Tilastot");
             } finally {
               setDeleting(false);
             }
@@ -116,11 +124,13 @@ export default function ExerciseDetailScreen() {
   const avgSpeedKmh = data.avgSpeedMs * 3.6;
   const distanceKm = data.distanceMeters / 1000;
   const startedAt = new Date(data.startedAt);
+  const displayType = data.workoutType ?? eventType;
 
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>{eventTitle ?? "Harjoituksen tiedot"}</Text>
       <Text style={styles.meta}>{startedAt.toLocaleString()}</Text>
+      {displayType && <Text style={styles.meta}>Tyyppi: {displayType}</Text>}
 
       <WorkoutSummaryCard
         durationSeconds={data.elapsedSeconds}

@@ -8,6 +8,7 @@ export type RouteFinal = {
   avgSpeedMs: number;
   startedAt: number;
   finishedAt: number;
+  workoutType?: string;
 };
 
 export type ChartType = 'Matka' | 'Kesto' | 'Keskinopeus'
