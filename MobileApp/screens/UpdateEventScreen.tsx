@@ -71,7 +71,6 @@ export default function UpdateEventScreen() {
 
       try {
         await updateEvent(eventId, payload);
-        Alert.alert("Onnistui", "Tapahtuma päivitetty");
         navigation.goBack();
         return true;
       } catch (err) {
