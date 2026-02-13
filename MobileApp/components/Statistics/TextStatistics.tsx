@@ -13,6 +13,7 @@ export default function TextStatistics({ events }: TextStatisticsProps) {
     const [filteredData, setFilteredData] = useState<RecordedEventsList | null>(null)
     const [distance, setDistance] = useState(0)
     const [elapsedTime, setElapsedTime] = useState(0)
+    const [steps, setSteps] = useState(0)
 
     useEffect(() => {
 
@@ -25,13 +26,16 @@ export default function TextStatistics({ events }: TextStatisticsProps) {
         //console.log(events)
         var eventsDistance = 0
         var eventsTime = 0
+        var eventsSteps = 0
         events.forEach(event => {
             eventsDistance += event.final.distanceMeters
             eventsTime += event.final.elapsedSeconds
+            eventsSteps += event.final.steps
         })
 
         setDistance(eventsDistance)
         setElapsedTime(eventsTime)
+        setSteps(eventsSteps)
         setFilteredData(events)
 
 
@@ -62,6 +66,7 @@ export default function TextStatistics({ events }: TextStatisticsProps) {
                             <Text style={globalStyles.infoText}>Käytetty aika: {(elapsedTime / 60).toFixed(0)} min {(elapsedTime % 60)} s</Text>
                             <Text style={globalStyles.infoText}>Keston keskiarvo: {((elapsedTime / filteredData.length) / 60).toFixed(0)} min {((elapsedTime / filteredData.length) % 60).toFixed(0)} s</Text>
                             <Text style={globalStyles.infoText}>Keskinopeus: {((distance / 1000) / (elapsedTime / 60)).toFixed(2)} km/h</Text>
+                            <Text style={globalStyles.infoText}>Askeleet: {steps}</Text>
                         </View>
                     </Card.Content>
                 </Card>
