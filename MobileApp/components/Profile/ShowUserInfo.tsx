@@ -7,6 +7,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { Card } from 'react-native-paper';
 import { useAuth } from '../../context/AuthContext';
 import globalStyles from '../../themes/GlobalStyles';
+import { Spacing } from '../../themes/spacing';
 
 export default function ShowUserInfo() {
 
@@ -41,8 +42,9 @@ export default function ShowUserInfo() {
 
 
   return (
-    <View style={globalStyles.showUserContainer}>
-      <ScrollView nestedScrollEnabled={true}>
+    <View style={globalStyles.EventFormContainer}>
+      <Card style={[globalStyles.cardContainer, { paddingVertical: Spacing.m }]}>
+        <ScrollView nestedScrollEnabled={true}>
         <Card.Content>
           <Text style={globalStyles.heading} >Omat tiedot</Text>
         </Card.Content>
@@ -69,7 +71,8 @@ export default function ShowUserInfo() {
             <Text style={globalStyles.infoText}>Pronominit: {userInfo.pronouns}</Text>
           </View> : null}
         </Card.Content>
-      </ScrollView>
+        </ScrollView>
+      </Card>
 
 
       <Pressable

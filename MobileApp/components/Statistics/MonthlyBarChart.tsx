@@ -125,6 +125,7 @@ export default function MonthlyBarChart({ allEvents, chartType }: MonthlyBarChar
                     barWidth={30}
                     gradientColor={Colors.dark.onPrimary}
                     noOfSections={4}
+                    formatYLabel={(label) => parseFloat(label).toFixed(2).toString()}
                     xAxisLabelTextStyle={globalStyles.text}
                     yAxisTextStyle={globalStyles.text}
                     yAxisColor={Colors.dark.primary}

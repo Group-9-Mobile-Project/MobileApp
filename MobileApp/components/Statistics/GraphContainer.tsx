@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { RadioButton } from 'react-native-paper'
 import { ChartType, RecordedEventsList, RouteFinal } from '../../types/Workout'
 import MonthlyBarChart from './MonthlyBarChart'
+import YearlyBarChart from './YearlyBarChart'
 import globalStyles from '../../themes/GlobalStyles'
 import { Colors } from '../../constants/colors'
 import { Spacing } from '../../themes/spacing'
@@ -52,6 +53,8 @@ export default function GraphContainer({ RecordedEvents }: AllRecordedEventsProp
                 {showYearly ?
                     <>
                         <Text style={globalStyles.statsHeading}>Vuosittain</Text>
+                        
+                        <YearlyBarChart allEvents={allEvents} chartType={chartType} />
                     </>
                     :
                     <View>

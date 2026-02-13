@@ -339,10 +339,9 @@ const globalStyles = StyleSheet.create({
         backgroundColor: Colors.dark.elevation.level5,
     },
     showUserContainer: {
-        flex: 1,
-        paddingVertical: Spacing.sm,
-        marginTop: Spacing.l,
-        margin: Spacing.md,
+        width: "100%",
+        padding: Spacing.m,
+        gap: 16,
         backgroundColor: Colors.dark.elevation.level1,
     },
 
