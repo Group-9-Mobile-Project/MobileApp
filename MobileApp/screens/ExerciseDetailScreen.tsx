@@ -74,7 +74,7 @@ export default function ExerciseDetailScreen() {
             try {
               await Promise.all([clearRouteFinal(eventId), clearRouteDraft(eventId)]);
               setData(null);
-              navigation.navigate("Koti");
+              navigation.navigate("Tilastot");
             } finally {
               setDeleting(false);
             }
