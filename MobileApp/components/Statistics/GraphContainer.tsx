@@ -53,6 +53,7 @@ export default function GraphContainer({ RecordedEvents }: AllRecordedEventsProp
                 {showYearly ?
                     <>
                         <Text style={globalStyles.statsHeading}>Vuosittain</Text>
+                        
                         <YearlyBarChart allEvents={allEvents} chartType={chartType} />
                     </>
                     :

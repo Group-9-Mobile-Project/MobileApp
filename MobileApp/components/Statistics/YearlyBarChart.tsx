@@ -96,16 +96,16 @@ export default function YearlyBarChart({ allEvents, chartType }: YearlyBarChartP
                 alignItems: 'center'
             }}>
                 <Pressable
-                    style={{ padding: Spacing.md }}
+                    style={({ pressed }) => pressed ? globalStyles.navigateMonthButtonPressed : globalStyles.navigateMonthButton}
                     onPress={() => navigateYear(-1)}
                 >
                     <Text style={globalStyles.navigateMonthButtonText}>◄</Text>
                 </Pressable>
 
-                <Text style={{ fontSize: FontSizes.m, fontWeight: 'bold' }}>{currentYear}</Text>
+                <Text style={globalStyles.navigateMonthButtonText}>{currentYear}</Text>
 
                 <Pressable
-                    style={{ padding: Spacing.l }}
+                    style={({ pressed }) => pressed ? globalStyles.navigateMonthButtonPressed : globalStyles.navigateMonthButton}
                     onPress={() => navigateYear(1)}
                 >
                     <Text style={globalStyles.navigateMonthButtonText}>►</Text>
@@ -132,6 +132,7 @@ export default function YearlyBarChart({ allEvents, chartType }: YearlyBarChartP
                 barWidth={22}
                 gradientColor={Colors.dark.onPrimary}
                 noOfSections={4}
+                formatYLabel={(label) => parseFloat(label).toFixed(2).toString()}
                 xAxisLabelTextStyle={globalStyles.text}
                 yAxisTextStyle={globalStyles.text}
                 yAxisColor={Colors.dark.primary}
