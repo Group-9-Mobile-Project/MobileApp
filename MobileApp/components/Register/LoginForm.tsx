@@ -1,7 +1,10 @@
-import { View, Text, StyleSheet, TextInput, Button, ActivityIndicator, Alert } from 'react-native'
+import { View, Text, TextInput, Button, ActivityIndicator, Alert } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../firebase/Config';
+import { Colors } from '../../constants/colors';
+import globalStyles from '../../themes/GlobalStyles';
+
 
 export default function LoginForm() {
   const passwordRef = useRef<TextInput>(null);
@@ -34,17 +37,18 @@ export default function LoginForm() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.subtitle}>Kirjaudu</Text>
-      <Text style={styles.text}>
+    <View style={globalStyles.registerContainer}>
+      <Text style={globalStyles.subtitle}>Kirjaudu</Text>
+      <Text style={globalStyles.registerText}>
         Anna sähköpostiosoitteesi ja salasanasi kirjautuaksesi tähän sovellukseen
       </Text>
 
       <TextInput
-        style={styles.input}
+        style={globalStyles.registerInput}
         value={email}
         onChangeText={setEmail}
         placeholder="erkki@esimerkki.com"
+        placeholderTextColor={Colors.dark.surface}
         keyboardType="email-address"
         returnKeyType="next"
         submitBehavior="submit"
@@ -53,11 +57,12 @@ export default function LoginForm() {
       />
 
       <TextInput
-        style={styles.input}
+        style={globalStyles.registerInput}
         ref={passwordRef}
         value={password}
         onChangeText={setPassword}
         placeholder="********"
+        placeholderTextColor={Colors.dark.surface}
         secureTextEntry
         returnKeyType='done'
       />
@@ -68,30 +73,3 @@ export default function LoginForm() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  input: {
-    width: '90%',
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: 'lightgrey',
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    fontSize: 16,
-  },
-  subtitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 12,
-  },
-  text: {
-    margin: 12,
-    textAlign: 'center'
-  },
-});

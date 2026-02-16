@@ -1,7 +1,6 @@
-import { View, Text, ScrollView } from 'react-native'
+import { ScrollView } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import GraphContainer from '../components/Statistics/GraphContainer'
-import TextStatistics from '../components/Statistics/TextStatistics'
 import RecordedEventsList from '../components/Statistics/RecordedEventsList'
 import { RouteFinal } from '../types/Workout'
 import { listRouteFinals } from '../services/routeStorage'
@@ -24,7 +23,7 @@ export default function StatisticsScreen() {
   }, [isFocused])
 
   return (
-    <LinearGradient colors={[Colors.dark.background, Colors.dark.onPrimary, Colors.dark.background]} style={globalStyles.gradientBackground}>
+    <LinearGradient colors={[Colors.dark.background, Colors.dark.inversePrimary, Colors.dark.background]} style={globalStyles.gradientBackground}>
 
 
       <ScrollView>
