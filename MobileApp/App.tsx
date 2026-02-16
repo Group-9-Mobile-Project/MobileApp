@@ -9,6 +9,7 @@ import { Provider as PaperProvider } from "react-native-paper";
 import { customDarkTheme, navigationDarkTheme } from './themes/MyThemes';
 import { RecordingProvider } from "./context/RecordingContext";
 import RecordingBubble from "./components/Workout/RecordingBubble";
+import { NotificationsProvider } from "./hooks/useNotifications";
 
 function AppContent() { 
   const { user, loading } = useAuth();
@@ -42,9 +43,15 @@ export default function App() {
   return (
     <AuthProvider> 
       <PaperProvider theme={customDarkTheme}>
-        <SafeAreaProvider style={isAndroid15 ? { marginBottom: initialWindowMetrics?.insets.bottom } : {}}>
+        <SafeAreaProvider style={isAndroid15 ? { paddingBottom: initialWindowMetrics?.insets.bottom, backgroundColor: 'black' } : {}}>
           <RecordingProvider>
-            <AppContent />
+            <NotificationsProvider>
+              <NavigationContainer theme={navigationDarkTheme}>
+                <RootNavigator />
+                <RecordingBubble />
+                <StatusBar style="light" />
+              </NavigationContainer>
+            </NotificationsProvider>
           </RecordingProvider>
         </SafeAreaProvider>
       </PaperProvider>
