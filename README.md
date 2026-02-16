@@ -1,15 +1,18 @@
-# MobileApp Project
+# Liikkeelle Mobile App
 
-A student project for a mobile app, built with React Native, Expo Go, and Firebase Cloud Firestore.
+Liikkeelle is a social workout app which helps users find nearby workout partners.
+It's a student mobile development project, built with React Native, Expo Go, Firebase Auth and Cloud Firestore.
+App finctionalities have been tested and work on both iOS and Android.
 
 ## Features
 
 **Authentication**
 - User registration and login using Firebase Authentication
-- Authenticated user data is stored in an AuthProvider and shared across the app
+- Authenticated user data is stored in an AsyncStorage and shared across the app
 
 **Homepage**
-- View all upcoming events in map and list views
+- View all upcoming events in map view
+- View five upcoming events in list view
 - Filter upcoming events by:
     - Date
     - Activity type (walk or run)
@@ -17,13 +20,12 @@ A student project for a mobile app, built with React Native, Expo Go, and Fireba
 
 **Create Event**
 - Create and publish new walking or running events
-- Mandatory fields are:
+- Fields:
     - Event name
+    - Event type
     - Date and start time
     - Start location
-- Additional fields:
     - Description
-    - Event type
 
 **Profile Page**
 - View the events you have:
@@ -36,10 +38,9 @@ A student project for a mobile app, built with React Native, Expo Go, and Fireba
     - City
     - Hobbies
     - Interests
-    - Pronouns
 
 **Statistics**
-- View statistics for your walks and runs:
+- View statistics of your walks and runs:
     - Walks/runs in total
     - Distance traveled
     - Average speed
@@ -60,13 +61,31 @@ A student project for a mobile app, built with React Native, Expo Go, and Fireba
 
 **Tracker**
 - Track your walks and runs
+- Tracker saves steps (platform native pedometer), average speed, time and distance in real time
+- Floating action button, shows the state of the tracker (on or pause) and follows user around the app and takes user back to the tracker page once pressed
+
+**Notifications**
+- Homepage has a banner that displays events that start in the next hour
+- In-app notifications for events you have joined
 
 ## Tech Stack
-- Framework: Expo framework with React Native
+- Framework: Expo Go with React Native
 - Language: TypeScript
-- Styling: React Native StyleSheet and custom MD3 theme from react-native-paper
+- Styling: React Native StyleSheet with custom global styling
 - Database: Firebase Cloud Firestore
-- Authentication: Firebase Auth with initializeAuth and AsyncStorage
+- Authentication: Firebase Auth with authContext and AsyncStorage
+
+```
+src/
+├── components/     # Uudelleenkäytettävät UI-komponentit
+├── screens/        # Näkymät
+├── hooks/          # Custom hookit
+├── services/       # Firebase-palvelut
+├── navigation/     # Navigaatiot
+├── types/          # TypeScript-tyypit
+├── config/         # Konfiguraatiot
+└── utils/          # Apufunktiot
+```
 
 ## Developed By
 - Ville-Pekka Alavuotunki
