@@ -106,7 +106,7 @@ export default function EditUserInfo({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <LinearGradient colors={[Colors.dark.background, Colors.dark.onPrimary, Colors.dark.background]} style={globalStyles.gradientBackground}>
+    <LinearGradient colors={[Colors.dark.background, Colors.dark.inversePrimary, Colors.dark.background]} style={globalStyles.gradientBackground}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <KeyboardAwareScrollView
           //style={{ backgroundColor: 'rgb(26, 28, 30)' }}

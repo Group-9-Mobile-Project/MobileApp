@@ -48,7 +48,7 @@ export default function CreateEventScreen() {
   );
 
   return (
-    <LinearGradient colors={[Colors.dark.background, Colors.dark.secondaryContainer, Colors.dark.background]} style={globalStyles.gradientBackground}>
+    <LinearGradient colors={[Colors.dark.background, Colors.dark.inversePrimary, Colors.dark.background]} style={globalStyles.gradientBackground}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <KeyboardAwareScrollView
           style={globalStyles.container}

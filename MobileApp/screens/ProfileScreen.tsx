@@ -11,7 +11,7 @@ import { Colors } from '../constants/colors';
 export default function ProfileScreen() {
 
   return (
-    <LinearGradient colors={[Colors.dark.background, Colors.dark.onPrimary, Colors.dark.background]} style={globalStyles.gradientBackground}>
+    <LinearGradient colors={[Colors.dark.background, Colors.dark.inversePrimary, Colors.dark.background]} style={globalStyles.gradientBackground}>
       <View style={globalStyles.container} >
         <ScrollView contentContainerStyle={globalStyles.contentContainer}>
           <ShowUsersEvents />

@@ -139,7 +139,7 @@ export default function EventInfoScreen() {
                         </Card.Content>
                         <Card.Content>
                             <View style={globalStyles.basicInfoView}>
-                                <Text style={globalStyles.infoText}>Aika: {event.startTime}</Text>
+                                <Text style={globalStyles.infoText}>Aika: {event.date} - {event.startTime}</Text>
                                 <Text style={globalStyles.infoText}>Paikka: {event.location.address}</Text>
                                 <Text style={globalStyles.infoText}>Tyyppi: {event.type}</Text>
                                 <View style={{ flexDirection: 'row' }}>

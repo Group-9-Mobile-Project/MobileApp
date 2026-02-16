@@ -132,7 +132,7 @@ export default function ExerciseDetailScreen() {
   const displayType = data.workoutType ?? eventType;
 
   return (
-  <LinearGradient colors={[Colors.dark.background, Colors.dark.onPrimary, Colors.dark.background]} style={globalStyles.gradientBackground}>
+  <LinearGradient colors={[Colors.dark.background, Colors.dark.inversePrimary, Colors.dark.background]} style={globalStyles.gradientBackground}>
 
     <View style={styles.container}>
       <View style={styles.headerRow}>
@@ -188,13 +188,13 @@ const styles = StyleSheet.create({
   },
   backButton: {
     marginTop: 12,
-    backgroundColor: Colors.dark.secondary,
+    backgroundColor: Colors.dark.onError,
     paddingVertical: Spacing.m,
     borderRadius: 10,
     alignItems: "center",
   },
   backButtonText: {
-    color: "white",
+    color: Colors.dark.error,
     fontWeight: "600"
   },
   centered: {
