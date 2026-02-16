@@ -1,8 +1,10 @@
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { View, Text, StyleSheet, TextInput, Button, Alert, ActivityIndicator } from 'react-native'
+import { View, Text, TextInput, Button, Alert, ActivityIndicator } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { auth, firestore, setDoc, USERINFO } from "../../firebase/Config";
 import { doc, serverTimestamp } from "firebase/firestore";
+import { Colors } from "../../constants/colors";
+import globalStyles from "../../themes/GlobalStyles";
 
 export default function RegisterForm() {
 
@@ -73,19 +75,20 @@ export default function RegisterForm() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.subtitle}>Luo käyttäjä</Text>
+    <View style={globalStyles.registerContainer}>
+      <Text style={globalStyles.subtitle}>Luo käyttäjä</Text>
 
-      <Text style={styles.text}>
+      <Text style={globalStyles.registerText}>
         Anna sähköpostiosoitteesi ja salasanasi. Toista salasana, ja lisää vielä
         käyttäjänimesi rekisteröityäksesi tähän sovellukseen
       </Text>
 
       <TextInput
-        style={styles.input}
+        style={globalStyles.registerInput}
         value={email}
         onChangeText={setEmail}
         placeholder="erkki@esimerkki.com"
+        placeholderTextColor={Colors.dark.surface}
         keyboardType="email-address"
         returnKeyType="next"
         submitBehavior="submit"
@@ -93,11 +96,12 @@ export default function RegisterForm() {
       />
 
       <TextInput
-        style={styles.input}
+        style={globalStyles.registerInput}
         ref={passwordRef}
         value={password}
         onChangeText={setPassword}
         placeholder="********"
+        placeholderTextColor={Colors.dark.surface}
         secureTextEntry
         autoCapitalize="none"
         returnKeyType="next"
@@ -106,11 +110,12 @@ export default function RegisterForm() {
       />
 
       <TextInput
-        style={styles.input}
+        style={globalStyles.registerInput}
         ref={passwordAgainRef}
         value={passwordAgain}
         onChangeText={setPasswordAgain}
         placeholder="Salasana uudelleen"
+        placeholderTextColor={Colors.dark.surface}
         secureTextEntry
         autoCapitalize="none"
         returnKeyType="next"
@@ -119,11 +124,12 @@ export default function RegisterForm() {
       />
 
       <TextInput
-        style={styles.input}
+        style={globalStyles.registerInput}
         ref={nameRef}
         value={displayName}
         onChangeText={setDisplayName}
         placeholder="Käyttäjänimi"
+        placeholderTextColor={Colors.dark.surface}
         returnKeyType="done"
       />
 
@@ -133,30 +139,3 @@ export default function RegisterForm() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  input: {
-    width: "90%",
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: "lightgrey",
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    fontSize: 16,
-  },
-  subtitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 12,
-  },
-  text: {
-    margin: 12,
-    textAlign: "center",
-  },
-});

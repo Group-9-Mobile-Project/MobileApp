@@ -1,24 +1,28 @@
-import { View, Text, StyleSheet, Button,TouchableWithoutFeedback, Keyboard } from 'react-native'
+import { View, Text, Button,TouchableWithoutFeedback, Keyboard } from 'react-native'
 import React, { useState } from 'react'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import LoginForm from "../components/Register/LoginForm";
 import RegisterForm from "../components/Register/RegisterForm";
+import { Colors } from '../constants/colors';
+import { LinearGradient } from 'expo-linear-gradient'
+import globalStyles from '../themes/GlobalStyles';
 
 export default function RegisterScreen() {
 
     const [showLogin, setShowLogin] = useState(true)
 
     return (
+        <LinearGradient colors={[Colors.dark.background, Colors.dark.onPrimary, Colors.dark.background]} style={globalStyles.gradientBackground}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
          <KeyboardAwareScrollView
-                style={styles.container}
-                contentContainerStyle={styles.container}
+                style={globalStyles.container}
+                contentContainerStyle={globalStyles.container}
                 keyboardShouldPersistTaps="handled"
               //  enableOnAndroid 
                 extraScrollHeight={24}
             >
 
-                <Text style={styles.title}>
+                <Text style={globalStyles.header}>
                     Liikkeelle
                 </Text>
 
@@ -26,11 +30,11 @@ export default function RegisterScreen() {
                     <>
                         <LoginForm />
 
-                        <View style={styles.changeModeView}>
-                            <Text style={styles.text}>
+                        <View style={globalStyles.changeModeView}>
+                            <Text style={globalStyles.label}>
                                 Eikö sinulla ole vielä käyttäjää?
                             </Text>
-                            <View style={styles.changeModeButton}>
+                            <View style={globalStyles.changeModeButton}>
                                 <Button
                                     title="Rekisteröidy"
                                     onPress={() => setShowLogin(false)}
@@ -42,11 +46,11 @@ export default function RegisterScreen() {
                     <>
                         <RegisterForm />
 
-                        <View style={styles.changeModeView}>
-                            <Text style={styles.text}>
+                        <View style={globalStyles.changeModeView}>
+                            <Text style={globalStyles.label}>
                                 Onko sinulla jo käyttäjä?
                             </Text>
-                            <View style={styles.changeModeButton}>
+                            <View style={globalStyles.changeModeButton}>
                                 <Button
                                     title="Kirjaudu"
                                     onPress={() => setShowLogin(true)}
@@ -56,33 +60,6 @@ export default function RegisterScreen() {
                     </>)}
             </KeyboardAwareScrollView>
         </TouchableWithoutFeedback >
+        </LinearGradient>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'white'
-    },
-    title: {
-        fontSize: 36,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        marginTop: 120,
-    },
-    text: {
-        textAlign: 'center',
-        fontWeight: 'bold',
-
-    },
-    changeModeView: {
-        margin: 8,
-        marginBottom: 60,
-        alignItems: 'center',
-    },
-    changeModeButton: {
-        width: '50%',
-        margin: 16,
-    }
-})
-

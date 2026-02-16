@@ -16,6 +16,8 @@ import { getEventById, updateEvent } from "../services/eventService";
 import { RootTabParamList } from "../types/Navigation";
 import { useAuth } from "../context/AuthContext";
 import globalStyles from "../themes/GlobalStyles";
+import { LinearGradient } from 'expo-linear-gradient'
+import { Colors } from "../constants/colors";
 
 type RouteParams = {
   eventId: string;
@@ -113,6 +115,7 @@ export default function UpdateEventScreen() {
   }
 
   return (
+     <LinearGradient colors={[Colors.dark.background, Colors.dark.onPrimary, Colors.dark.background]} style={globalStyles.gradientBackground}>
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <KeyboardAwareScrollView
         style={globalStyles.container}
@@ -129,5 +132,6 @@ export default function UpdateEventScreen() {
         />
       </KeyboardAwareScrollView>
     </TouchableWithoutFeedback>
+    </LinearGradient>
   );
 }

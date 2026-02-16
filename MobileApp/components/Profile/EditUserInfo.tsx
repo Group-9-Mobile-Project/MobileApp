@@ -7,6 +7,7 @@ import { Colors } from '../../constants/colors';
 import { useAuth } from '../../context/AuthContext';
 import globalStyles from '../../themes/GlobalStyles';
 import DateTimePickerField from '../Common/DateTimePickerField';
+import { LinearGradient } from 'expo-linear-gradient'
 
 export default function EditUserInfo({ onClose }: { onClose: () => void }) {
 
@@ -105,114 +106,115 @@ export default function EditUserInfo({ onClose }: { onClose: () => void }) {
   }
 
   return (
-
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <KeyboardAwareScrollView
-        style={{ backgroundColor: 'rgb(26, 28, 30)' }}
-        keyboardShouldPersistTaps="handled"
-        //  enableOnAndroid 
-        extraScrollHeight={24}
-      >
-        <View style={{ backgroundColor: 'rgb(26, 28, 30)', height: 30 }} />
-        <View style={globalStyles.editUserContainer}>
-          <Text style={globalStyles.heading} >Muokkaa omia tietoja</Text>
-          <Text style={globalStyles.label}>Nimi:</Text>
-          <TextInput style={globalStyles.input}
-            placeholder='Syötä nimesi'
-            placeholderTextColor={Colors.dark.inversePrimary}
-            value={name}
-            onChangeText={setName}
-            editable={!loading}
-          />
-          <Text style={globalStyles.label}>Kuvaus:</Text>
-          <TextInput style={globalStyles.input}
-            placeholder='Syötä Kuvaus'
-            placeholderTextColor={Colors.dark.inversePrimary}
-            value={description}
-            onChangeText={setDescription}
-            editable={!loading}
-          />
-          <DateTimePickerField
-            label="Syntymäpäivä:"
-            labelStyle={globalStyles.label}
-            value={birthdate ?? new Date()}
-            mode="date"
-            onChange={setBirthdate}
-            buttonLabel={birthdate ? formatDate(birthdate) : 'Valitse syntymäpäivä'}
-            maximumDate={new Date()}
-          />
-          <Text style={globalStyles.label}>Kaupunki:</Text>
-          <TextInput style={globalStyles.input}
-            placeholder='Syötä kaupunkisi'
-            placeholderTextColor={Colors.dark.inversePrimary}
-            value={city}
-            onChangeText={setCity}
-            editable={!loading}
-          />
-          <Text style={globalStyles.label}>Harrastukset:</Text>
-          <View style={globalStyles.hobbyInputContainer}>
-            <TextInput style={globalStyles.hobbyInput}
-              placeholder='Lisää harrastus'
+    <LinearGradient colors={[Colors.dark.background, Colors.dark.onPrimary, Colors.dark.background]} style={globalStyles.gradientBackground}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <KeyboardAwareScrollView
+          //style={{ backgroundColor: 'rgb(26, 28, 30)' }}
+          keyboardShouldPersistTaps="handled"
+          //  enableOnAndroid 
+          extraScrollHeight={24}
+        >
+          <View style={{ height: 30 }} />
+          <View style={globalStyles.editUserContainer}>
+            <Text style={globalStyles.heading} >Muokkaa omia tietoja</Text>
+            <Text style={globalStyles.label}>Nimi:</Text>
+            <TextInput style={globalStyles.input}
+              placeholder='Syötä nimesi'
               placeholderTextColor={Colors.dark.inversePrimary}
-              value={hobbyInput}
-              onChangeText={setHobbyInput}
+              value={name}
+              onChangeText={setName}
               editable={!loading}
             />
-            <TouchableOpacity style={globalStyles.addButton} onPress={addHobby}>
-              <Text style={globalStyles.subHeading}>+</Text>
-            </TouchableOpacity>
+            <Text style={globalStyles.label}>Kuvaus:</Text>
+            <TextInput style={globalStyles.input}
+              placeholder='Syötä Kuvaus'
+              placeholderTextColor={Colors.dark.inversePrimary}
+              value={description}
+              onChangeText={setDescription}
+              editable={!loading}
+            />
+            <DateTimePickerField
+              label="Syntymäpäivä:"
+              labelStyle={globalStyles.label}
+              value={birthdate ?? new Date()}
+              mode="date"
+              onChange={setBirthdate}
+              buttonLabel={birthdate ? formatDate(birthdate) : 'Valitse syntymäpäivä'}
+              maximumDate={new Date()}
+            />
+            <Text style={globalStyles.label}>Kaupunki:</Text>
+            <TextInput style={globalStyles.input}
+              placeholder='Syötä kaupunkisi'
+              placeholderTextColor={Colors.dark.inversePrimary}
+              value={city}
+              onChangeText={setCity}
+              editable={!loading}
+            />
+            <Text style={globalStyles.label}>Harrastukset:</Text>
+            <View style={globalStyles.hobbyInputContainer}>
+              <TextInput style={globalStyles.hobbyInput}
+                placeholder='Lisää harrastus'
+                placeholderTextColor={Colors.dark.inversePrimary}
+                value={hobbyInput}
+                onChangeText={setHobbyInput}
+                editable={!loading}
+              />
+              <TouchableOpacity style={globalStyles.addButton} onPress={addHobby}>
+                <Text style={globalStyles.subHeading}>+</Text>
+              </TouchableOpacity>
+            </View>
+            <FlatList
+              scrollEnabled={false}
+              data={hobbies}
+              keyExtractor={(_, index) => index.toString()}
+              renderItem={({ item, index }) => (
+                <View style={globalStyles.hobbyItem}>
+                  <Text style={globalStyles.hobbyText}>{item}</Text>
+                  <TouchableOpacity
+                    style={globalStyles.deleteButton}
+                    onPress={() => removeHobby(index)}
+                  >
+                    <Text style={globalStyles.deleteButtonText}>x</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            />
+            <Text style={globalStyles.label}>Kiinnostusten kohteet:</Text>
+            <TextInput style={globalStyles.input}
+              placeholder='Syötä kiinnostusten kohteet'
+              placeholderTextColor={Colors.dark.inversePrimary}
+              value={interests}
+              onChangeText={setInterests}
+              editable={!loading}
+            />
+            <Text style={globalStyles.label}>Pronominit:</Text>
+            <TextInput style={globalStyles.input}
+              placeholder='Syötä pronominit'
+              placeholderTextColor={Colors.dark.inversePrimary}
+              value={pronouns}
+              onChangeText={setPronouns}
+              editable={!loading}
+            />
           </View>
-          <FlatList
-            scrollEnabled={false}
-            data={hobbies}
-            keyExtractor={(_, index) => index.toString()}
-            renderItem={({ item, index }) => (
-              <View style={globalStyles.hobbyItem}>
-                <Text style={globalStyles.hobbyText}>{item}</Text>
-                <TouchableOpacity
-                  style={globalStyles.deleteButton}
-                  onPress={() => removeHobby(index)}
-                >
-                  <Text style={globalStyles.deleteButtonText}>x</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-          />
-          <Text style={globalStyles.label}>Kiinnostusten kohteet:</Text>
-          <TextInput style={globalStyles.input}
-            placeholder='Syötä kiinnostusten kohteet'
-            placeholderTextColor={Colors.dark.inversePrimary}
-            value={interests}
-            onChangeText={setInterests}
-            editable={!loading}
-          />
-          <Text style={globalStyles.label}>Pronominit:</Text>
-          <TextInput style={globalStyles.input}
-            placeholder='Syötä pronominit'
-            placeholderTextColor={Colors.dark.inversePrimary}
-            value={pronouns}
-            onChangeText={setPronouns}
-            editable={!loading}
-          />
-        </View>
 
 
-        <TouchableOpacity style={[globalStyles.buttonSave, loading && globalStyles.buttonDisabled]}
-          onPress={handleSave}
-          disabled={loading}
-        >
-          <Text style={globalStyles.buttonSaveText}>
-            {loading ? "Tallennetaan..." : "Tallenna muutokset"}
-          </Text>
-        </TouchableOpacity>
+          <TouchableOpacity style={[globalStyles.buttonSave, loading && globalStyles.buttonDisabled]}
+            onPress={handleSave}
+            disabled={loading}
+          >
+            <Text style={globalStyles.buttonSaveText}>
+              {loading ? "Tallennetaan..." : "Tallenna muutokset"}
+            </Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity style={globalStyles.buttonCancel}
-          onPress={onClose}
-        >
-          <Text style={globalStyles.logOutButtonText}>Peruuta</Text>
-        </TouchableOpacity>
-        <View style={{ backgroundColor: 'rgb(26, 28, 30)', height: 30 }} />
-      </KeyboardAwareScrollView>
-    </TouchableWithoutFeedback>
+          <TouchableOpacity style={globalStyles.buttonCancel}
+            onPress={onClose}
+          >
+            <Text style={globalStyles.logOutButtonText}>Peruuta</Text>
+          </TouchableOpacity>
+          <View style={{ backgroundColor: 'rgb(26, 28, 30)', height: 30 }} />
+        </KeyboardAwareScrollView>
+      </TouchableWithoutFeedback>
+    </LinearGradient>
   )
 }
