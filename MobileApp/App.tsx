@@ -46,11 +46,7 @@ export default function App() {
         <SafeAreaProvider style={isAndroid15 ? { paddingBottom: initialWindowMetrics?.insets.bottom, backgroundColor: 'black' } : {}}>
           <RecordingProvider>
             <NotificationsProvider>
-              <NavigationContainer theme={navigationDarkTheme}>
-                <RootNavigator />
-                <RecordingBubble />
-                <StatusBar style="light" />
-              </NavigationContainer>
+              <AppContent /> 
             </NotificationsProvider>
           </RecordingProvider>
         </SafeAreaProvider>
