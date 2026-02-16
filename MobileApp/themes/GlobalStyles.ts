@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import { Colors } from '../constants/colors';
 import { Spacing, BorderRadius, FontSizes } from './spacing';
 
@@ -81,7 +81,7 @@ const globalStyles = StyleSheet.create({
         alignContent: 'flex-start',
         width: '100%',
         //backgroundColor: Colors.dark.elevation.level1,
-        backgroundColor: 'rgba(0, 0, 0, 0.2)',
+        backgroundColor: (Platform.OS === 'android') ? Colors.dark.surface : 'rgba(0, 0, 0, 0.2)',
         borderWidth: 1,
         borderColor: Colors.dark.outline,
         marginBlockStart: Spacing.s,
