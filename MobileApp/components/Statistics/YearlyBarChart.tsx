@@ -130,6 +130,7 @@ export default function YearlyBarChart({ allEvents, chartType }: YearlyBarChartP
                     barBorderColor={frontColor}
                     barBorderWidth={2}
                     barWidth={30}
+                    yAxisExtraHeight={40}
                     gradientColor={Colors.dark.onPrimary}
                     noOfSections={4}
                     formatYLabel={(label) => parseFloat(label).toFixed(2).toString()}
