@@ -11,7 +11,7 @@ const globalStyles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: Colors.dark.background,
+        //backgroundColor: Colors.dark.background,
         shadowColor: Colors.dark.shadow,
         padding: Spacing.s,
         shadowOpacity: 0.25,
@@ -26,12 +26,50 @@ const globalStyles = StyleSheet.create({
     //UpdateEventScreen
     container: {
         flex: 1,
-        backgroundColor: Colors.dark.background
+        //backgroundColor: Colors.dark.background
     },
     contentContainer: {
         alignItems: "center",
         justifyContent: "center",
         paddingVertical: Spacing.md,
+    },
+
+    //LoginScreen
+    //RegisterScreen
+    registerContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    registerInput: {
+        width: "90%",
+        backgroundColor: Colors.dark.primary,
+        borderColor: Colors.dark.primaryContainer,
+        color: Colors.dark.surface,
+        marginBottom: 16,
+        borderWidth: 1,
+        borderRadius: 8,
+        paddingHorizontal: 16,
+        paddingVertical: 12,
+        fontSize: 16,
+    },
+    header: {
+        fontSize: 36,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginTop: 120,
+        color: Colors.dark.onSurface
+    },
+    subtitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 12,
+        color: Colors.dark.onSurface
+    },
+    registerText: {
+        margin: 12,
+        textAlign: "center",
+        color: Colors.dark.onSurface
     },
 
     //ExpandableListCard
@@ -42,7 +80,10 @@ const globalStyles = StyleSheet.create({
     cardContainer: {
         alignContent: 'flex-start',
         width: '100%',
-        backgroundColor: Colors.dark.elevation.level1,
+        //backgroundColor: Colors.dark.elevation.level1,
+        backgroundColor: 'rgba(0, 0, 0, 0.2)',
+        borderWidth: 1,
+        borderColor: Colors.dark.outline,
         marginBlockStart: Spacing.s,
         marginBlockEnd: Spacing.s
     },
@@ -91,11 +132,11 @@ const globalStyles = StyleSheet.create({
         width: '100%',
         backgroundColor: Colors.dark.primary,
         borderColor: Colors.dark.primaryContainer,
+        color: Colors.dark.surface,
         borderWidth: 1,
         borderRadius: BorderRadius.m,
         paddingHorizontal: Spacing.m,
         paddingVertical: Spacing.sm,
-        color: Colors.dark.surface,
     },
 
     //EventFrom
@@ -189,6 +230,7 @@ const globalStyles = StyleSheet.create({
     //EventForm
     //AllEventsMapView
     //EditUserInfo
+    //RegisterScreen
     label: {
         fontWeight: "600",
         color: Colors.dark.onSurface,
@@ -262,7 +304,6 @@ const globalStyles = StyleSheet.create({
         gap: 5,
         padding: 20,
         marginTop: 20,
-        backgroundColor: Colors.dark.background
     },
     hobbyInputContainer: {
         flexDirection: 'row',
@@ -283,7 +324,7 @@ const globalStyles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        backgroundColor: Colors.dark.surfaceVariant,
+        backgroundColor: 'rgba(0, 0, 0, 0.4)',
         padding: 10,
         borderRadius: 5,
         marginBottom: 8,
@@ -336,7 +377,6 @@ const globalStyles = StyleSheet.create({
         paddingHorizontal: 8,
         borderBottomWidth: 1,
         borderBottomColor: Colors.dark.outline,
-        backgroundColor: Colors.dark.elevation.level5,
     },
     showUserContainer: {
         width: "100%",
@@ -385,7 +425,7 @@ const globalStyles = StyleSheet.create({
         borderRadius: BorderRadius.l,
         borderWidth: 1,
         padding: Spacing.m,
-        backgroundColor: Colors.dark.primaryContainer, 
+        backgroundColor: Colors.dark.primaryContainer,
     },
     navigateMonthButtonPressed: {
         borderRadius: BorderRadius.l,
@@ -405,7 +445,7 @@ const globalStyles = StyleSheet.create({
         color: Colors.dark.onSurface,
         alignSelf: 'center'
     },
-    chartTypeSelected: { 
+    chartTypeSelected: {
         flexDirection: 'row',
         alignItems: 'center',
         margin: 5, paddingRight: 10,
@@ -414,7 +454,7 @@ const globalStyles = StyleSheet.create({
         borderRadius: 100,
         backgroundColor: Colors.dark.secondary
     },
-    chartTypeNotSelected: { 
+    chartTypeNotSelected: {
         flexDirection: 'row',
         alignItems: 'center',
         margin: 5,
@@ -451,6 +491,17 @@ const globalStyles = StyleSheet.create({
     startingSoonText: {
         color: Colors.dark.onTertiary,
         padding: Spacing.xs
+    },
+
+    //RegisterScreen
+    changeModeView: {
+        margin: 8,
+        marginBottom: 60,
+        alignItems: 'center',
+    },
+    changeModeButton: {
+        width: '50%',
+        margin: 16,
     }
 })
 

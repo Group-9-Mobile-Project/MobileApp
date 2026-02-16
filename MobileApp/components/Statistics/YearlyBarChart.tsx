@@ -112,32 +112,33 @@ export default function YearlyBarChart({ allEvents, chartType }: YearlyBarChartP
                 </Pressable>
             </View>
 
-            <View style={{margin: Spacing.m }}>
-            <BarChart
-                data={data.map((item, index) => ({
-                    ...item,
-                    label: item.date,
-                    topLabelComponent: () =>
-                        selectedBarIndex === index ? (
-                            <Text>{item.value.toFixed(1)}</Text>
-                        ) : null
-                }))}
-                onPress={(_item: BarData, index: any) => {
-                    setSelectedBarIndex(selectedBarIndex === index ? null : index)
-                }}
-                showGradient
-                frontColor={frontColor}
-                barBorderColor={frontColor}
-                barBorderWidth={2}
-                barWidth={22}
-                gradientColor={Colors.dark.onPrimary}
-                noOfSections={4}
-                formatYLabel={(label) => parseFloat(label).toFixed(2).toString()}
-                xAxisLabelTextStyle={globalStyles.text}
-                yAxisTextStyle={globalStyles.text}
-                yAxisColor={Colors.dark.primary}
-                xAxisColor={Colors.dark.primary}
-            />
+            <View style={{ margin: Spacing.m }}>
+                <BarChart
+                    data={data.map((item, index) => ({
+                        ...item,
+                        label: item.date,
+                        topLabelComponent: () =>
+                            selectedBarIndex === index ? (
+                                <Text style={globalStyles.infoText}>{item.value.toFixed(1)}</Text>
+                            ) : null
+                    }))}
+                    onPress={(_item: BarData, index: any) => {
+                        setSelectedBarIndex(selectedBarIndex === index ? null : index)
+                    }}
+                    showGradient
+                    frontColor={frontColor}
+                    barBorderColor={frontColor}
+                    barBorderWidth={2}
+                    barWidth={30}
+                    yAxisExtraHeight={40}
+                    gradientColor={Colors.dark.onPrimary}
+                    noOfSections={4}
+                    formatYLabel={(label) => parseFloat(label).toFixed(2).toString()}
+                    xAxisLabelTextStyle={globalStyles.text}
+                    yAxisTextStyle={globalStyles.text}
+                    yAxisColor={Colors.dark.primary}
+                    xAxisColor={Colors.dark.primary}
+                />
             </View>
             {data && <TextStatistics events={monthAndYearFilteredEvents} />}
         </View>

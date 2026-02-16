@@ -8,6 +8,8 @@ import { Event } from "../types/Event";
 import globalStyles from "../themes/GlobalStyles";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { RootTabParamList } from "../types/Navigation";
+import { LinearGradient } from 'expo-linear-gradient'
+import { Colors } from "../constants/colors";
 
 export default function CreateEventScreen() {
   const { user } = useAuth();
@@ -35,7 +37,7 @@ export default function CreateEventScreen() {
 
         navigation.navigate("Koti");
         return true;
-        
+
       } catch (err) {
         console.error("Failed to save new event", err);
         Alert.alert("Virhe", "Tapahtuman tallennus epäonnistui");
@@ -46,16 +48,18 @@ export default function CreateEventScreen() {
   );
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <KeyboardAwareScrollView
-        style={globalStyles.container}
-        contentContainerStyle={globalStyles.contentContainer}
-        keyboardShouldPersistTaps="handled"
-        //  enableOnAndroid 
-        extraScrollHeight={24}
-      >
-        <EventForm onSubmit={handleSubmit} />
-      </KeyboardAwareScrollView>
-    </TouchableWithoutFeedback>
+    <LinearGradient colors={[Colors.dark.background, Colors.dark.inversePrimary, Colors.dark.background]} style={globalStyles.gradientBackground}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <KeyboardAwareScrollView
+          style={globalStyles.container}
+          contentContainerStyle={globalStyles.contentContainer}
+          keyboardShouldPersistTaps="handled"
+          //  enableOnAndroid 
+          extraScrollHeight={24}
+        >
+          <EventForm onSubmit={handleSubmit} />
+        </KeyboardAwareScrollView>
+      </TouchableWithoutFeedback>
+    </LinearGradient>
   );
 }

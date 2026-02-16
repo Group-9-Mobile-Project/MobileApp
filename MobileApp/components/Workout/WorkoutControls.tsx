@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     gap: 6
   },
   primaryButton: {
-    backgroundColor: Colors.dark.secondary,
+    backgroundColor: Colors.dark.secondaryContainer,
     paddingVertical: 8,
     borderRadius: 12,
     alignItems: "center",
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     opacity: 0.85,
   },
   primaryButtonText: {
-    color: Colors.dark.inversePrimary,
+    color: Colors.dark.secondary,
     fontSize: 16,
     fontWeight: "600",
   },
@@ -75,13 +75,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 8,        
     paddingHorizontal: 20,      
-    borderWidth: 2,             
-    borderColor: Colors.dark.primary,  
     borderRadius: 12,          
-    backgroundColor: "transparent",    
+    backgroundColor: Colors.dark.onError   
   },
   secondaryButtonPressed: {
-    backgroundColor: Colors.dark.primary + "20",  
     opacity: 0.9,
   },
   secondaryButtonDisabled: {
@@ -92,7 +89,7 @@ const styles = StyleSheet.create({
     color: "#888",
   },
   secondaryButtonText: {
-    color: Colors.dark.primary,
+    color: Colors.dark.error,
     fontWeight: "600",         
     fontSize: 14,              
   },
