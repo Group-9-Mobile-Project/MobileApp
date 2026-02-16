@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
   backButton: {
     marginTop: 12,
     backgroundColor: Colors.dark.secondary,
-    paddingVertical: 12,
+    paddingVertical: Spacing.m,
     borderRadius: 10,
     alignItems: "center",
   },
