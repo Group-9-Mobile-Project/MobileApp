@@ -77,14 +77,14 @@ App finctionalities have been tested and work on both iOS and Android.
 
 ```
 src/
-├── components/     # Uudelleenkäytettävät UI-komponentit
-├── screens/        # Näkymät
-├── hooks/          # Custom hookit
-├── services/       # Firebase-palvelut
-├── navigation/     # Navigaatiot
-├── types/          # TypeScript-tyypit
-├── config/         # Konfiguraatiot
-└── utils/          # Apufunktiot
+├── components/     # Reusable UI-komponents
+├── screens/        # Screens
+├── hooks/          # Custom hooks
+├── services/       # Services
+├── navigation/     # Navigations
+├── types/          # TypeScript-types
+├── config/         # Konfigurations
+└── utils/          # Helpers
 ```
 
 ## Developed By
