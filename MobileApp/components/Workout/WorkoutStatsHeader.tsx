@@ -1,5 +1,8 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { Colors } from "../../constants/colors";
+import globalStyles from '../../themes/GlobalStyles'
+import { Spacing } from "../../themes/spacing";
 
 type WorkoutStatsHeaderProps = {
   elapsedSeconds: number;
@@ -48,10 +51,11 @@ const styles = StyleSheet.create({
     fontSize: 56,
     fontWeight: "700",
     textAlign: "center",
+    color: Colors.dark.onSurface,
   },
   timeLabel: {
     fontSize: 20,
-    color: "#888",
+    color: Colors.dark.primary,
     textAlign: "center",
     marginBottom: 8,
   },
@@ -67,9 +71,10 @@ const styles = StyleSheet.create({
   metricValue: {
     fontSize: 22,
     fontWeight: "600",
+    color: Colors.dark.onSurface,
   },
   metricLabel: {
     fontSize: 16,
-    color: "#888",
+    color: Colors.dark.primary,
   },
 });

@@ -60,21 +60,26 @@ const NotificationsProvider: FC<PropsWithChildren> = ({ children }) => {
     ) => {
         const notification = await Notifications.scheduleNotificationAsync(request);
 
-        console.log("Scheduling notification: ", request.identifier);
-
-        const allNotis = Notifications.getAllScheduledNotificationsAsync()
-            ; (await allNotis).forEach(note => console.log(note.trigger))
-        console.log(notification)
+        if (__DEV__) {
+            console.log("Scheduling notification: ", request.identifier);
+            const allNotis = Notifications.getAllScheduledNotificationsAsync();
+            (await allNotis).forEach(note => console.log(note.trigger));
+            console.log(notification);
+        }
 
     };
 
     const cancelNotificationAsync = async (identifier: string) => {
-        console.log("Canceling notification: ", identifier);
+        if (__DEV__) {
+            console.log("Canceling notification: ", identifier);
+        }
         await Notifications.cancelScheduledNotificationAsync(identifier);
 
-        const allNotis = Notifications.getAllScheduledNotificationsAsync()
-            ; (await allNotis).forEach(note => console.log(note.trigger))
-        console.log(allNotis)
+        if (__DEV__) {
+            const allNotis = Notifications.getAllScheduledNotificationsAsync();
+            (await allNotis).forEach(note => console.log(note.trigger));
+            console.log(allNotis);
+        }
     };
 
     const value = { scheduleNotificationAsync, cancelNotificationAsync };

@@ -1,5 +1,8 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { Colors } from "../../constants/colors";
+import globalStyles from '../../themes/GlobalStyles'
+import { Spacing } from "../../themes/spacing";
 
 type WorkoutSummaryCardProps = {
   durationSeconds: number;
@@ -59,9 +62,10 @@ const styles = StyleSheet.create({
   },
   statValue: {
     fontSize: 18,
-    fontWeight: "600"
+    fontWeight: "600",
+    color: Colors.dark.onSurfaceVariant
   },
   statLabel: {
-    color: "#777"
+    color: Colors.dark.primary
   },
 });

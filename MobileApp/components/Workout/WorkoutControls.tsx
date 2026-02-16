@@ -1,5 +1,8 @@
 import React from "react";
 import { Pressable, Text, StyleSheet, View } from "react-native";
+import { Colors } from "../../constants/colors";
+import globalStyles from '../../themes/GlobalStyles'
+import { Spacing } from "../../themes/spacing";
 
 type WorkoutControlsProps = {
   primaryLabel: string;
@@ -53,7 +56,7 @@ const styles = StyleSheet.create({
     gap: 6
   },
   primaryButton: {
-    backgroundColor: "black",
+    backgroundColor: Colors.dark.secondary,
     paddingVertical: 8,
     borderRadius: 12,
     alignItems: "center",
@@ -63,24 +66,34 @@ const styles = StyleSheet.create({
     opacity: 0.85,
   },
   primaryButtonText: {
-    color: "white",
+    color: Colors.dark.inversePrimary,
     fontSize: 16,
     fontWeight: "600",
   },
+ 
   secondaryButton: {
     alignItems: "center",
-    paddingVertical: 4,
+    paddingVertical: 8,        
+    paddingHorizontal: 20,      
+    borderWidth: 2,             
+    borderColor: Colors.dark.primary,  
+    borderRadius: 12,          
+    backgroundColor: "transparent",    
   },
   secondaryButtonPressed: {
-    opacity: 0.7,
+    backgroundColor: Colors.dark.primary + "20",  
+    opacity: 0.9,
   },
   secondaryButtonDisabled: {
+    borderColor: "#888",        
     opacity: 0.5,
-  },
-  secondaryButtonText: {
-    color: "#444",
   },
   secondaryButtonTextDisabled: {
     color: "#888",
+  },
+  secondaryButtonText: {
+    color: Colors.dark.primary,
+    fontWeight: "600",         
+    fontSize: 14,              
   },
 });
