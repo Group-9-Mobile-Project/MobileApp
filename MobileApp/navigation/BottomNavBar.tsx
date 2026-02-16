@@ -3,10 +3,12 @@ import { StyleSheet, View } from "react-native";
 import { useLinkBuilder, useTheme } from "@react-navigation/native";
 import { Text, PlatformPressable } from "@react-navigation/elements";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function BottomNavBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const { colors } = useTheme();
   const { buildHref } = useLinkBuilder();
+  const insets = useSafeAreaInsets(); 
 
   const visibleRoutes = state.routes.filter((route) => {
     const options = descriptors[route.key].options;
@@ -15,7 +17,14 @@ export default function BottomNavBar({ state, descriptors, navigation }: BottomT
   });
 
   return (
-    <View style={{ flexDirection: "row", height: 60, backgroundColor: colors.card, borderTopWidth: 1, borderTopColor: colors.border }}>
+    <View style={{
+      flexDirection: "row",
+      height: 56 + insets.bottom,
+      paddingBottom: insets.bottom,
+      backgroundColor: colors.card,
+      borderTopWidth: 1,
+      borderTopColor: colors.border
+    }}>
       {visibleRoutes.map((route) => {
         const { options } = descriptors[route.key];
         const isFocused = state.routes[state.index].key === route.key;
@@ -62,10 +71,10 @@ export default function BottomNavBar({ state, descriptors, navigation }: BottomT
             {options.tabBarIcon &&
               options.tabBarIcon({
                 focused: isFocused,
-                color: isFocused ? colors.primary : colors.notification,
+                color: isFocused ? colors.notification : colors.primary,
                 size: 24,
               })}
-            <Text style={{ color: isFocused ? colors.primary : colors.notification, fontSize: 12, marginTop: 4 }}>
+            <Text style={{ color: isFocused ? colors.notification : colors.primary, fontSize: 12, marginTop: 4 }}>
               {label}
             </Text>
           </PlatformPressable>

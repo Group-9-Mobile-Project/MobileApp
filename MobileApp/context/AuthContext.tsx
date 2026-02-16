@@ -1,5 +1,5 @@
-import React, { createContext, useContext } from "react";
-import { signOut, User } from "firebase/auth";
+import React, { createContext, useState, useEffect, useContext } from "react";
+import { signOut, User, onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase/Config";
 
 type AuthContextValue = {
@@ -10,15 +10,18 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-export function AuthProvider({
-  user,
-  loading,
-  children,
-}: {
-  user: User | null;
-  loading: boolean;
-  children: React.ReactNode;
-}) {
+export function AuthProvider({ children }: { children: React.ReactNode }) { 
+  const [user, setUser] = useState<User | null>(null); 
+  const [loading, setLoading] = useState(true);  
+ 
+  useEffect(() => {  
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      setUser(firebaseUser);
+      setLoading(false);
+    });
+    return unsubscribe;
+  }, []);
+ 
   const signOutUser = async () => {
     await signOut(auth);
   };

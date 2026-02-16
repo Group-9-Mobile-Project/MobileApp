@@ -7,7 +7,12 @@ import { useRoute, RouteProp, useNavigation, NavigationProp, useFocusEffect } fr
 import { RootTabParamList } from "../types/Navigation";
 import WorkoutMap from "../components/Workout/WorkoutMap";
 import WorkoutSummaryCard from "../components/Workout/WorkoutSummaryCard";
+import { LinearGradient } from "expo-linear-gradient";
+import { Colors } from "../constants/colors";
+import globalStyles from '../themes/GlobalStyles'
+import { Spacing } from "../themes/spacing";
 import { EventType } from "../types/Event"
+import { Ionicons } from "@expo/vector-icons";
 
 const DEFAULT_REGION: Region = {
   latitude: 65.08,
@@ -127,8 +132,15 @@ export default function ExerciseDetailScreen() {
   const displayType = data.workoutType ?? eventType;
 
   return (
+  <LinearGradient colors={[Colors.dark.background, Colors.dark.onPrimary, Colors.dark.background]} style={globalStyles.gradientBackground}>
+
     <View style={styles.container}>
-      <Text style={styles.heading}>{eventTitle ?? "Harjoituksen tiedot"}</Text>
+      <View style={styles.headerRow}>
+        <Text style={globalStyles.heading}>{eventTitle ?? "Harjoituksen tiedot"}</Text>
+        <Pressable onPress={handleDelete} style={styles.deleteIcon}>
+          <Ionicons name="trash-outline" size={28} color="#d32f2f" />
+        </Pressable>
+      </View>
       <Text style={styles.meta}>{startedAt.toLocaleString()}</Text>
       {displayType && <Text style={styles.meta}>Tyyppi: {displayType}</Text>}
 
@@ -153,29 +165,17 @@ export default function ExerciseDetailScreen() {
         }
       />
 
-      <Pressable
-        style={[styles.deleteButton, deleting && styles.deleteButtonDisabled]}
-        onPress={handleDelete}
-        disabled={deleting}
-      >
-        {deleting ? (
-          <ActivityIndicator color="white" />
-        ) : (
-          <Text style={styles.deleteButtonText}>Poista harjoitus</Text>
-        )}
-      </Pressable>
-
       <Pressable style={styles.backButton} onPress={() => navigation.navigate("Tilastot")}>
         <Text style={styles.backButtonText}>Sulje</Text>
       </Pressable>
-    </View>
+      </View>
+    </LinearGradient>
   )
 } 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "white",
     gap: 12
   },
   heading: {
@@ -183,12 +183,13 @@ const styles = StyleSheet.create({
     fontWeight: "700"
   },
   meta: {
-    color: "#666"
+    color: Colors.dark.primary,
+    padding: Spacing.xs
   },
   backButton: {
     marginTop: 12,
-    backgroundColor: "black",
-    paddingVertical: 12,
+    backgroundColor: Colors.dark.secondary,
+    paddingVertical: Spacing.m,
     borderRadius: 10,
     alignItems: "center",
   },
@@ -205,19 +206,13 @@ const styles = StyleSheet.create({
   link: {
     color: "#1e88e5"
   },
-  deleteButton: {
-    marginTop: 8,
-    backgroundColor: "#d32f2f",
-    paddingVertical: 12,
-    borderRadius: 10,
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
   },
-  deleteButtonDisabled: {
-    opacity: 0.7,
-  },
-  deleteButtonText: {
-    color: "white",
-    fontWeight: "600",
+  deleteIcon: {
+    padding: 12,
   },
 
 });

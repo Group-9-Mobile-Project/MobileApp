@@ -9,6 +9,10 @@ import WorkoutStatsHeader from "../components/Workout/WorkoutStatsHeader";
 import WorkoutMap from "../components/Workout/WorkoutMap";
 import WorkoutControls from "../components/Workout/WorkoutControls";
 import { useRecordingContext } from "../context/RecordingContext";
+import { LinearGradient } from "expo-linear-gradient";
+import { Colors } from "../constants/colors";
+import globalStyles from '../themes/GlobalStyles'
+import { Spacing } from "../themes/spacing";
 
 const DEFAULT_REGION: Region = {
   latitude: 65.08,
@@ -184,6 +188,7 @@ export default function RecordEventScreen() {
       : "Aloita treeni";
 
   return (
+    <LinearGradient colors={[Colors.dark.background, Colors.dark.onPrimary, Colors.dark.background]} style={globalStyles.gradientBackground}>
     <View style={styles.container}>
       
         <WorkoutStatsHeader
@@ -209,7 +214,8 @@ export default function RecordEventScreen() {
           disableStop={!hasData}
         />
       
-    </View>
+      </View>
+    </LinearGradient>
   );
 }
 
@@ -220,10 +226,9 @@ const styles = StyleSheet.create({
     paddingTop: 4,
     paddingBottom: 4,
     gap: 4,
-    backgroundColor: "white",
   },
   errorText: {
-    color: "#c62828",
+    color: Colors.dark.error,
     textAlign: "center",
   },
 });
