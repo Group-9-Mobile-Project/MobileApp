@@ -43,11 +43,7 @@ export default function App() {
         <SafeAreaProvider>
           <RecordingProvider>
             <NotificationsProvider>
-              <NavigationContainer theme={navigationDarkTheme}>
-                <RootNavigator />
-                <RecordingBubble />
-                <StatusBar style="light" />
-              </NavigationContainer>
+              <AppContent /> 
             </NotificationsProvider>
           </RecordingProvider>
         </SafeAreaProvider>
