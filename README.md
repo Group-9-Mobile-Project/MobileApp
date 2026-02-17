@@ -2,7 +2,9 @@
 
 Liikkeelle is a social workout app which helps users find nearby workout partners.
 It's a student mobile development project, built with React Native, Expo Go, Firebase Auth and Cloud Firestore.
-App finctionalities have been tested and work on both iOS and Android.
+App functionalities have been tested and work on both iOS and Android.
+
+A demonstration video - in finnish - can be found here: [https://youtu.be/EwmQwa5Fr_8](https://youtu.be/EwmQwa5Fr_8)
 
 ## Features
 
