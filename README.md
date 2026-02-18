@@ -77,17 +77,26 @@ A demonstration video - in finnish - can be found here: [https://youtu.be/EwmQwa
 - Database: Firebase Cloud Firestore
 - Authentication: Firebase Auth with authContext and AsyncStorage
 
-```
-src/
-├── components/     # Reusable UI-komponents
-├── screens/        # Screens
-├── hooks/          # Custom hooks
-├── services/       # Services
-├── navigation/     # Navigations
-├── types/          # TypeScript-types
-├── config/         # Konfigurations
-└── utils/          # Helpers
-```
+## Architecture
+
+Structure overview:
+
+- `components/` + `screens/`: UI and screen logic
+- `navigation/`: app routes (stacks/tabs)
+- `hooks/` + `services/`: reusable logic and data operations
+- `context/`: global auth/session state
+- `firebase/`: Firebase config + shared Auth/Firestore references
+- `types/` + `utils/`: models and helpers
+- `themes/` + `constants/`: styling system and fixed values
+
+Data flow (high level):  
+`UI -> hooks/services/context -> Firebase (Auth + Firestore)`  
+with native features (location/maps/pedometer) used in tracking and event/location features.
+
+Persistence:
+- Firebase Auth session persistence (AsyncStorage)
+- Route/tracker drafts/finals in AsyncStorage
+- Shared app data in Firestore
 
 ## Developed By
 - Ville-Pekka Alavuotunki
