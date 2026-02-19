@@ -12,6 +12,10 @@ A demonstration video - in finnish - can be found here: [https://youtu.be/EwmQwa
 - User registration and login using Firebase Authentication
 - Authenticated user data is stored in an AsyncStorage and shared across the app
 
+<img src="./screenshots/rekisteröinti.jpg" height="500px"/>
+
+Register screen
+
 **Homepage**
 - View all upcoming events in map view
 - View five upcoming events in list view
@@ -19,6 +23,10 @@ A demonstration video - in finnish - can be found here: [https://youtu.be/EwmQwa
     - Date
     - Activity type (walk or run)
 - Displays the user's location on the map
+
+<img src="./screenshots/androidKoti.jpg" height="500px"/>
+
+Home screen on Android
 
 **Create Event**
 - Create and publish new walking or running events
@@ -28,6 +36,10 @@ A demonstration video - in finnish - can be found here: [https://youtu.be/EwmQwa
     - Date and start time
     - Start location
     - Description
+
+<img src="./screenshots/uusiLenkki.jpg" height="500px"/>
+
+Create event screen
 
 **Profile Page**
 - View the events you have:
@@ -40,6 +52,10 @@ A demonstration video - in finnish - can be found here: [https://youtu.be/EwmQwa
     - City
     - Hobbies
     - Interests
+
+<img src="./screenshots/profiili.jpg" height="500px"/>
+
+Profile screen on iOS
 
 **Statistics**
 - View statistics of your walks and runs:
@@ -61,6 +77,10 @@ A demonstration video - in finnish - can be found here: [https://youtu.be/EwmQwa
     - Average speed
     - Map view of the route
 
+<img src="./screenshots/kestoKuukausi.jpg" height="500px"/>
+
+Exercise duration bar chart, monthly view
+
 **Tracker**
 - Track your walks and runs
 - Tracker saves steps (platform native pedometer), average speed, time and distance in real time
@@ -77,17 +97,26 @@ A demonstration video - in finnish - can be found here: [https://youtu.be/EwmQwa
 - Database: Firebase Cloud Firestore
 - Authentication: Firebase Auth with authContext and AsyncStorage
 
-```
-src/
-├── components/     # Reusable UI-komponents
-├── screens/        # Screens
-├── hooks/          # Custom hooks
-├── services/       # Services
-├── navigation/     # Navigations
-├── types/          # TypeScript-types
-├── config/         # Konfigurations
-└── utils/          # Helpers
-```
+## Architecture
+
+Structure overview:
+
+- `components/` + `screens/`: UI and screen logic
+- `navigation/`: app routes (stacks/tabs)
+- `hooks/` + `services/`: reusable logic and data operations
+- `context/`: global auth/session state
+- `firebase/`: Firebase config + shared Auth/Firestore references
+- `types/` + `utils/`: models and helpers
+- `themes/` + `constants/`: styling system and fixed values
+
+Data flow (high level):  
+`UI -> hooks/services/context -> Firebase (Auth + Firestore)`  
+with native features (location/maps/pedometer) used in tracking and event/location features.
+
+Persistence:
+- Firebase Auth session persistence (AsyncStorage)
+- Route/tracker drafts/finals in AsyncStorage
+- Shared app data in Firestore
 
 ## Developed By
 - Ville-Pekka Alavuotunki
